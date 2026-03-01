@@ -8,6 +8,9 @@ import os
 from zen import responder, verificar_chave, aquecer_modelo
 from uuid import uuid4
 
+# =============================
+# Avatar
+# =============================
 AVATAR_B64 = ""
 if os.path.exists("avatar.png"):
     with open("avatar.png", "rb") as img_file:
@@ -17,14 +20,16 @@ if os.path.exists("avatar.png"):
 conversation_memory = {}
 
 # ============================================
-# INICIALIZAÇÃO
+# Inicialização
 # ============================================
 verificar_chave()
 aquecer_modelo()
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="."), name="static")
 
+# ============================================
 # Mensagens para o Frontend
+# ============================================
 DESPEDIDA_JS = [
     "Que o silêncio te acompanhe.",
     "O caminho se abre diante de ti.",
@@ -42,7 +47,7 @@ AGUARDANDO_JS = [
 ]
 
 # ============================================
-# PÁGINA HTML (LIMPA E SEM DUPLICIDADE)
+# Página HTML
 # ============================================
 HTML_PAGE = f"""
 <!DOCTYPE html>
@@ -84,7 +89,6 @@ HTML_PAGE = f"""
             digite "sair", "ok" ou "gassho" para encerrar<br>
             <a href="https://chizuzen.github.io/Zenbot/" target="_blank" class="doc-link">📖 Ver Documentação do Projeto</a>
         </div>
-
     </div>
 
     <script>
@@ -97,11 +101,25 @@ HTML_PAGE = f"""
 """
 
 # ============================================
-# ROTAS DA API
+# Carrega Koans Clássicos
+# ============================================
+KOANS = []
+koans_path = "src/styles/koans_classicos.txt"
+if os.path.exists(koans_path):
+    with open(koans_path, "r", encoding="utf-8") as f:
+        KOANS = [k.strip() for k in f.read().split("\n") if k.strip()]
+
+# ============================================
+# Rotas
 # ============================================
 @app.get("/", response_class=HTMLResponse)
 async def get_index():
     return HTML_PAGE
+
+@app.get("/koan")
+async def get_koan():
+    koan = random.choice(KOANS) if KOANS else "O silêncio é profundo."
+    return JSONResponse({"koan": koan})
 
 @app.post("/ask")
 async def ask(request: Request):
@@ -112,7 +130,6 @@ async def ask(request: Request):
         if not pergunta:
             return JSONResponse({"resposta": "O silêncio é a resposta."})
 
-        # Corrigindo a lista para evitar o Erro 500 anterior:
         palavras_saida = ["sair", "exit", "quit", "gassho", "obrigado", "ok"]
         if pergunta.lower() in palavras_saida:
             return JSONResponse({"resposta": random.choice(DESPEDIDA_JS)})
@@ -120,16 +137,24 @@ async def ask(request: Request):
         session_id = request.cookies.get("chizu_session") or str(uuid4())
         historico = conversation_memory.setdefault(session_id, [])
 
-        # Resposta do Mestre
         try:
             resposta = responder(pergunta, historico)
+        except RuntimeError as e:
+            # Fallback para rate limit
+            if str(e) == "RATE_LIMIT":
+                koan_fallback = random.choice(KOANS) if KOANS else "O silêncio é profundo."
+                aviso = "Estamos recebendo muitas requisições no momento. Tente novamente mais tarde."
+                resposta = f"{aviso}\n\nEnquanto isso, reflita sobre este koan:\n{koan_fallback}"
+            else:
+                raise
         except Exception as e:
-            return JSONResponse({"resposta": f"O mestre medita. (Erro: {str(e)})"}, status_code=500)
+            resposta = f"O mestre medita. (Erro: {str(e)})"
 
-        # Atualiza memória
-        historico.append({"role": "user", "content": pergunta})
-        historico.append({"role": "assistant", "content": resposta})
-        conversation_memory[session_id] = historico[-8:]
+        # Atualiza memória apenas se não for fallback de rate limit
+        if "Estamos recebendo muitas requisições" not in resposta:
+            historico.append({"role": "user", "content": pergunta})
+            historico.append({"role": "assistant", "content": resposta})
+            conversation_memory[session_id] = historico[-8:]
 
         response = JSONResponse({"resposta": resposta})
         response.set_cookie("chizu_session", session_id, max_age=60*60*24*7)
@@ -138,8 +163,10 @@ async def ask(request: Request):
     except Exception as e:
         return JSONResponse({"resposta": "Tremor na montanha digital."}, status_code=500)
 
+# ============================================
+# Execução local / Render
+# ============================================
 if __name__ == "__main__":
     import uvicorn
-    # Importante: O Render usa a porta da variável de ambiente $PORT
     port = int(os.environ.get("PORT", 10000))
     uvicorn.run(app, host="0.0.0.0", port=port)
