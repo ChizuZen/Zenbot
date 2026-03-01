@@ -2,6 +2,7 @@ import os
 import time
 import random
 import requests
+import traceback
 from core.engine import montar_prompt
 
 # =============================
@@ -101,11 +102,21 @@ def responder(pergunta, historico=None, tentativas=2):
 
             return r.json()["choices"][0]["message"]["content"].strip()
 
-        except Exception:
+        # except Exception:
+        #     if tentativa < tentativas - 1:
+        #         time.sleep(1.5)
+        #     else:
+        #         return f"({random.choice(ERROS_ZEN)})"
+            
+        except Exception as e:
+            print("\n[ERRO REAL NO CHIZU]")
+            traceback.print_exc()
+
             if tentativa < tentativas - 1:
                 time.sleep(1.5)
             else:
                 return f"({random.choice(ERROS_ZEN)})"
+                    
 
 # =============================
 # Inicialização
