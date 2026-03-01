@@ -21,9 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # =============================
 
 STYLE_MAP = {
-    "aforismo": BASE_DIR / "styles" / "aforismo.txt",
-    "koan": BASE_DIR / "styles" / "koan.txt",
-    "meditacao": BASE_DIR / "styles" / "meditacao_guiada.txt",
+    "aforismo": BASE_DIR / "styles" / "aforismos_zen.txt",
+    "koan": BASE_DIR / "styles" / "koans_classicos.txt",
+    "meditacao": BASE_DIR / "styles" / "meditacoes_guiadas.txt",
     "padrao": BASE_DIR / "styles" / "system_prompt.txt"
 }
 

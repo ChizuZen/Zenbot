@@ -198,9 +198,10 @@ As respostas devem parecer escritas por **quatro consciências diferentes**.
 
 ### Organização dos arquivos
 ```text
+cd .
+├── aforismos_zen.txt
+├── koans_classicos.txt
+├── meditacoes_guiadas.txt
+└── system_prompt.txt
 
-├── system_prompt.txt
-├── aforismo.txt
-├── koan.txt
-└── meditacao_guiada.txt
 ````
