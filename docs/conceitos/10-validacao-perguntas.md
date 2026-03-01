@@ -198,6 +198,7 @@ As respostas devem parecer escritas por **quatro consciências diferentes**.
 
 ### Organização dos arquivos
 ```text
+
 ├── system_prompt.txt
 ├── aforismo.txt
 ├── koan.txt

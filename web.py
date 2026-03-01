@@ -129,7 +129,7 @@ async def ask(request: Request):
         # Atualiza memória
         historico.append({"role": "user", "content": pergunta})
         historico.append({"role": "assistant", "content": resposta})
-        conversation_memory[session_id] = historico[-6:]
+        conversation_memory[session_id] = historico[-8:]
 
         response = JSONResponse({"resposta": resposta})
         response.set_cookie("chizu_session", session_id, max_age=60*60*24*7)

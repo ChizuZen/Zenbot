@@ -65,8 +65,22 @@ def responder(pergunta, historico=None, tentativas=2):
             messages = montar_prompt(pergunta, estilo)
 
             # opcional: memória curta
-            if historico:
-                messages = historico[-4:] + messages
+            def normalizar_historico(historico, limite_pares=2, max_chars=300):
+                if not historico:
+                    return []
+
+                ultimos = historico[-limite_pares*2:]
+                seguro = []
+                for m in ultimos:
+                    seguro.append({
+                        "role": m["role"],
+                        "content": m["content"][:max_chars]
+                    })
+                return seguro
+
+
+            memoria = normalizar_historico(historico)
+            messages = memoria + messages
 
             payload = {
                 "model": MODEL,
@@ -114,4 +128,3 @@ if __name__ == "__main__":
         if p.lower() in ["sair", "ok", "gassho"]:
             break
         print(f"\nChizu: {responder(p)}\n")
-        
