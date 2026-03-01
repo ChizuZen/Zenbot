@@ -70,12 +70,14 @@ def responder(pergunta, historico=None, tentativas=3, temperature=0.55, max_toke
                 ultimos = historico[-limite_pares*2:]
                 seguro = []
                 for m in ultimos:
-                    seguro.append({
-                        "role": m["role"],
-                        "content": m["content"][:max_chars]
-                    })
+                    # ignora mensagens sem content
+                    content = m.get("content")
+                    if content:
+                        seguro.append({
+                            "role": m.get("role", "user"),
+                            "content": content[:max_chars]
+                        })
                 return seguro
-
             memoria = normalizar_historico(historico)
             messages = memoria + messages
 
