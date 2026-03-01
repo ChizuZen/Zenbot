@@ -53,23 +53,20 @@ def limpar_comando(pergunta: str) -> str:
         return ""
     return pergunta
 
-# =============================
-# Função principal
-# =============================
 
-def responder(pergunta, historico=None, tentativas=2):
+def responder(pergunta, historico=None, tentativas=3, temperature=0.55, max_tokens=800):
     estilo = detectar_estilo(pergunta)
     pergunta = limpar_comando(pergunta)
 
     for tentativa in range(tentativas):
         try:
+            # ===== Monta prompt e histórico =====
             messages = montar_prompt(pergunta, estilo)
 
-            # opcional: memória curta
+            # Memória curta
             def normalizar_historico(historico, limite_pares=2, max_chars=300):
                 if not historico:
                     return []
-
                 ultimos = historico[-limite_pares*2:]
                 seguro = []
                 for m in ultimos:
@@ -79,45 +76,51 @@ def responder(pergunta, historico=None, tentativas=2):
                     })
                 return seguro
 
-
             memoria = normalizar_historico(historico)
             messages = memoria + messages
 
+            # ===== Payload =====
             payload = {
                 "model": MODEL,
                 "messages": messages,
-                "temperature": 0.55,
-                "max_tokens": 800,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
                 "frequency_penalty": 0.4,
                 "presence_penalty": 0.25
             }
 
+            # ===== Rate limit / backoff =====
             r = requests.post(
                 GROQ_URL,
                 json=payload,
                 headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
                 timeout=TIMEOUT
             )
-            r.raise_for_status()
 
+            if r.status_code == 429:
+                sleep_time = (2 ** tentativa) + random.random()
+                print(f"[RATE LIMIT] HTTP 429. Tentativa {tentativa+1}/{tentativas}. Dormindo {sleep_time:.2f}s")
+                time.sleep(sleep_time)
+                continue
+
+            r.raise_for_status()
             return r.json()["choices"][0]["message"]["content"].strip()
 
-        # except Exception:
-        #     if tentativa < tentativas - 1:
-        #         time.sleep(1.5)
-        #     else:
-        #         return f"({random.choice(ERROS_ZEN)})"
-            
-        except Exception as e:
-            print("\n[ERRO REAL NO CHIZU]")
+        except requests.exceptions.HTTPError as e:
+            print(f"[HTTP ERROR] {e}")
             traceback.print_exc()
-
             if tentativa < tentativas - 1:
                 time.sleep(1.5)
             else:
                 return f"({random.choice(ERROS_ZEN)})"
-                    
 
+        except Exception as e:
+            print("[ERRO REAL NO CHIZU]")
+            traceback.print_exc()
+            if tentativa < tentativas - 1:
+                time.sleep(1.5)
+            else:
+                return f"({random.choice(ERROS_ZEN)})"
 # =============================
 # Inicialização
 # =============================
