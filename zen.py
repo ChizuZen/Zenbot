@@ -82,13 +82,26 @@ def responder(pergunta, historico=None, top_k=TOP_K, tentativas=2):
             print(f"[DEBUG] Modo: {modo} | Processando pergunta...")            
             blocos = buscar_blocos(pergunta, top_k=top_k)
             if not blocos: return random.choice(ERROS_ZEN)
-            contexto = "\n\n---\n\n".join([b[:600] for b in blocos])
+            contexto = "\n\n---\n\n".join([b[:350] for b in blocos])
 
-            memoria = ""
-            if historico:
-                memoria = "\n\nMEMÓRIA RECENTE:\n" + "\n".join(
-                    f"{m['role'].upper()}: {m['content']}" for m in historico
-                )
+            # memoria = ""
+            # if historico:
+            #     memoria = "\n\nMEMÓRIA RECENTE:\n" + "\n".join(
+            #         f"{m['role'].upper()}: {m['content']}" for m in historico
+            #     )
+
+
+            def montar_memoria_curta(historico, limite=2):
+                if not historico:
+                    return ""
+                ultimos = historico[-limite*2:]
+                texto = []
+                for m in ultimos:
+                    texto.append(f"{m['role']}: {m['content'][:300]}")
+                return "\n".join(texto)
+            memoria = ""   
+            # memoria = montar_memoria_curta(historico)
+
 
             # Prompt com suas instruções específicas de profundidade
             prompt_final = f"""
@@ -129,6 +142,7 @@ def responder(pergunta, historico=None, top_k=TOP_K, tentativas=2):
             - Evite introduções mecânicas como "Baseado nos textos...".
             - Desenvolva o raciocínio de forma profunda, mas sem academicismo.            
             """
+            print("TAMANHO DO PROMPT:", len(prompt_final))
 
             payload = {
                 "model": MODEL,
