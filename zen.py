@@ -135,7 +135,7 @@ def responder(pergunta, historico=None, tentativas=3, temperature=0.35, max_toke
 
             resposta_llm = r.json()["choices"][0]["message"]["content"].strip()
 
-            resposta_final = f"Discípulo: {pergunta}\n\nChizu:\n{resposta_llm}"
+            resposta_final = resposta_llm
 
             return resposta_llm, resposta_final
 
