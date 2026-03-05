@@ -6,7 +6,7 @@ import traceback
 from core.engine import montar_prompt
 
 # =============================
-# Configurações da API LLM
+# Configurações da API
 # =============================
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -15,7 +15,7 @@ MODEL = "llama-3.3-70b-versatile"
 TIMEOUT = 30
 
 # =============================
-# Mensagens de personalidade
+# Mensagens zen
 # =============================
 
 ERROS_ZEN = [
@@ -30,7 +30,7 @@ AQUECIMENTO = [
 ]
 
 # =============================
-# Detector simples de estilo
+# Estilo
 # =============================
 
 def detectar_estilo(pergunta: str) -> str:
@@ -45,6 +45,7 @@ def detectar_estilo(pergunta: str) -> str:
 
     return "padrao"
 
+
 def limpar_comando(pergunta: str) -> str:
     if pergunta.startswith("/"):
         partes = pergunta.split(" ", 1)
@@ -53,29 +54,48 @@ def limpar_comando(pergunta: str) -> str:
         return ""
     return pergunta
 
+
+# =============================
+# Motor de resposta
+# =============================
+
 def responder(pergunta, historico=None, tentativas=3, temperature=0.35, max_tokens=256):
+
     estilo = detectar_estilo(pergunta)
     pergunta = limpar_comando(pergunta)
 
     for tentativa in range(tentativas):
+
         try:
+
             messages = montar_prompt(pergunta, estilo)
 
+            # =============================
+            # Histórico curto
+            # =============================
+
             def normalizar_historico(historico, limite_pares=2, max_chars=300):
+
                 if not historico:
                     return []
+
                 ultimos = historico[-limite_pares*2:]
+
                 seguro = []
+
                 for m in ultimos:
                     content = m.get("content")
+
                     if content:
                         seguro.append({
                             "role": m.get("role", "user"),
                             "content": content[:max_chars]
                         })
+
                 return seguro
 
             memoria = normalizar_historico(historico)
+
             messages = memoria + messages
 
             payload = {
@@ -94,53 +114,57 @@ def responder(pergunta, historico=None, tentativas=3, temperature=0.35, max_toke
                 timeout=TIMEOUT
             )
 
-            # ===== Detecta rate limit =====
+            # =============================
+            # Rate limit
+            # =============================
+
             if r.status_code == 429:
+
                 sleep_time = (2 ** tentativa) + random.random()
-                print(f"[RATE LIMIT] HTTP 429. Tentativa {tentativa+1}/{tentativas}. Dormindo {sleep_time:.2f}s")
+
+                print(f"[RATE LIMIT] Tentativa {tentativa+1}/{tentativas}")
+
                 time.sleep(sleep_time)
+
                 if tentativa == tentativas - 1:
-                    # última tentativa falhou => levanta erro específico
                     raise RuntimeError("RATE_LIMIT")
+
                 continue
 
             r.raise_for_status()
-            return r.json()["choices"][0]["message"]["content"].strip()
 
-        except requests.exceptions.HTTPError as e:
-            print(f"[HTTP ERROR] {e}")
-            traceback.print_exc()
-            if tentativa < tentativas - 1:
-                time.sleep(1.5)
-            else:
-                return f"({random.choice(ERROS_ZEN)})"
+            resposta_llm = r.json()["choices"][0]["message"]["content"].strip()
+
+            resposta_final = f"Discípulo: {pergunta}\n\nChizu:\n{resposta_llm}"
+
+            return resposta_llm, resposta_final
+
 
         except Exception as e:
+
             print("[ERRO REAL NO CHIZU]")
             traceback.print_exc()
+
             if tentativa < tentativas - 1:
+
                 time.sleep(1.5)
+
             else:
-                return f"({random.choice(ERROS_ZEN)})"
-            
+
+                erro = random.choice(ERROS_ZEN)
+
+                return erro, erro
+
+
 # =============================
 # Inicialização
 # =============================
 
 def verificar_chave():
     if not GROQ_API_KEY:
-        print("❌ Erro: GROQ_API_KEY não configurada.")
+        print("❌ GROQ_API_KEY não configurada.")
         exit(1)
+
 
 def aquecer_modelo():
     print(random.choice(AQUECIMENTO))
-
-if __name__ == "__main__":
-    verificar_chave()
-    aquecer_modelo()
-    print("\n🧘 Chizu Online. Digite 'sair' para encerrar.\n")
-    while True:
-        p = input("Discípulo: ")
-        if p.lower() in ["sair", "ok", "gassho"]:
-            break
-        print(f"\nChizu: {responder(p)}\n")

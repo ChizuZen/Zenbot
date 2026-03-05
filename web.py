@@ -125,50 +125,67 @@ async def get_koan():
 
 @app.post("/ask")
 async def ask(request: Request):
+
     try:
+
         data = await request.json()
+
         pergunta = data.get("pergunta", "").strip()
-        
+
         if not pergunta:
             return JSONResponse({"resposta": "O silêncio é a resposta."})
 
         palavras_saida = ["sair", "exit", "quit", "gassho", "obrigado", "ok"]
+
         if pergunta.lower() in palavras_saida:
             return JSONResponse({"resposta": random.choice(DESPEDIDA_JS)})
 
         session_id = request.cookies.get("chizu_session") or str(uuid4())
+
         historico = conversation_memory.setdefault(session_id, [])
 
         try:
-            resposta = responder(pergunta, historico)
+
+            resposta_llm, resposta_final = responder(pergunta, historico)
+
         except RuntimeError as e:
-            # Fallback para rate limit
+
             if str(e) == "RATE_LIMIT":
+
                 koan_fallback = random.choice(KOANS) if KOANS else "O silêncio é profundo."
-                aviso = "Estamos recebendo muitas requisições no momento. Tente novamente mais tarde."
-                resposta = f"{aviso}\n\nEnquanto isso, reflita sobre este koan:\n{koan_fallback}"
+
+                aviso = "Estamos recebendo muitas requisições no momento."
+
+                resposta_final = f"{aviso}\n\nKoan para reflexão:\n{koan_fallback}"
+
+                return JSONResponse({"resposta": resposta_final})
+
             else:
+
                 raise
-        except Exception as e:
-            resposta = f"O mestre medita. (Erro: {str(e)})"
 
-        # Atualiza memória apenas se não for fallback de rate limit
-        if "Estamos recebendo muitas requisições" not in resposta:
-            historico.append({"role": "user", "content": pergunta})
-            historico.append({"role": "assistant", "content": resposta})
-            conversation_memory[session_id] = historico[-8:]
+        # =============================
+        # Memória da conversa
+        # =============================
 
-        response = JSONResponse({"resposta": resposta})
+        historico.append({
+            "role": "user",
+            "content": pergunta
+        })
+
+        historico.append({
+            "role": "assistant",
+            "content": resposta_llm
+        })
+
+        conversation_memory[session_id] = historico[-8:]
+
+        response = JSONResponse({"resposta": resposta_final})
+
         response.set_cookie("chizu_session", session_id, max_age=60*60*24*7)
+
         return response
 
-    except Exception as e:
-        return JSONResponse({"resposta": "Tremor na montanha digital."}, status_code=500)
+    except Exception:
 
-# ============================================
-# Execução local / Render
-# ============================================
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 10000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+        return JSONResponse({"resposta": "Tremor na montanha digital."}, status_code=500)
