@@ -147,6 +147,14 @@ async def ask(request: Request):
         try:
 
             resposta_llm, resposta_final = responder(pergunta, historico)
+            # remove marcas artificiais de silêncio
+            resposta_llm = (
+                resposta_llm
+                .replace("(Silêncio)", "")  
+                .replace("(silêncio)", "")
+                .replace("(pausa)", "")
+            )   
+            resposta_final = resposta_llm            
 
         except RuntimeError as e:
 
