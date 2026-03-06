@@ -75,3 +75,7 @@ Este projeto foi concebido para ser aberto a ideias, sugestões e melhorias.
 
 Se você chegou até aqui e deseja contribuir, critique, sugira, questione e proponha.  
 O ZenBot é, acima de tudo, um espaço de aprendizado coletivo.
+
+ 
+  © 2026 ZenBot • contato: <a href="mailto:Chizu.Zenbot@gmail">Chizu.Zenbot@gmail</a>
+ 
