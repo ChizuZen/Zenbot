@@ -1,0 +1,36 @@
+site_name: ZenBot
+site_description: Documentação do projeto ZenBot e do Mestre Chizu
+site_author: Projeto Chizu
+site_url: https://chizuzen.github.io/Zenbot/
+
+theme:
+  name: mkdocs  # ou readthedocs se não quiser instalar Material
+  language: pt
+
+nav:
+  - Início: index.md
+  - Motivação: 01-motivacao.md
+  - Visão Geral: 02-visao-geral.md
+  - Evolução do Projeto: 03-evolucao-do-projeto.md
+  - Arquitetura: 04-arquitetura.md
+  - Ferramentas: 05-ferramentas.md
+  - Fluxo de Trabalho: 06-fluxo-de-trabalho.md
+  - Comandos Úteis: 07-comandos-uteis.md
+  - Organização dos Textos: 08-organizacao-dos-textos.md
+  - Roadmap: 09-roadmap.md
+  - Jornada de Aprendizado: 10-jornada-de-aprendizado.md
+  - Conceitos:
+      - Sistemas Operacionais: conceitos/01-sistemas-operacionais.md
+      - Ferramentas de Desenvolvimento: conceitos/02-ferramentas-de-desenvolvimento.md
+      - Servidores e Deploy: conceitos/03-servidores-e-deploy.md
+      - Inteligência Artificial: conceitos/04-inteligencia-artificial.md
+      - Modelos e LLMs: conceitos/05-modelos-e-llms.md
+      - Embeddings: conceitos/06-embeddings.md
+      - Busca Semântica: conceitos/07-busca-semantica.md
+      - Pipeline do ZenBot: conceitos/08-pipeline-do-zenbot.md
+      - Metáfora Zen: conceitos/09-metafora-zen.md
+      - Validação de Perguntas: conceitos/10-validacao-perguntas.md
+      - Ajustes: conceitos/11-ajustes.md
+
+copyright: |
+  © 2026 ZenBot • contato: <a href="mailto:Chizu.Zenbot@gmail">Chizu.Zenbot@gmail</a>

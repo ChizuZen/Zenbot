@@ -8,16 +8,16 @@ Ela foi pensada como um **guia progressivo de aprendizado**, partindo das bases 
 
 ## 📚 Navegação pelos conceitos
 
-- 🖥️ [Sistemas operacionais](01-sistemas-operacionais.html)
-- 🛠️ [Ferramentas de desenvolvimento](02-ferramentas-de-desenvolvimento.html)
-- 🌐 [Servidores e deploy](03-servidores-e-deploy.html)
-- 🤖 [Inteligência artificial](04-inteligencia-artificial.html)
-- 🧠 [Modelos e LLMs](05-modelos-e-llms.html)
-- 🧬 [Embeddings](06-embeddings.html)
-- 🔍 [Busca semântica](07-busca-semantica.html)
-- 🧩 [Pipeline do ZenBot](08-pipeline-do-zenbot.html)
-- 🛡️ [Validação de Perguntas e Controle de Estilo](10-validacao-perguntas.html)
-- ☯️ [Metáfora Zen — A Arquitetura Mental do ZenBot](09-metafora-zen.html)
+- 🖥️ [Sistemas operacionais](01-sistemas-operacionais.md)
+- 🛠️ [Ferramentas de desenvolvimento](02-ferramentas-de-desenvolvimento.md)
+- 🌐 [Servidores e deploy](03-servidores-e-deploy.md)
+- 🤖 [Inteligência artificial](04-inteligencia-artificial.md)
+- 🧠 [Modelos e LLMs](05-modelos-e-llms.md)
+- 🧬 [Embeddings](06-embeddings.md)
+- 🔍 [Busca semântica](07-busca-semantica.md)
+- 🧩 [Pipeline do ZenBot](08-pipeline-do-zenbot.md)
+- 🛡️ [Validação de Perguntas e Controle de Estilo](10-validacao-perguntas.md)
+- ☯️ [Metáfora Zen — A Arquitetura Mental do ZenBot](09-metafora-zen.md)
 
 ---
 
@@ -50,8 +50,8 @@ Cada conceito aqui apresentado busca equilibrar:
 
 Para transformar estes conceitos em **aprendizado real**, acompanhe o diário de construção do projeto, com decisões técnicas, erros, ajustes e descobertas ao longo do caminho:
 
-- 🛤️ [Jornada de Aprendizado — Diário de Construção](../10-jornada-de-aprendizado.html)
+- 🛤️ [Jornada de Aprendizado — Diário de Construção](../10-jornada-de-aprendizado.md)
 
 ---
 
-📘 *Voltar ao índice geral:* [Documentação ZenBot](../index.html)
+📘 *Voltar ao índice geral:* [Documentação ZenBot](../index.md)
