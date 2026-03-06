@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Projeto Chizu">
+        <link rel="canonical" href="https://chizuzen.github.io/Zenbot/conceitos/05-modelos-e-llms/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Modelos e LLMs - ZenBot</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">ZenBot</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Início</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../01-motivacao/" class="nav-link">Motivação</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../02-visao-geral/" class="nav-link">Visão Geral</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../03-evolucao-do-projeto/" class="nav-link">Evolução do Projeto</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../04-arquitetura/" class="nav-link">Arquitetura</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../05-ferramentas/" class="nav-link">Ferramentas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../06-fluxo-de-trabalho/" class="nav-link">Fluxo de Trabalho</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../07-comandos-uteis/" class="nav-link">Comandos Úteis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../08-organizacao-dos-textos/" class="nav-link">Organização dos Textos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../09-roadmap/" class="nav-link">Roadmap</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../10-jornada-de-aprendizado/" class="nav-link">Jornada de Aprendizado</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Conceitos</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../01-sistemas-operacionais/" class="dropdown-item">Sistemas Operacionais</a>
+</li>
+                                    
+<li>
+    <a href="../02-ferramentas-de-desenvolvimento/" class="dropdown-item">Ferramentas de Desenvolvimento</a>
+</li>
+                                    
+<li>
+    <a href="../03-servidores-e-deploy/" class="dropdown-item">Servidores e Deploy</a>
+</li>
+                                    
+<li>
+    <a href="../04-inteligencia-artificial/" class="dropdown-item">Inteligência Artificial</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Modelos e LLMs</a>
+</li>
+                                    
+<li>
+    <a href="../06-embeddings/" class="dropdown-item">Embeddings</a>
+</li>
+                                    
+<li>
+    <a href="../07-busca-semantica/" class="dropdown-item">Busca Semântica</a>
+</li>
+                                    
+<li>
+    <a href="../08-pipeline-do-zenbot/" class="dropdown-item">Pipeline do ZenBot</a>
+</li>
+                                    
+<li>
+    <a href="../09-metafora-zen/" class="dropdown-item">Metáfora Zen</a>
+</li>
+                                    
+<li>
+    <a href="../10-validacao-perguntas/" class="dropdown-item">Validação de Perguntas</a>
+</li>
+                                    
+<li>
+    <a href="../11-ajustes/" class="dropdown-item">Ajustes</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../04-inteligencia-artificial/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../06-embeddings/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#modelos-e-llms-large-language-models" class="nav-link">Modelos e LLMs (Large Language Models)</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#o-que-e-um-modelo" class="nav-link">🧠 O que é um modelo?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#o-que-e-um-modelo-de-linguagem" class="nav-link">📚 O que é um modelo de linguagem?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#o-que-significa-llm" class="nav-link">🌍 O que significa LLM?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#o-que-sao-parametros" class="nav-link">🧬 O que são parâmetros?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#como-um-llm-funciona-por-dentro" class="nav-link">⚙️ Como um LLM funciona por dentro?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#como-um-llm-gera-texto" class="nav-link">🔮 Como um LLM gera texto?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#o-papel-do-prompt" class="nav-link">🧩 O papel do prompt</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#llm-busca-semantica-zenbot" class="nav-link">🔗 LLM + Busca Semântica = ZenBot</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#limitacoes-dos-llms" class="nav-link">🛑 Limitações dos LLMs</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#por-que-usar-llm-no-zenbot" class="nav-link">🎯 Por que usar LLM no ZenBot?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#metafora-zen" class="nav-link">🧘 Metáfora Zen</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#conceito-chave" class="nav-link">📌 Conceito-chave</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#proximo-capitulo" class="nav-link">🔗 Próximo capítulo</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="modelos-e-llms-large-language-models">Modelos e LLMs (Large Language Models)</h1>
+<p>Este capítulo explica o que são <strong>modelos de linguagem</strong>, o que significa <strong>LLM (Large Language Model)</strong> e como esses sistemas funcionam por dentro.</p>
+<hr />
+<h2 id="o-que-e-um-modelo">🧠 O que é um modelo?</h2>
+<p>Em inteligência artificial, um <strong>modelo</strong> é uma estrutura matemática treinada para reconhecer padrões.</p>
+<p>Ele aprende observando <strong>milhões ou bilhões de exemplos</strong> e, a partir disso, passa a prever:</p>
+<ul>
+<li>Próxima palavra</li>
+<li>Próxima frase</li>
+<li>Próxima resposta</li>
+<li>Relações de significado</li>
+<li>Estruturas da linguagem</li>
+</ul>
+<p>Em termos simples:</p>
+<blockquote>
+<p>Um modelo é uma máquina que aprende a prever o que vem depois.</p>
+</blockquote>
+<hr />
+<h2 id="o-que-e-um-modelo-de-linguagem">📚 O que é um modelo de linguagem?</h2>
+<p>Um <strong>modelo de linguagem</strong> é treinado especificamente com <strong>textos</strong>.</p>
+<p>Ele aprende:</p>
+<ul>
+<li>Gramática</li>
+<li>Vocabulário</li>
+<li>Estilo</li>
+<li>Contexto</li>
+<li>Relações semânticas</li>
+</ul>
+<p>Isso permite que ele:</p>
+<ul>
+<li>Responda perguntas</li>
+<li>Explique conceitos</li>
+<li>Produza textos coerentes</li>
+<li>Dialogue de forma natural</li>
+</ul>
+<hr />
+<h2 id="o-que-significa-llm">🌍 O que significa LLM?</h2>
+<p><strong>LLM</strong> = <strong>Large Language Model</strong><br />
+(Modelo de Linguagem de Grande Escala)</p>
+<p>"Grande" significa:</p>
+<ul>
+<li>Bilhões de parâmetros</li>
+<li>Trilhões de exemplos de texto</li>
+<li>Infraestrutura computacional massiva</li>
+</ul>
+<p>Exemplos famosos:</p>
+<ul>
+<li>GPT</li>
+<li>LLaMA</li>
+<li>Claude</li>
+<li>Gemini</li>
+<li>Mistral</li>
+</ul>
+<hr />
+<h2 id="o-que-sao-parametros">🧬 O que são parâmetros?</h2>
+<p>Parâmetros são os <strong>números internos</strong> que o modelo ajusta durante o aprendizado.</p>
+<p>Eles funcionam como:</p>
+<blockquote>
+<p>Conexões neurais artificiais.</p>
+</blockquote>
+<p>Quanto mais parâmetros:</p>
+<ul>
+<li>Maior capacidade de aprendizado</li>
+<li>Maior compreensão de contexto</li>
+<li>Maior qualidade de geração textual</li>
+</ul>
+<p>Modelos modernos possuem:</p>
+<ul>
+<li>7 bilhões</li>
+<li>13 bilhões</li>
+<li>70 bilhões</li>
+<li>175 bilhões ou mais de parâmetros</li>
+</ul>
+<hr />
+<h2 id="como-um-llm-funciona-por-dentro">⚙️ Como um LLM funciona por dentro?</h2>
+<p>De forma simplificada:</p>
+<ol>
+<li>Recebe um texto de entrada</li>
+<li>Converte palavras em números</li>
+<li>Processa esses números em várias camadas</li>
+<li>Calcula probabilidades</li>
+<li>Gera a próxima palavra</li>
+<li>Repete o processo milhares de vezes</li>
+</ol>
+<p>Isso acontece <strong>em milissegundos</strong>.</p>
+<hr />
+<h2 id="como-um-llm-gera-texto">🔮 Como um LLM gera texto?</h2>
+<p>Ele responde sempre a uma pergunta fundamental:</p>
+<blockquote>
+<p>Qual é a palavra mais provável a vir agora?</p>
+</blockquote>
+<p>Ele não escolhe apenas a mais provável — ele equilibra:</p>
+<ul>
+<li>Probabilidade</li>
+<li>Coerência</li>
+<li>Variedade</li>
+<li>Criatividade</li>
+</ul>
+<p>Por isso os textos parecem humanos.</p>
+<hr />
+<h2 id="o-papel-do-prompt">🧩 O papel do prompt</h2>
+<p>O <strong>prompt</strong> é a instrução que você dá ao modelo.</p>
+<p>Ele funciona como:</p>
+<blockquote>
+<p>O estado mental inicial da IA.</p>
+</blockquote>
+<p>Pequenas mudanças no prompt geram <strong>grandes diferenças no comportamento</strong>.</p>
+<p>No ZenBot, o prompt define:</p>
+<ul>
+<li>Tom reflexivo</li>
+<li>Estilo zen</li>
+<li>Profundidade das respostas</li>
+<li>Didatismo</li>
+<li>Clareza</li>
+</ul>
+<hr />
+<h2 id="llm-busca-semantica-zenbot">🔗 LLM + Busca Semântica = ZenBot</h2>
+<p>O ZenBot não depende apenas do LLM.</p>
+<p>Ele combina:</p>
+<ul>
+<li>LLM → capacidade de escrever bem</li>
+<li>Busca semântica → encontrar textos relevantes</li>
+<li>Embeddings → mapear significados</li>
+</ul>
+<p>Fluxo:
+Pergunta → Embeddings → Busca → Textos relevantes → LLM → Resposta</p>
+<p>Assim:</p>
+<ul>
+<li>O LLM não alucina tanto</li>
+<li>As respostas ficam fiéis aos textos</li>
+<li>O conteúdo mantém coerência filosófica</li>
+</ul>
+<hr />
+<h2 id="limitacoes-dos-llms">🛑 Limitações dos LLMs</h2>
+<p>Apesar de poderosos, eles:</p>
+<ul>
+<li>Podem inventar respostas</li>
+<li>Não sabem quando estão errados</li>
+<li>Não possuem consciência</li>
+<li>Não entendem o mundo real diretamente</li>
+</ul>
+<p>Por isso o ZenBot usa:</p>
+<blockquote>
+<p><strong>Textos confiáveis + busca semântica</strong></p>
+</blockquote>
+<hr />
+<h2 id="por-que-usar-llm-no-zenbot">🎯 Por que usar LLM no ZenBot?</h2>
+<p>Porque permite:</p>
+<ul>
+<li>Linguagem natural</li>
+<li>Diálogo fluido</li>
+<li>Reflexão profunda</li>
+<li>Respostas longas e bem estruturadas</li>
+<li>Tom humano</li>
+</ul>
+<p>Sem LLM:</p>
+<blockquote>
+<p>O ZenBot seria apenas um motor de busca técnico.</p>
+</blockquote>
+<hr />
+<h2 id="metafora-zen">🧘 Metáfora Zen</h2>
+<p>O LLM é como:</p>
+<blockquote>
+<p>Um calígrafo extremamente habilidoso que escreve belamente qualquer pensamento que você colocar em sua mente.</p>
+</blockquote>
+<p>Mas:</p>
+<blockquote>
+<p>A sabedoria ainda vem dos textos.</p>
+</blockquote>
+<hr />
+<h2 id="conceito-chave">📌 Conceito-chave</h2>
+<blockquote>
+<p>O LLM não é o sábio.<br />
+Ele é apenas o instrumento que expressa a sabedoria.</p>
+</blockquote>
+<hr />
+<h2 id="proximo-capitulo">🔗 Próximo capítulo</h2>
+<p>👉 <strong>06 — Embeddings</strong></p>
+<p>Aqui veremos como o ZenBot transforma palavras em números e consegue "entender significado".</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+                <p>© 2026 ZenBot • contato: <a href="mailto:Chizu.Zenbot@gmail">Chizu.Zenbot@gmail</a></p>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

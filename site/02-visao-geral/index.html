@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Projeto Chizu">
+        <link rel="canonical" href="https://chizuzen.github.io/Zenbot/02-visao-geral/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Visão Geral - ZenBot</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">ZenBot</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Início</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../01-motivacao/" class="nav-link">Motivação</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Visão Geral</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../03-evolucao-do-projeto/" class="nav-link">Evolução do Projeto</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../04-arquitetura/" class="nav-link">Arquitetura</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../05-ferramentas/" class="nav-link">Ferramentas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../06-fluxo-de-trabalho/" class="nav-link">Fluxo de Trabalho</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../07-comandos-uteis/" class="nav-link">Comandos Úteis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../08-organizacao-dos-textos/" class="nav-link">Organização dos Textos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../09-roadmap/" class="nav-link">Roadmap</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../10-jornada-de-aprendizado/" class="nav-link">Jornada de Aprendizado</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Conceitos</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../conceitos/01-sistemas-operacionais/" class="dropdown-item">Sistemas Operacionais</a>
+</li>
+                                    
+<li>
+    <a href="../conceitos/02-ferramentas-de-desenvolvimento/" class="dropdown-item">Ferramentas de Desenvolvimento</a>
+</li>
+                                    
+<li>
+    <a href="../conceitos/03-servidores-e-deploy/" class="dropdown-item">Servidores e Deploy</a>
+</li>
+                                    
+<li>
+    <a href="../conceitos/04-inteligencia-artificial/" class="dropdown-item">Inteligência Artificial</a>
+</li>
+                                    
+<li>
+    <a href="../conceitos/05-modelos-e-llms/" class="dropdown-item">Modelos e LLMs</a>
+</li>
+                                    
+<li>
+    <a href="../conceitos/06-embeddings/" class="dropdown-item">Embeddings</a>
+</li>
+                                    
+<li>
+    <a href="../conceitos/07-busca-semantica/" class="dropdown-item">Busca Semântica</a>
+</li>
+                                    
+<li>
+    <a href="../conceitos/08-pipeline-do-zenbot/" class="dropdown-item">Pipeline do ZenBot</a>
+</li>
+                                    
+<li>
+    <a href="../conceitos/09-metafora-zen/" class="dropdown-item">Metáfora Zen</a>
+</li>
+                                    
+<li>
+    <a href="../conceitos/10-validacao-perguntas/" class="dropdown-item">Validação de Perguntas</a>
+</li>
+                                    
+<li>
+    <a href="../conceitos/11-ajustes/" class="dropdown-item">Ajustes</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../01-motivacao/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../03-evolucao-do-projeto/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#visao-geral" class="nav-link">Visão Geral</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#o-que-o-zenbot-faz" class="nav-link">🧩 O que o ZenBot faz?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#componentes-principais" class="nav-link">⚙️ Componentes principais</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#por-que-usar-embeddings" class="nav-link">🧠 Por que usar embeddings?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#onde-o-zenbot-roda" class="nav-link">🌐 Onde o ZenBot roda?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="visao-geral">Visão Geral</h1>
+<p>O ZenBot é um chatbot baseado em inteligência artificial capaz de responder perguntas a partir de uma base textual previamente organizada.</p>
+<p>Ele combina técnicas modernas de processamento de linguagem natural com uma arquitetura simples, modular e escalável.</p>
+<hr />
+<h2 id="o-que-o-zenbot-faz">🧩 O que o ZenBot faz?</h2>
+<p>De forma resumida, o ZenBot:</p>
+<ol>
+<li>Recebe uma pergunta do usuário.</li>
+<li>Analisa semanticamente essa pergunta.</li>
+<li>Busca, em sua base de textos, os trechos mais relacionados.</li>
+<li>Monta um contexto.</li>
+<li>Envia esse contexto para um modelo de linguagem.</li>
+<li>Retorna uma resposta clara e contextualizada.</li>
+</ol>
+<hr />
+<h2 id="componentes-principais">⚙️ Componentes principais</h2>
+<ul>
+<li><strong>Backend</strong>, parte do sistema que roda no servidor e controla toda a lógica.</li>
+<li><strong>API</strong>, interface que permite que aplicações externas façam perguntas.</li>
+<li><strong>Modelos de linguagem</strong>, inteligências artificiais capazes de compreender texto.</li>
+<li><strong>Embeddings</strong>, vetores numéricos que representam o significado das palavras.</li>
+<li><strong>Busca semântica</strong>, mecanismo que encontra informações por similaridade de sentido.</li>
+</ul>
+<hr />
+<h2 id="por-que-usar-embeddings">🧠 Por que usar embeddings?</h2>
+<p>Buscas tradicionais trabalham com palavras-chave.<br />
+O ZenBot trabalha com <strong>significado</strong>.</p>
+<p>Isso permite que:</p>
+<blockquote>
+<p>Perguntas diferentes, mas com o mesmo sentido, produzam boas respostas.</p>
+</blockquote>
+<p>Exemplo:</p>
+<ul>
+<li>"O que é mente zen?"</li>
+<li>"Explique o conceito de mente zen"</li>
+</ul>
+<p>Mesmo usando palavras diferentes, o sistema encontra os textos corretos.</p>
+<hr />
+<h2 id="onde-o-zenbot-roda">🌐 Onde o ZenBot roda?</h2>
+<p>O ZenBot funciona como uma aplicação web hospedada em um servidor, utilizando:</p>
+<ul>
+<li>FastAPI, framework web moderno em Python.</li>
+<li>Render, plataforma de hospedagem.</li>
+<li>ngrok, ferramenta para testes locais de acesso remoto.</li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+                <p>© 2026 ZenBot • contato: <a href="mailto:Chizu.Zenbot@gmail">Chizu.Zenbot@gmail</a></p>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

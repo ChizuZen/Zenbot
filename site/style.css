@@ -1,0 +1,70 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Cantarell, sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  padding: 0;
+  color: #1f2937;
+}
+
+header {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  color: white;
+  padding: 1.2rem 2rem;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+/* Link de voltar - Legibilidade Garantida */
+header a {
+  color: #dbeafe; 
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+header a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+main {
+  max-width: 960px;
+  margin: 2rem auto;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+/* Blocos de Código e Árvore de Pastas - Fundo Claro */
+pre {
+  background: #f1f5f9; 
+  color: #334155;      
+  padding: 1.2rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0; 
+  overflow-x: auto;
+}
+
+code {
+  background: #f1f5f9;
+  color: #2563eb;      
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* Navegação e Listas */
+main ul { list-style: none; padding-left: 0.5rem; }
+main a { text-decoration: none; color: #2563eb; font-weight: 500; }
+main a:hover { text-decoration: underline; }
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  border-top: 1px solid #e2e8f0;
+}
