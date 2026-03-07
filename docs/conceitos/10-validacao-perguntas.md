@@ -165,7 +165,7 @@ As respostas devem parecer escritas por **quatro consciências diferentes**.
 2. Explique a mente do iniciante.  
 3. O que significa apenas sentar?  
 
-**Critérios de sucesso:**
+**Critérios de sucesso:**x
 
 - respostas diferentes  
 - pouca repetição textual  
@@ -198,10 +198,8 @@ As respostas devem parecer escritas por **quatro consciências diferentes**.
 
 ### Organização dos arquivos
 ```text
-cd .
 ├── aforismos_zen.txt
 ├── koans_classicos.txt
 ├── meditacoes_guiadas.txt
 └── system_prompt.txt
-
 ````

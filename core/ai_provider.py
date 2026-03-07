@@ -12,7 +12,6 @@ class FreeAIProvider:
         }
 
     def chat(self, messages, temperature=0.4, max_tokens=180):
-        # Lista de provedores disponíveis
         providers = [
             (self._gemini_chat, "Gemini"),
             (self._groq_chat, "Groq"),
@@ -20,7 +19,6 @@ class FreeAIProvider:
             (self._cerebras_chat, "Cerebras")
         ]
 
-        # O mestre embaralha as opções para o equilíbrio perfeito
         random.shuffle(providers) 
 
         for method, name in providers:
@@ -48,31 +46,34 @@ class FreeAIProvider:
         r.raise_for_status()
         return r.json()["choices"][0]["message"]["content"]
 
-
-
     def _sambanova_chat(self, messages, temperature, max_tokens):
-        headers = {"Authorization": f"Bearer {self.keys['sambanova']}", "Content-Type": "application/json"}
+        headers = {
+            "Authorization": f"Bearer {self.keys['sambanova']}", 
+            "Content-Type": "application/json"
+        }
         payload = {
             "model": "Llama-3.1-405B-Instruct",
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max_tokens
         }
-        r = requests.post("https://api.sambanova.ai/v1/chat/completions", headers=headers, json=payload, timeout=25)
+        r = requests.post("https://api.sambanova.ai/v1/chat/completions", 
+                          headers=headers, json=payload, timeout=25)
         r.raise_for_status()
         return r.json()["choices"][0]["message"]["content"]
 
     def _gemini_chat(self, messages, temperature, max_tokens):
-        # Ajuste na URL para garantir a versão estável
-        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={self.keys['gemini']}"
+        # v1beta é mais flexível para chaves gratuitas
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.keys['gemini']}"
         
-        prompt = ""
+        # O Gemini espera uma lista de objetos 'parts' dentro de 'contents'
+        contents = []
         for m in messages:
             role = "model" if m["role"] == "assistant" else "user"
-            prompt += f"{role}: {m['content']}\n"
+            contents.append({"role": role, "parts": [{"text": m["content"]}]})
         
         payload = {
-            "contents": [{"parts":[{"text": prompt}]}],
+            "contents": contents,
             "generationConfig": {
                 "temperature": temperature,
                 "maxOutputTokens": max_tokens
@@ -88,12 +89,11 @@ class FreeAIProvider:
             "Content-Type": "application/json"
         }
         payload = {
-            "model": "llama3.1-8b", # Confirme se é este o modelo no seu dashboard
+            "model": "llama3.1-8b", # Ajustado conforme seu dashboard
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max_tokens
         }
-        # Tente usar a URL sem o /v1 se o erro persistir, mas o padrão é:
         r = requests.post("https://api.cerebras.ai/v1/chat/completions", 
                           headers=headers, json=payload, timeout=15)
         r.raise_for_status()
