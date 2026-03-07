@@ -4,6 +4,7 @@ import random
 
 class FreeAIProvider:
     def __init__(self):
+        # O mestre busca as chaves guardadas nas variáveis de ambiente do Render
         self.keys = {
             "gemini": os.getenv("GEMINI_API_KEY"),             
             "groq": os.getenv("GROQ_API_KEY"),
@@ -12,6 +13,7 @@ class FreeAIProvider:
         }
 
     def chat(self, messages, temperature=0.4, max_tokens=180):
+        # O círculo das quatro mentes
         providers = [
             (self._gemini_chat, "Gemini"),
             (self._groq_chat, "Groq"),
@@ -19,6 +21,7 @@ class FreeAIProvider:
             (self._cerebras_chat, "Cerebras")
         ]
 
+        # O mestre embaralha as opções para o equilíbrio perfeito
         random.shuffle(providers) 
 
         for method, name in providers:
@@ -28,6 +31,7 @@ class FreeAIProvider:
                 print(f"[AI] Escolhida: {name}. Processando...")
                 return method(messages, temperature, max_tokens)
             except Exception as e:
+                # Se uma mente falha, o silêncio não prevalece; tentamos a próxima
                 print(f"[AI] {name} falhou: {e}. Tentando próxima...")
                 continue
         
@@ -46,14 +50,13 @@ class FreeAIProvider:
         r.raise_for_status()
         return r.json()["choices"][0]["message"]["content"]
 
-
     def _cerebras_chat(self, messages, temperature, max_tokens):
         headers = {
             "Authorization": f"Bearer {self.keys['cerebras']}",
             "Content-Type": "application/json"
         }
         payload = {
-            "model": "llama3.1-8b", # Ajustado conforme seu dashboard
+            "model": "llama3.1-8b", 
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max_tokens
@@ -62,14 +65,14 @@ class FreeAIProvider:
                           headers=headers, json=payload, timeout=15)
         r.raise_for_status()
         return r.json()["choices"][0]["message"]["content"]
-    
+
     def _sambanova_chat(self, messages, temperature, max_tokens):
         headers = {
             "Authorization": f"Bearer {self.keys['sambanova']}", 
             "Content-Type": "application/json"
         }
         payload = {
-            "model": "Meta-Llama-3.1-8B-Instruct", # ID exato conforme seu dashboard
+            "model": "Meta-Llama-3.1-8B-Instruct", 
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max_tokens
@@ -80,11 +83,12 @@ class FreeAIProvider:
         return r.json()["choices"][0]["message"]["content"]
 
     def _gemini_chat(self, messages, temperature, max_tokens):
-        # Removendo o 'v1beta' e o '-latest' para usar a rota estável e universal
+        # A URL v1 estável: o porto seguro que evita o erro 404
         url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={self.keys['gemini']}"
         
         contents = []
         for m in messages:
+            # Traduzindo o papel do assistente para o dialeto do Google (model)
             role = "model" if m["role"] == "assistant" else "user"
             contents.append({"role": role, "parts": [{"text": m["content"]}]})
         
@@ -95,7 +99,6 @@ class FreeAIProvider:
                 "maxOutputTokens": max_tokens
             }
         }
-        
         r = requests.post(url, json=payload, timeout=15)
         r.raise_for_status()
-        return r.json()["candidates"][0]["content"]["parts"][0]["text"]]
+        return r.json()["candidates"][0]["content"]["parts"][0]["text"]
