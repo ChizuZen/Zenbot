@@ -83,18 +83,18 @@ class FreeAIProvider:
         return r.json()["candidates"][0]["content"]["parts"][0]["text"]
 
     def _cerebras_chat(self, messages, temperature, max_tokens):
-        # Verifique se o modelo está escrito corretamente (llama-3.1-70b)
         headers = {
             "Authorization": f"Bearer {self.keys['cerebras']}",
             "Content-Type": "application/json"
         }
         payload = {
-            "model": "llama3.1-70b", # Nome exato exigido pela Cerebras
+            "model": "llama3.1-8b", # Confirme se é este o modelo no seu dashboard
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max_tokens
         }
-        # URL oficial da Cerebras v1
-        r = requests.post("https://api.cerebras.ai/v1/chat/completions", headers=headers, json=payload, timeout=15)
+        # Tente usar a URL sem o /v1 se o erro persistir, mas o padrão é:
+        r = requests.post("https://api.cerebras.ai/v1/chat/completions", 
+                          headers=headers, json=payload, timeout=15)
         r.raise_for_status()
         return r.json()["choices"][0]["message"]["content"]
