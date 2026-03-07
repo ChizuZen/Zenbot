@@ -104,15 +104,24 @@ async def tuning_submit(
         hist_sel = get_last_messages(context_count)
         pergunta_com_estilo = f"Estilo: {style_content}\n\nPergunta: {question}"
 
-        resultado = responder(
-            pergunta_com_estilo, 
-            historico=hist_sel, 
-            temperature=temperature, 
-            max_tokens=max_tokens, 
-            top_p=top_p, 
-            frequency_penalty=frequency_penalty, 
-            presence_penalty=presence_penalty
-        )
+        resultado, ia_nome = responder(
+                    pergunta_com_estilo, 
+                    historico=hist_sel, 
+                    temperature=temperature, 
+                    max_tokens=max_tokens, 
+                    top_p=top_p, 
+                    frequency_penalty=frequency_penalty, 
+                    presence_penalty=presence_penalty
+                )
+
+        # Agora imprimimos no log do Render/Terminal
+        print(f"--- OFICINA DE TUNING ---")
+        print(f"[LOG] Estilo: {style}")
+        print(f"[LOG] Provedor Utilizado: {ia_nome}")
+        print(f"-------------------------")
+
+        if isinstance(resultado, tuple): resultado = resultado[0]
+        resposta_final = str(resultado).replace("\\n", "\n")
 
         # 3. TRATA A RESPOSTA E ATUALIZA O SITE
         if isinstance(resultado, tuple): resultado = resultado[0]

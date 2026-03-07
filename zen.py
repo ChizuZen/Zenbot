@@ -5,6 +5,10 @@ import requests
 import traceback
 from core.engine import montar_prompt
 from core.ai_provider import FreeAIProvider
+from sentence_transformers import SentenceTransformer
+
+# Usamos o 'all-MiniLM-L6-v2' por ser leve para o plano gratuito do Render
+model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # =============================
 # Configurações da API
@@ -111,7 +115,7 @@ def responder(pergunta, historico=None, temperature=0.4, max_tokens=180,
 
         # 3. MÁGICA DO FALLBACK: Repassa TODOS os parâmetros para o ai_provider
         # O ai_provider.chat agora recebe a "mesa de som" completa
-        resposta_llm = ai_provider.chat(
+        resposta_llm, ia_nome = ai_provider.chat(
             full_messages, 
             temperature=temperature, 
             max_tokens=max_tokens,
@@ -132,7 +136,7 @@ def responder(pergunta, historico=None, temperature=0.4, max_tokens=180,
         if not resposta_llm.endswith((".", "。", "!", "?", "...", "—")):
             resposta_llm += "..."
 
-        return resposta_llm
+        return resposta_llm, ia_nome
 
     except Exception as e:
         print(f"[LOG CHIZU] Falha total no sistema: {e}")
