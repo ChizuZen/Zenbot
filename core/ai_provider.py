@@ -46,42 +46,6 @@ class FreeAIProvider:
         r.raise_for_status()
         return r.json()["choices"][0]["message"]["content"]
 
-    def _sambanova_chat(self, messages, temperature, max_tokens):
-        headers = {
-            "Authorization": f"Bearer {self.keys['sambanova']}", 
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": "Llama-3.1-405B-Instruct",
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens
-        }
-        r = requests.post("https://api.sambanova.ai/v1/chat/completions", 
-                          headers=headers, json=payload, timeout=25)
-        r.raise_for_status()
-        return r.json()["choices"][0]["message"]["content"]
-
-    def _gemini_chat(self, messages, temperature, max_tokens):
-        # v1beta é mais flexível para chaves gratuitas
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.keys['gemini']}"
-        
-        # O Gemini espera uma lista de objetos 'parts' dentro de 'contents'
-        contents = []
-        for m in messages:
-            role = "model" if m["role"] == "assistant" else "user"
-            contents.append({"role": role, "parts": [{"text": m["content"]}]})
-        
-        payload = {
-            "contents": contents,
-            "generationConfig": {
-                "temperature": temperature,
-                "maxOutputTokens": max_tokens
-            }
-        }
-        r = requests.post(url, json=payload, timeout=15)
-        r.raise_for_status()
-        return r.json()["candidates"][0]["content"]["parts"][0]["text"]
 
     def _cerebras_chat(self, messages, temperature, max_tokens):
         headers = {
@@ -98,3 +62,39 @@ class FreeAIProvider:
                           headers=headers, json=payload, timeout=15)
         r.raise_for_status()
         return r.json()["choices"][0]["message"]["content"]
+    
+    def _sambanova_chat(self, messages, temperature, max_tokens):
+        headers = {
+            "Authorization": f"Bearer {self.keys['sambanova']}", 
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": "Meta-Llama-3.1-8B-Instruct", # ID exato conforme seu dashboard
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_tokens
+        }
+        r = requests.post("https://api.sambanova.ai/v1/chat/completions", 
+                          headers=headers, json=payload, timeout=25)
+        r.raise_for_status()
+        return r.json()["choices"][0]["message"]["content"]
+
+    def _gemini_chat(self, messages, temperature, max_tokens):
+        # O endereço v1 é o porto mais seguro para o Chizu agora
+        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={self.keys['gemini']}"
+        
+        contents = []
+        for m in messages:
+            role = "model" if m["role"] == "assistant" else "user"
+            contents.append({"role": role, "parts": [{"text": m["content"]}]})
+        
+        payload = {
+            "contents": contents,
+            "generationConfig": {
+                "temperature": temperature,
+                "maxOutputTokens": max_tokens
+            }
+        }
+        r = requests.post(url, json=payload, timeout=15)
+        r.raise_for_status()
+        return r.json()["candidates"][0]["content"]["parts"][0]["text"]
