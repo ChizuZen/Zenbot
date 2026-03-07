@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Projeto Chizu">
+        <link rel="canonical" href="https://chizuzen.github.io/Zenbot/conceitos/08-pipeline-do-zenbot/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Pipeline do ZenBot - ZenBot</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">ZenBot</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Início</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../01-motivacao/" class="nav-link">Motivação</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../02-visao-geral/" class="nav-link">Visão Geral</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../03-evolucao-do-projeto/" class="nav-link">Evolução do Projeto</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../04-arquitetura/" class="nav-link">Arquitetura</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../05-ferramentas/" class="nav-link">Ferramentas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../06-fluxo-de-trabalho/" class="nav-link">Fluxo de Trabalho</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../07-comandos-uteis/" class="nav-link">Comandos Úteis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../08-organizacao-dos-textos/" class="nav-link">Organização dos Textos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../09-roadmap/" class="nav-link">Roadmap</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../10-jornada-de-aprendizado/" class="nav-link">Jornada de Aprendizado</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Conceitos</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../01-sistemas-operacionais/" class="dropdown-item">Sistemas Operacionais</a>
+</li>
+                                    
+<li>
+    <a href="../02-ferramentas-de-desenvolvimento/" class="dropdown-item">Ferramentas de Desenvolvimento</a>
+</li>
+                                    
+<li>
+    <a href="../03-servidores-e-deploy/" class="dropdown-item">Servidores e Deploy</a>
+</li>
+                                    
+<li>
+    <a href="../04-inteligencia-artificial/" class="dropdown-item">Inteligência Artificial</a>
+</li>
+                                    
+<li>
+    <a href="../05-modelos-e-llms/" class="dropdown-item">Modelos e LLMs</a>
+</li>
+                                    
+<li>
+    <a href="../06-embeddings/" class="dropdown-item">Embeddings</a>
+</li>
+                                    
+<li>
+    <a href="../07-busca-semantica/" class="dropdown-item">Busca Semântica</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Pipeline do ZenBot</a>
+</li>
+                                    
+<li>
+    <a href="../09-metafora-zen/" class="dropdown-item">Metáfora Zen</a>
+</li>
+                                    
+<li>
+    <a href="../10-validacao-perguntas/" class="dropdown-item">Validação de Perguntas</a>
+</li>
+                                    
+<li>
+    <a href="../11-ajustes/" class="dropdown-item">Ajustes</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../07-busca-semantica/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../09-metafora-zen/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#pipeline-do-zenbot" class="nav-link">Pipeline do ZenBot</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#o-que-e-um-pipeline" class="nav-link">🧠 O que é um pipeline?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#objetivo-do-pipeline-do-zenbot" class="nav-link">🎯 Objetivo do pipeline do ZenBot</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#visao-geral-do-pipeline" class="nav-link">🧩 Visão geral do pipeline</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-1-coleta-dos-textos" class="nav-link">🔹 Etapa 1 — Coleta dos textos</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-2-limpeza-dos-textos" class="nav-link">🔹 Etapa 2 — Limpeza dos textos</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-3-fragmentacao-chunking" class="nav-link">🔹 Etapa 3 — Fragmentação (chunking)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-4-geracao-de-embeddings" class="nav-link">🔹 Etapa 4 — Geração de embeddings</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-5-armazenamento-vetorial" class="nav-link">🔹 Etapa 5 — Armazenamento vetorial</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-6-recebimento-da-pergunta" class="nav-link">🔹 Etapa 6 — Recebimento da pergunta</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-7-geracao-do-embedding-da-pergunta" class="nav-link">🔹 Etapa 7 — Geração do embedding da pergunta</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-8-busca-semantica" class="nav-link">🔹 Etapa 8 — Busca semântica</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-9-montagem-do-contexto" class="nav-link">🔹 Etapa 9 — Montagem do contexto</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-10-geracao-da-resposta" class="nav-link">🔹 Etapa 10 — Geração da resposta</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#etapa-11-retorno-da-resposta-ao-usuario" class="nav-link">🔹 Etapa 11 — Retorno da resposta ao usuário</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="pipeline-do-zenbot">Pipeline do ZenBot</h1>
+<p>Este capítulo descreve <strong>todo o fluxo de funcionamento do ZenBot</strong>, desde a preparação dos textos até a geração da resposta final.</p>
+<p>Aqui você verá o ZenBot como um <strong>organismo completo</strong>, e não como partes soltas.</p>
+<hr />
+<h2 id="o-que-e-um-pipeline">🧠 O que é um pipeline?</h2>
+<p>Pipeline é uma <strong>cadeia organizada de etapas</strong>, onde:</p>
+<blockquote>
+<p>A saída de uma etapa se torna a entrada da próxima.</p>
+</blockquote>
+<p>Em sistemas de IA, o pipeline define:</p>
+<ul>
+<li>Como os dados entram</li>
+<li>Como são processados</li>
+<li>Como viram respostas</li>
+</ul>
+<hr />
+<h2 id="objetivo-do-pipeline-do-zenbot">🎯 Objetivo do pipeline do ZenBot</h2>
+<p>Transformar:</p>
+<blockquote>
+<p>Livros + textos + perguntas humanas  </p>
+</blockquote>
+<p>em:</p>
+<blockquote>
+<p>Respostas coerentes, profundas e contextualizadas.</p>
+</blockquote>
+<hr />
+<h2 id="visao-geral-do-pipeline">🧩 Visão geral do pipeline</h2>
+<p>Textos → Limpeza → Fragmentação → Embeddings → Armazenamento
+Pergunta → Embedding → Busca Semântica → Seleção → LLM → Resposta</p>
+<p>Ou em forma visual:
+Usuário
+↓
+Pergunta
+↓
+Embedding
+↓
+Busca Semântica
+↓
+Textos Relevantes
+↓
+LLM (modelo de linguagem)
+↓
+Resposta Final</p>
+<hr />
+<h2 id="etapa-1-coleta-dos-textos">🔹 Etapa 1 — Coleta dos textos</h2>
+<p>Fontes:</p>
+<ul>
+<li>Livros em PDF</li>
+<li>Textos digitais</li>
+<li>Arquivos Markdown</li>
+<li>Anotações</li>
+</ul>
+<p>Objetivo:</p>
+<blockquote>
+<p>Construir uma base confiável de conhecimento.</p>
+</blockquote>
+<hr />
+<h2 id="etapa-2-limpeza-dos-textos">🔹 Etapa 2 — Limpeza dos textos</h2>
+<p>Scripts utilizados:</p>
+<ul>
+<li><code>limpar_texto.py</code></li>
+<li><code>extrair_pdf.py</code></li>
+</ul>
+<p>O que acontece:</p>
+<ul>
+<li>Remoção de quebras desnecessárias</li>
+<li>Correção de caracteres estranhos</li>
+<li>Eliminação de ruído visual</li>
+<li>Padronização</li>
+</ul>
+<p>Resultado:</p>
+<blockquote>
+<p>Texto limpo, contínuo e processável.</p>
+</blockquote>
+<hr />
+<h2 id="etapa-3-fragmentacao-chunking">🔹 Etapa 3 — Fragmentação (chunking)</h2>
+<p>Script:</p>
+<ul>
+<li><code>fragmentar_texto.py</code></li>
+</ul>
+<p>O texto é dividido em pequenos blocos chamados <strong>chunks</strong>.</p>
+<p>Por quê?</p>
+<ul>
+<li>Modelos trabalham melhor com blocos pequenos</li>
+<li>Permite busca mais precisa</li>
+<li>Evita perda de contexto</li>
+</ul>
+<p>Tamanho típico:</p>
+<ul>
+<li>300 a 800 caracteres</li>
+</ul>
+<hr />
+<h2 id="etapa-4-geracao-de-embeddings">🔹 Etapa 4 — Geração de embeddings</h2>
+<p>Script:</p>
+<ul>
+<li><code>embeddings.py</code></li>
+</ul>
+<p>Cada chunk é convertido em um <strong>vetor numérico</strong>.</p>
+<p>Resultado:
+texto → embedding → vetor</p>
+<p>Esses vetores representam o <strong>significado matemático</strong> do conteúdo.</p>
+<hr />
+<h2 id="etapa-5-armazenamento-vetorial">🔹 Etapa 5 — Armazenamento vetorial</h2>
+<p>Os embeddings são armazenados em:</p>
+<ul>
+<li>Arquivos <code>.json</code></li>
+<li>Estruturas internas</li>
+<li>Bases vetoriais simples</li>
+</ul>
+<p>Arquivo típico:</p>
+<ul>
+<li><code>embeddings.json</code></li>
+</ul>
+<p>Função:</p>
+<blockquote>
+<p>Permitir busca semântica ultrarrápida.</p>
+</blockquote>
+<hr />
+<h2 id="etapa-6-recebimento-da-pergunta">🔹 Etapa 6 — Recebimento da pergunta</h2>
+<p>Via:</p>
+<ul>
+<li>API (interface de comunicação entre sistemas)</li>
+<li>Endpoint <code>/ask</code></li>
+<li>Interface web</li>
+</ul>
+<p>Exemplo:</p>
+<p>```json
+{
+  "question": "O que é mente zen?"
+}</p>
+<h2 id="etapa-7-geracao-do-embedding-da-pergunta">🔹 Etapa 7 — Geração do embedding da pergunta</h2>
+<p>Quando o usuário envia uma pergunta, o ZenBot <strong>transforma essa pergunta em um vetor numérico</strong>, usando o mesmo modelo de embeddings aplicado aos textos.</p>
+<p>Isso garante que:</p>
+<blockquote>
+<p>Pergunta e textos estejam representados no <strong>mesmo espaço matemático</strong>.</p>
+</blockquote>
+<p>Exemplo conceitual:
+"O que é mente zen?" → embedding → vetor numérico</p>
+<p>Esse vetor representa o <strong>significado da pergunta</strong>, não apenas suas palavras.</p>
+<hr />
+<h2 id="etapa-8-busca-semantica">🔹 Etapa 8 — Busca semântica</h2>
+<p>Script principal:</p>
+<ul>
+<li><code>search.py</code></li>
+</ul>
+<p>O vetor da pergunta é comparado com <strong>todos os vetores dos textos armazenados</strong>.</p>
+<p>O sistema calcula a similaridade entre eles e seleciona:</p>
+<blockquote>
+<p>Os trechos <strong>mais semanticamente próximos</strong>.</p>
+</blockquote>
+<p>Normalmente são retornados:</p>
+<ul>
+<li>Entre <strong>3 e 8 blocos de texto relevantes</strong></li>
+</ul>
+<p>Isso garante que a resposta seja baseada <strong>em conteúdo real</strong>, e não em improvisação.</p>
+<hr />
+<h2 id="etapa-9-montagem-do-contexto">🔹 Etapa 9 — Montagem do contexto</h2>
+<p>Os trechos encontrados são:</p>
+<ul>
+<li>Organizados</li>
+<li>Concatenados</li>
+<li>Preparados em forma de contexto</li>
+</ul>
+<p>Esse contexto é enviado ao modelo de linguagem junto com a pergunta.</p>
+<p>Assim, o LLM recebe:</p>
+<ul>
+<li>A pergunta original</li>
+<li>Os textos mais relevantes</li>
+<li>O prompt orientador do ZenBot</li>
+</ul>
+<p>Isso cria um <strong>ambiente informacional rico e confiável</strong>.</p>
+<hr />
+<h2 id="etapa-10-geracao-da-resposta">🔹 Etapa 10 — Geração da resposta</h2>
+<p>Script principal:</p>
+<ul>
+<li><code>engine.py</code></li>
+</ul>
+<p>O modelo de linguagem (LLM) recebe:</p>
+<ul>
+<li>Pergunta</li>
+<li>Contexto recuperado</li>
+<li>Prompt do ZenBot</li>
+</ul>
+<p>E então:</p>
+<blockquote>
+<p>Gera uma resposta clara, profunda, didática e coerente com os textos-base.</p>
+</blockquote>
+<p>Essa etapa transforma <strong>informação bruta em linguagem humana compreensível</strong>.</p>
+<hr />
+<h2 id="etapa-11-retorno-da-resposta-ao-usuario">🔹 Etapa 11 — Retorno da resposta ao usuário</h2>
+<p>A resposta final é entregue por meio de:</p>
+<ul>
+<li>API (JSON)</li>
+<li>Interface web</li>
+<li>Endpoint <code>/ask</code></li>
+</ul>
+<p>Exemplo:</p>
+<p>```json
+{
+  "answer": "A mente zen é o estado de atenção plena..."
+}</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
