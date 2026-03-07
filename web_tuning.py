@@ -68,21 +68,40 @@ def render_form_html(resposta: str = "", historico_html: str = ""):
                     <option value="meditacoes_guiadas.txt">Meditações Guiadas</option>
                 </select>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
                     <div>
-                        <label>Temperature (Criatividade):</label>
+                        <label>Temperature: <small>(0.0 a 1.0)</small></label>
                         <input type="number" step="0.05" name="temperature" value="0.4">
+                        <span style="font-size: 0.8em; color: #666;"><i>Baixa = Focado/Rígido | Alta = Criativo/Caótico</i></span>
+
+                        <label>Top P: <small>(0.0 a 1.0)</small></label>
+                        <input type="number" step="0.05" name="top_p" value="0.9">
+                        <span style="font-size: 0.8em; color: #666;"><i>Filtro de diversidade de palavras (Nucleus Sampling)</i></span>
+
+                        <label>Context Count:</label>
+                        <input type="number" name="context_count" value="4">
+                        <span style="font-size: 0.8em; color: #666;"><i>Quantas mensagens passadas o mestre "lembra"</i></span>
                     </div>
+
                     <div>
-                        <label>Max Tokens (Tamanho):</label>
+                        <label>Max Tokens:</label>
                         <input type="number" name="max_tokens" value="180">
+                        <span style="font-size: 0.8em; color: #666;"><i>Limite de tamanho da resposta</i></span>
+
+                        <label>Frequency Penalty: <small>(-2.0 a 2.0)</small></label>
+                        <input type="number" step="0.1" name="frequency_penalty" value="0.0">
+                        <span style="font-size: 0.8em; color: #666;"><i>Evita repetir as mesmas palavras exatas</i></span>
+
+                        <label>Presence Penalty: <small>(-2.0 a 2.0)</small></label>
+                        <input type="number" step="0.1" name="presence_penalty" value="0.0">
+                        <span style="font-size: 0.8em; color: #666;"><i>Incentiva o mestre a falar sobre novos temas</i></span>
                     </div>
                 </div>
 
                 <label>Sua Pergunta:</label>
-                <input type="text" name="question" placeholder="O que é o silêncio?" required>
+                <input type="text" id="question_input" name="question" placeholder="O que é o silêncio?" required>
 
-                <button type="submit">Enviar para o ZenBot</button>
+                <button type="submit">Calibrar e Perguntar</button>
             </form>
 
             <h3>Resposta do Mestre:</h3>
@@ -106,59 +125,57 @@ async def tuning_page():
     ])
     return HTMLResponse(render_form_html(historico_html=historico_html))
 
+# ... (parte superior do arquivo igual)
+
 @router.post("/")
 async def tuning_submit(
     style: str = Form(...),
     temperature: float = Form(...),
+    top_p: float = Form(...),
     max_tokens: int = Form(...),
+    frequency_penalty: float = Form(...),
+    presence_penalty: float = Form(...),
+    context_count: int = Form(...),
     question: str = Form(...)
 ):
     try:
-        # 1. O mestre caminha até a pasta 'styles' que vimos no seu terminal
-        # O 'style' aqui será 'system_prompt.txt', 'koans_classicos.txt', etc.
         style_path = os.path.join("styles", style)
-        
-        style_content = ""
+        style_content = "Aja como o Mestre Chizu."
         if os.path.exists(style_path):
             with open(style_path, "r", encoding="utf-8") as f:
                 style_content = f.read()
-        else:
-            # Caso o caminho falhe, usamos uma essência padrão
-            style_content = "Aja como o Mestre Chizu, inspirado no Zen de Shunryu Suzuki."
 
-        # 2. Preparamos o 'Super Prompt' com a personalidade escolhida
-        # Isso permite testar como o bot reage a diferentes arquivos de sistema
+        historico_selecionado = get_last_messages(context_count)
         pergunta_com_estilo = f"Contexto/Estilo: {style_content}\n\nPergunta: {question}"
-        
-        # 3. Chamamos o seu zen.py (que agora recebe os parâmetros da tela)
-        # Importante: o zen.py deve estar configurado para aceitar esses argumentos
+
+        # Chamada única com todos os novos parâmetros
         resultado_bruto = responder(
             pergunta_com_estilo, 
-            temperature=temperature, 
-            max_tokens=max_tokens
+            historico=historico_selecionado,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            top_p=top_p,
+            frequency_penalty=frequency_penalty,
+            presence_penalty=presence_penalty
         )
 
-        # 4. LIMPEZA FINAL (O Filtro da Oficina)
-        # Se o zen.py ainda retornar tupla, pegamos o primeiro item
         if isinstance(resultado_bruto, tuple):
             resposta_limpa = resultado_bruto[0]
         else:
             resposta_limpa = resultado_bruto
 
-        # Removemos aspas e formatamos quebras de linha para o <pre> do HTML
         resposta_final = str(resposta_limpa).strip("()").strip("'").strip('"')
         resposta_final = resposta_final.replace("\\n", "\n")
         
-        # Adicionamos ao histórico da oficina para consulta
         add_to_history(question, resposta_final)
         resposta = resposta_final
 
     except Exception as e:
         resposta = f"Distração na montanha (Erro): {str(e)}"
 
-    # Renderiza o histórico para a parte inferior da página
+    # Renderiza o histórico uma única vez no final
     historico_html = "".join([
-        f"<div class='msg-box {msg['role']}'><b>{msg['role'].capitalize()}:</b> {msg['content']}</div>" 
+        f<div class='msg-box {msg['role']}'><b>{msg['role'].capitalize()}:</b> {msg['content']}</div>" 
         for msg in MESSAGES[-10:]
     ])
     

@@ -80,61 +80,64 @@ ai_provider = FreeAIProvider()
 
 import random
 
-def responder(pergunta, historico=None, temperature=0.4, max_tokens=180):
+# Adicionamos os novos parâmetros com valores padrão (default)
+def responder(pergunta, historico=None, temperature=0.4, max_tokens=180, 
+              top_p=0.9, frequency_penalty=0.0, presence_penalty=0.0):
     """
-    Orquestra a resposta do Mestre Chizu, 
-    garantindo resiliência através de múltiplos provedores.
+    Orquestra a resposta do Mestre Chizu.
+    Aceita parâmetros de tuning quando chamados pela oficina, 
+    mas mantém os padrões para o uso normal via web.py.
     """
     estilo = detectar_estilo(pergunta)
     pergunta_limpa = limpar_comando(pergunta)
 
     try:
-        # 1. Monta o prompt (System + RAG + Pergunta) usando o engine.py
+        # 1. Monta o prompt (System + RAG + Pergunta)
         messages = montar_prompt(pergunta_limpa, estilo)
         
-        # 2. Normaliza o histórico para manter a fluidez da conversa
-        def normalizar_historico(hist, limite_pares=2, max_chars=300):
+        # 2. Normaliza o histórico
+        # Juça, aqui a memória já vem limitada pelo 'context_count' da oficina!
+        def normalizar_historico(hist, max_chars=300):
             if not hist: return []
-            # Filtra apenas o que for lista de dicionários
-            ultimos = [m for m in hist if isinstance(m, dict)]
-            ultimos = ultimos[-limite_pares*2:]
             return [
                 {
                     "role": m.get("role", "user"), 
                     "content": str(m.get("content", ""))[:max_chars]
-                } for m in ultimos
+                } for m in hist if isinstance(m, dict)
             ]
 
         memoria = normalizar_historico(historico)
-        
-        # Insere a memória entre o System Prompt e a pergunta atual
         full_messages = [messages[0]] + memoria + [messages[-1]]
 
-        # 3. MÁGICA DO FALLBACK: Repassa a temperatura e os tokens escolhidos na web
-        # Agora o ai_provider usará os valores que você definiu na tela de tuning
-        resposta_llm = ai_provider.chat(full_messages, temperature, max_tokens)
+        # 3. MÁGICA DO FALLBACK: Repassa TODOS os parâmetros para o ai_provider
+        # O ai_provider.chat agora recebe a "mesa de som" completa
+        resposta_llm = ai_provider.chat(
+            full_messages, 
+            temperature=temperature, 
+            max_tokens=max_tokens,
+            top_p=top_p,
+            frequency_penalty=frequency_penalty,
+            presence_penalty=presence_penalty
+        )
         
         # 4. Polimento Zen na resposta
-        if isinstance(resposta_llm, tuple): # Proteção contra tuplas inesperadas
+        if isinstance(resposta_llm, tuple):
             resposta_llm = resposta_llm[0]
             
         resposta_llm = str(resposta_llm).strip()
         
-        # Remove marcas de pensamento
         if "</think>" in resposta_llm:
             resposta_llm = resposta_llm.split("</think>")[-1].strip()
 
         if not resposta_llm.endswith((".", "。", "!", "?", "...", "—")):
             resposta_llm += "..."
 
-        # Retornamos apenas a string para evitar os parênteses na interface
         return resposta_llm
 
     except Exception as e:
         print(f"[LOG CHIZU] Falha total no sistema: {e}")
-        sabedoria_silenciosa = random.choice(RESPOSTAS_ZEN)
-        return sabedoria_silenciosa
-    
+        return random.choice(RESPOSTAS_ZEN)
+       
 # =============================
 # Inicialização
 # =============================
