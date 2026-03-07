@@ -70,10 +70,13 @@ def render_form_html(resposta: str = "", historico_html: str = ""):
     </html>
     """
 
+# --- ROTAS DA OFICINA ---
+
 @router.get("/", response_class=HTMLResponse)
 async def tuning_page():
-    historico_html = "".join([f"<div class='msg-box {msg['role']}'><b>{msg['role'].capitalize()}:</b> {msg['content']}</div>" for msg in MESSAGES[-10:]])
-    return HTMLResponse(render_form_html(historico_html=historico_html))
+    # Apenas exibe a página inicial da oficina com o histórico atual
+    hist_html = "".join([f"<div class='msg-box {m['role']}'><b>{m['role'].capitalize()}:</b> {m['content']}</div>" for m in MESSAGES[-10:]])
+    return HTMLResponse(render_form_html(historico_html=hist_html))
 
 @router.post("/")
 async def tuning_submit(
@@ -82,26 +85,42 @@ async def tuning_submit(
     presence_penalty: float = Form(...), context_count: int = Form(...), question: str = Form(...)
 ):
     try:
-        style_path = os.path.join("src", "styles", style)
-        style_content = "Aja como o Mestre Chizu."
-        if os.path.exists(style_path):
-            with open(style_path, "r", encoding="utf-8") as f: style_content = f.read()
-        else:
-            print(f"[LOG] Arquivo de estilo não encontrado em: {style_path}")                       
+        # 1. BUSCA O ARQUIVO DE ESTILO (Lógica Dupla)
+        style_path = os.path.join("styles", style)
+        if not os.path.exists(style_path):
+            style_path = os.path.join("src", "styles", style)
 
-        historico_selecionado = get_last_messages(context_count)
+        style_content = "Aja como o Mestre Chizu." # Caso falhe
+        if os.path.exists(style_path):
+            with open(style_path, "r", encoding="utf-8") as f:
+                style_content = f.read()
+            print(f"[LOG] Estilo carregado de: {style_path}")
+        else:
+            print(f"[LOG] AVISO: Estilo não encontrado em {style_path}")
+
+        # 2. PREPARA O CONTEXTO E ENVIA PARA O ZEN.PY
+        hist_sel = get_last_messages(context_count)
         pergunta_com_estilo = f"Estilo: {style_content}\n\nPergunta: {question}"
 
-        resultado = responder(pergunta_com_estilo, historico=historico_selecionado, temperature=temperature, 
-                              max_tokens=max_tokens, top_p=top_p, frequency_penalty=frequency_penalty, 
-                              presence_penalty=presence_penalty)
+        resultado = responder(
+            pergunta_com_estilo, 
+            historico=hist_sel, 
+            temperature=temperature, 
+            max_tokens=max_tokens, 
+            top_p=top_p, 
+            frequency_penalty=frequency_penalty, 
+            presence_penalty=presence_penalty
+        )
 
+        # 3. TRATA A RESPOSTA E ATUALIZA O SITE
         if isinstance(resultado, tuple): resultado = resultado[0]
         resposta_final = str(resultado).replace("\\n", "\n")
         add_to_history(question, resposta_final)
         
-        hist_html = "".join([f"<div class='msg-box {msg['role']}'><b>{msg['role'].capitalize()}:</b> {msg['content']}</div>" for msg in MESSAGES[-10:]])
+        hist_html = "".join([f"<div class='msg-box {m['role']}'><b>{m['role'].capitalize()}:</b> {m['content']}</div>" for m in MESSAGES[-10:]])
+        
         return HTMLResponse(render_form_html(resposta=resposta_final, historico_html=hist_html))
+
     except Exception as e:
-        return HTMLResponse(render_form_html(resposta=f"Erro: {str(e)}"))
-    
+        print(f"[ERRO] {e}")
+        return HTMLResponse(render_form_html(resposta=f"Erro na Oficina: {str(e)}"))
