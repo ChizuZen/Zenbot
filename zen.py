@@ -78,6 +78,8 @@ def limpar_comando(pergunta: str) -> str:
 
 ai_provider = FreeAIProvider()
 
+import random
+
 def responder(pergunta, historico=None, temperature=0.4, max_tokens=180):
     """
     Orquestra a resposta do Mestre Chizu, 
@@ -93,7 +95,9 @@ def responder(pergunta, historico=None, temperature=0.4, max_tokens=180):
         # 2. Normaliza o histórico para manter a fluidez da conversa
         def normalizar_historico(hist, limite_pares=2, max_chars=300):
             if not hist: return []
-            ultimos = hist[-limite_pares*2:]
+            # Filtra apenas o que for lista de dicionários
+            ultimos = [m for m in hist if isinstance(m, dict)]
+            ultimos = ultimos[-limite_pares*2:]
             return [
                 {
                     "role": m.get("role", "user"), 
@@ -104,32 +108,32 @@ def responder(pergunta, historico=None, temperature=0.4, max_tokens=180):
         memoria = normalizar_historico(historico)
         
         # Insere a memória entre o System Prompt e a pergunta atual
-        # messages[0] é o System, messages[1] é o User
         full_messages = [messages[0]] + memoria + [messages[-1]]
 
-        # 3. MÁGICA DO FALLBACK: Tenta Groq -> Gemini -> SambaNova -> Cerebras
+        # 3. MÁGICA DO FALLBACK: Repassa a temperatura e os tokens escolhidos na web
+        # Agora o ai_provider usará os valores que você definiu na tela de tuning
         resposta_llm = ai_provider.chat(full_messages, temperature, max_tokens)
         
         # 4. Polimento Zen na resposta
-        resposta_llm = resposta_llm.strip()
+        if isinstance(resposta_llm, tuple): # Proteção contra tuplas inesperadas
+            resposta_llm = resposta_llm[0]
+            
+        resposta_llm = str(resposta_llm).strip()
         
-        # Remove marcas de pensamento se a IA as gerar (como no DeepSeek ou similares)
+        # Remove marcas de pensamento
         if "</think>" in resposta_llm:
             resposta_llm = resposta_llm.split("</think>")[-1].strip()
 
         if not resposta_llm.endswith((".", "。", "!", "?", "...", "—")):
             resposta_llm += "..."
 
-        return resposta_llm, resposta_llm
+        # Retornamos apenas a string para evitar os parênteses na interface
+        return resposta_llm
 
     except Exception as e:
-        # Se o "tremor na montanha digital" derrubar todas as APIs
         print(f"[LOG CHIZU] Falha total no sistema: {e}")
-        
-        # O mestre recorre à sua sabedoria interior (estática)
         sabedoria_silenciosa = random.choice(RESPOSTAS_ZEN)
-        
-        return sabedoria_silenciosa, sabedoria_silenciosa
+        return sabedoria_silenciosa
     
 # =============================
 # Inicialização

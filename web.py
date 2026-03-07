@@ -146,16 +146,19 @@ async def ask(request: Request):
         historico = conversation_memory.setdefault(session_id, [])
 
         try:
-
-            resposta_llm, resposta_final = responder(pergunta, historico)
-            # remove marcas artificiais de silêncio
+            # Chamamos o mestre apenas UMA vez
+            resposta_llm = responder(pergunta, historico)
+            
+            # Removemos marcas artificiais de silêncio para a resposta ficar pura
             resposta_llm = (
                 resposta_llm
                 .replace("(Silêncio)", "")  
                 .replace("(silêncio)", "")
                 .replace("(pausa)", "")
             )   
-            resposta_final = resposta_llm            
+            
+            # Definimos que a resposta final é a versão limpa
+            resposta_final = resposta_llm          
 
         except RuntimeError as e:
 

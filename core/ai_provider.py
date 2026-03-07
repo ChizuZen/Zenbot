@@ -83,11 +83,12 @@ class FreeAIProvider:
         return r.json()["choices"][0]["message"]["content"]
 
     def _gemini_chat(self, messages, temperature, max_tokens):
-        # Usando o modelo que o seu curl confirmou como disponível e atualizado
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key={self.keys['gemini']}"
+        # A URL v1 estável: o porto seguro que evita o erro 404
+        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={self.keys['gemini']}"
         
         contents = []
         for m in messages:
+            # Traduzindo o papel do assistente para o dialeto do Google (model)
             role = "model" if m["role"] == "assistant" else "user"
             contents.append({"role": role, "parts": [{"text": m["content"]}]})
         
