@@ -6,7 +6,7 @@ import os
 router = APIRouter()
 
 # ============================================
-# Histórico em memória
+# Histórico em memória (Limpa ao reiniciar)
 # ============================================
 MESSAGES = []
 
@@ -26,59 +26,59 @@ def render_form_html(resposta: str = "", historico_html: str = ""):
     <html lang="pt">
     <head>
         <meta charset="UTF-8">
-        <title>ZenBot – Página de Testes</title>
+        <title>ZenBot – Oficina de Tuning</title>
         <style>
-            body {{ font-family: Arial, sans-serif; background: #f2f2f2; padding: 20px; }}
-            .container {{ background: #fff; padding: 20px; border-radius: 10px; max-width: 700px; margin: auto; }}
-            h2 {{ text-align: center; }}
-            label {{ display: block; margin-top: 10px; font-weight: bold; }}
-            input, select {{ width: 100%; padding: 5px; margin-top: 5px; }}
-            button {{ margin-top: 15px; padding: 10px 20px; font-size: 16px; }}
-            pre {{ background: #eee; padding: 10px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; }}
-            .historico {{ margin-top: 20px; }}
+            body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #e8ecef; padding: 20px; }}
+            .container {{ background: #fff; padding: 30px; border-radius: 12px; max-width: 800px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }}
+            h2 {{ text-align: center; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }}
+            label {{ display: block; margin-top: 15px; font-weight: bold; color: #34495e; }}
+            input, select {{ width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }}
+            button {{ margin-top: 20px; padding: 12px 25px; font-size: 16px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; }}
+            button:hover {{ background: #219150; }}
+            pre {{ background: #f8f9fa; padding: 15px; border-left: 5px solid #27ae60; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; color: #2c3e50; }}
+            .historico {{ margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }}
+            .msg-box {{ margin-bottom: 10px; padding: 10px; border-radius: 5px; font-size: 0.9em; }}
+            .user {{ background: #d1ecf1; border-left: 3px solid #0c5460; }}
+            .assistant {{ background: #d4edda; border-left: 3px solid #155724; }}
         </style>
     </head>
     <body>
         <div class="container">
-            <h2>ZenBot – Página de Testes</h2>
+            <h2>ZenBot – Oficina de Tuning</h2>
             <form method="post">
-                <label>Style:</label>
+                <label>Estilo (Personalidade):</label>
                 <select name="style">
-                    <option value="aforismo_zen.txt">Aforismos</option>
-                    <option value="koans_classicos.txt">Koans</option>
-                    <option value="meditacoes_guiadas.txt">Meditação</option>
-                    <option value="system_prompt.txt">Prompt</option>
+                    <option value="01-motivacao.md">Motivação</option>
+                    <option value="09-metafora-zen.md">Metáfora Zen</option>
+                    <option value="10-jornada-de-aprendizado.md">Jornada</option>
+                    <option value="index.md">Página Inicial</option>
                 </select>
 
-                <label>Temperature:</label>
-                <input type="number" step="0.05" name="temperature" value="0.5">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label>Temperature (0.0 a 1.0):</label>
+                        <input type="number" step="0.05" name="temperature" value="0.7">
+                    </div>
+                    <div>
+                        <label>Max Tokens:</label>
+                        <input type="number" name="max_tokens" value="400">
+                    </div>
+                </div>
 
-                <label>Max Tokens:</label>
-                <input type="number" name="max_tokens" value="300">
-
-                <label>Top P:</label>
-                <input type="number" step="0.05" name="top_p" value="1.0">
-
-                <label>Frequency Penalty:</label>
-                <input type="number" step="0.1" name="frequency_penalty" value="0">
-
-                <label>Presence Penalty:</label>
-                <input type="number" step="0.1" name="presence_penalty" value="0">
-
-                <label>Mensagens para lembrar:</label>
+                <label>Mensagens para Contexto (Memória):</label>
                 <input type="number" name="context_count" value="5">
 
-                <label>Pergunta:</label>
-                <input type="text" name="question">
+                <label>Sua Pergunta ao Mestre:</label>
+                <input type="text" name="question" placeholder="Ex: O que é a iluminação técnica?" required>
 
-                <button type="submit">Enviar</button>
+                <button type="submit">Enviar para o ZenBot</button>
             </form>
 
-            <h3>Última Resposta:</h3>
-            <pre>{resposta}</pre>
+            <h3>Resposta do Mestre:</h3>
+            <pre>{resposta if resposta else "Aguardando sua pergunta..."}</pre>
 
             <div class="historico">
-                <h3>Histórico:</h3>
+                <h3>Diálogo Recente:</h3>
                 {historico_html}
             </div>
         </div>
@@ -86,56 +86,57 @@ def render_form_html(resposta: str = "", historico_html: str = ""):
     </html>
     """
 
-# ============================================
-# GET: exibe formulário
-# ============================================
 @router.get("/")
 async def tuning_page():
-    historico_html = "".join([f"<pre><b>{msg['role']}:</b> {msg['content']}</pre>" for msg in MESSAGES[-10:]])
+    historico_html = "".join([
+        f"<div class='msg-box {msg['role']}'><b>{msg['role'].capitalize()}:</b> {msg['content']}</div>" 
+        for msg in MESSAGES[-10:]
+    ])
     return HTMLResponse(render_form_html(historico_html=historico_html))
 
-# ============================================
-# POST: processa formulário e responde
-# ============================================
 @router.post("/")
 async def tuning_submit(
     style: str = Form(...),
     temperature: float = Form(...),
     max_tokens: int = Form(...),
-    top_p: float = Form(...),
-    frequency_penalty: float = Form(...),
-    presence_penalty: float = Form(...),
     context_count: int = Form(...),
     question: str = Form(...)
 ):
     try:
-        # Lê o arquivo correspondente ao style
+        # Ajuste do caminho conforme sua estrutura de pastas no iMac
+        # Buscando dentro de 'textos/' onde estão seus arquivos .md
+        style_path = os.path.join("textos", style)
+        
         style_content = ""
-        style_path = os.path.join("src/styles", style)
         if os.path.exists(style_path):
             with open(style_path, "r", encoding="utf-8") as f:
                 style_content = f.read()
         else:
-            style_content = f"Estilo selecionado: {style}"
+            style_content = "Agindo com sabedoria natural (Estilo padrão)."
 
-        # Cria a pergunta final
-        pergunta_final = f"{style_content}\nPergunta: {question}"
-
-        # Pega histórico das últimas n mensagens como lista de dicts
+        # Construção do Prompt de Contexto
+        instrucao_sistema = f"Use este estilo para responder: {style_content}"
+        
+        # Recupera histórico para manter o fio da meada
         historico_list = get_last_messages(context_count)
+        
+        # Prepara a lista final para a função responder do zen.py
+        # Passamos as instruções e a pergunta atual
+        mensagens_para_responder = historico_list + [{"role": "user", "content": question}]
 
-        # Adiciona a pergunta do usuário ao histórico temporariamente
-        mensagens_para_responder = historico_list + [{"role": "user", "content": pergunta_final}]
+        # Chama a função principal do seu motor zen.py
+        # Certifique-se que o responder(pergunta, historico) aceita esses parâmetros
+        resposta = responder(question, mensagens_para_responder)
 
-        # Chama o responder passando a lista correta
-        resposta = responder(pergunta_final, mensagens_para_responder)
-
-        # Atualiza o histórico
+        # Salva no histórico para a próxima rodada
         add_to_history(question, resposta)
 
     except Exception as e:
-        resposta = f"O mestre medita. (Erro interno: {str(e)})"
+        resposta = f"O mestre está em silêncio profundo. (Erro: {str(e)})"
 
-    # Gera HTML do histórico
-    historico_html = "".join([f"<pre><b>{msg['role']}:</b> {msg['content']}</pre>" for msg in MESSAGES[-10:]])
+    # Gera o HTML atualizado com o histórico e a nova resposta
+    historico_html = "".join([
+        f"<div class='msg-box {msg['role']}'><b>{msg['role'].capitalize()}:</b> {msg['content']}</div>" 
+        for msg in MESSAGES[-10:]
+    ])
     return HTMLResponse(render_form_html(resposta=resposta, historico_html=historico_html))
