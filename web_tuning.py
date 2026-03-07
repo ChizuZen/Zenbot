@@ -45,7 +45,9 @@ def render_form_html(resposta: str = "", historico_html: str = ""):
                     <option value="system_prompt.txt" selected>System Prompt (Base)</option>
                     <option value="koans_classicos.txt">Koans Clássicos</option>
                     <option value="aforismos_zen.txt">Aforismos Zen</option>
+                    <option value="meditacoes_guiadas.txt">Meditações Guiadas</option> 
                 </select>
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
                     <div>
                         <label>Temperature:</label> <input type="number" step="0.05" name="temperature" value="0.4">
@@ -53,9 +55,9 @@ def render_form_html(resposta: str = "", historico_html: str = ""):
                         <label>Context Count:</label> <input type="number" name="context_count" value="4">
                     </div>
                     <div>
-                        <label>Max Tokens:</label> <input type="number" name="max_tokens" value="180">
-                        <label>Frequency Penalty:</label> <input type="number" step="0.1" name="frequency_penalty" value="0.0">
-                        <label>Presence Penalty:</label> <input type="number" step="0.1" name="presence_penalty" value="0.0">
+                        <label>Max Tokens:</label> <input type="number" name="max_tokens" value="250">
+                        <label>Frequency Penalty:</label> <input type="number" step="0.1" name="frequency_penalty" value="0.1">
+                        <label>Presence Penalty:</label> <input type="number" step="0.1" name="presence_penalty" value="0.1">
                     </div>
                 </div>
                 <label>Sua Pergunta:</label>
