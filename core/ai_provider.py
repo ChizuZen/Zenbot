@@ -9,8 +9,8 @@ class FreeAIProvider:
             "gemini": os.getenv("GEMINI_API_KEY"),
             "groq": os.getenv("GROQ_API_KEY"),
             "sambanova": os.getenv("SAMBANOVA_API_KEY"),
-            "cerebras": os.getenv("CEREBRAS_API_KEY"),
-            "anthropic": os.getenv("ANTHROPIC_API_KEY")
+            "cerebras": os.getenv("CEREBRAS_API_KEY")
+
         }
 
     def chat(self, messages, temperature=0.45, max_tokens=500, top_p=0.9, frequency_penalty=0.45, presence_penalty=0.25):
@@ -45,28 +45,6 @@ class FreeAIProvider:
         # Se todos falharem, o sistema retorna o silêncio que será tratado pelo seu zen.py
         return "Caminhante, o silêncio envolve essa questão;", "Fallback"
 
-    def _anthropic_chat(self, messages, temperature, max_tokens, top_p, freq_pen, pres_pen):
-
-        url = "https://api.anthropic.com/v1/messages"
-
-        headers = {
-            "x-api-key": self.keys["anthropic"],
-            "anthropic-version": "2023-06-01",
-            "content-type": "application/json"
-        }
-
-        payload = {
-            "model": "claude-3-haiku-20240307",
-            "max_tokens": max_tokens,
-            "temperature": temperature,
-            "top_p": top_p,
-            "messages": messages
-        }
-
-        r = requests.post(url, headers=headers, json=payload, timeout=20)
-        r.raise_for_status()
-
-        return r.json()["content"][0]["text"]
 
 
     def _gemini_chat(self, messages, temperature, max_tokens, top_p, freq_pen, pres_pen):
