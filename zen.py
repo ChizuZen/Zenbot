@@ -1,189 +1,144 @@
+import sys
 import os
-from dotenv import load_dotenv
-import time
 import random
-import requests
-import traceback
-from core.engine import montar_prompt
-from core.ai_provider import FreeAIProvider
+import json
+import base64
+from uuid import uuid4
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from dotenv import load_dotenv
 
-# =============================
-# Configurações da API
-# =============================
+# 1. Ajuste de Caminho Absoluto
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
-MODEL = "llama-3.3-70b-versatile"
-TIMEOUT = 30
+load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
 
-# =============================
-# Mensagens zen
-# =============================
+# --- IMPORTAÇÕES DO NOVO SISTEMA (CORE) ---
+try:
+    from core.ai_provider import FreeAIProvider
+    from core.engine import carregar_biblioteca, buscar_contexto, montar_prompt
+    from web_tuning import router as tuning_router
+except ImportError as e:
+    print(f"❌ Erro de importação: {e}. Verifique a pasta 'core'.")
+    sys.exit(1)
 
-RESPOSTAS_ZEN = [
-    "A mente que pergunta já contém a resposta.",
-    "A pergunta correta dissolve a necessidade da resposta.",
-    "A resposta está no silêncio, não nas palavras.",
-    "A resposta não está nas palavras, mas no silêncio entre elas.",
-    "Não há palavras para isso, apenas prática.",
-    "O caminho não se revela ao ser forçado.",
-    "O vento levou a resposta... tente novamente mais tarde.",
-    "Observe este instante antes de perguntar novamente.",
-    "Observe sua própria mente enquanto pergunta.",
-    "Quando nada surge, o vazio se revela.",
-    "Talvez a pergunta seja mais importante que a resposta.",
-    "Talvez não haja nada a buscar."
-]
-
-ERROS_ZEN = [
-    "O silêncio de Chizu é mais profundo que o mar.",
-    "O vento sopra forte e Chizu se cala por instantes. Tente novamente.",
-    "Uma folha cai entre nós e a resposta se perde. Pergunte outra vez."
-]
-
-AQUECIMENTO = [
-    "(Chizu prepara o incenso...)",
-    "(O mestre ajusta a postura de zazen...)"
-]
-
-# =============================
-# Estilo
-# =============================
-
-def detectar_estilo(pergunta: str) -> str:
-    p = pergunta.lower().strip()
-
-    if p.startswith("/aforismo"):
-        return "aforismo"
-    if p.startswith("/koan"):
-        return "koan"
-    if p.startswith("/meditacao"):
-        return "meditacao"
-
-    return "padrao"
-
-
-def limpar_comando(pergunta: str) -> str:
-    if pergunta.startswith("/"):
-        partes = pergunta.split(" ", 1)
-        if len(partes) == 2:
-            return partes[1]
-        return ""
-    return pergunta
-
-
-# =============================
-# Motor de resposta
-# =============================
-
+# ============================================
+# Inicialização do Sistema
+# ============================================
+app = FastAPI()
 
 ai_provider = FreeAIProvider()
+biblioteca_chizu = carregar_biblioteca()
+conversation_memory = {}
 
-import random
+# =============================
+# Avatar e Arquivos Estáticos
+# =============================
+AVATAR_B64 = ""
+avatar_path = os.path.join(BASE_DIR, "static", "avatar.png")
 
-def responder(pergunta, historico=None, temperature=0.45, max_tokens=500, top_p=0.9, frequency_penalty=0.45, presence_penalty=0.25):
-    """
-    Orquestra a resposta do Mestre Chizu com captura de silêncio e variação poética.
-    """
-    estilo = detectar_estilo(pergunta)
-    pergunta_limpa = limpar_comando(pergunta)
+if os.path.exists(avatar_path):
+    with open(avatar_path, "rb") as img_file:
+        AVATAR_B64 = f"data:image/png;base64,{base64.b64encode(img_file.read()).decode()}"
 
+if os.path.exists("site"):
+    app.mount("/docs", StaticFiles(directory="site", html=True), name="docs")
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+app.include_router(tuning_router, prefix="/tuning")
+
+# ============================================
+# Textos da Interface
+# ============================================
+DESPEDIDA_JS = ["Que o silêncio te acompanhe.", "O caminho se abre diante de ti.", "Vá em paz."]
+AGUARDANDO_JS = ["Chizu medita...", "O mestre contempla...", "O silêncio se aprofunda..."]
+
+HTML_PAGE = f"""
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chizu · Mestre Zen</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header-card">
+            <div class="header-info">
+                <h1>Chizu</h1>
+                <div class="sub">mestre zen digital</div>
+            </div>
+            <div class="header-avatar">
+                <img src="{AVATAR_B64}" alt="Mestre Chizu">
+            </div>
+            <div class="header-quote">
+                Inspirado em<br>Shunryu Suzuki<br>Thich Nhat Hanh<br>Shunmyo Masuno<br>Haemin Sunim
+            </div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="pergunta" placeholder="Fale com Chizu..." autofocus>
+        </div>
+        <div class="resposta" id="resposta"><em>O silêncio precede a resposta...</em></div>
+        <div class="footer">
+            digite "sair", "ok" ou "gassho" para encerrar<br>
+            <a href="https://chizuzen.github.io/Zenbot/" target="_blank" class="doc-link">📖 Documentação do Projeto</a>
+            © 2026 • Chizu.Zenbot@gmail.com
+        </div>
+    </div>
+    <script>
+        window.DESPEDIDA_JS = {json.dumps(DESPEDIDA_JS)};
+        window.AGUARDANDO_JS = {json.dumps(AGUARDANDO_JS)};
+    </script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
+"""
+
+# ============================================
+# Rotas do Servidor
+# ============================================
+@app.get("/", response_class=HTMLResponse)
+async def get_index():
+    return HTML_PAGE
+
+@app.post("/ask")
+async def ask(request: Request):
     try:
-        # 1. Monta o prompt (System + RAG + Pergunta)
-        messages = montar_prompt(pergunta_limpa, estilo)
-        
-        # 2. Normaliza o histórico
-        def normalizar_historico(hist, max_chars=300):
-            if not hist: return []
-            return [
-                {
-                    "role": m.get("role", "user"), 
-                    "content": str(m.get("content", ""))[:max_chars]
-                } for m in hist if isinstance(m, dict)
-            ]
+        data     = await request.json()
+        pergunta = data.get("pergunta", "").strip()
 
-        memoria = normalizar_historico(historico)
-        full_messages = [messages[0]] + memoria + [messages[-1]]
+        if not pergunta:
+            return JSONResponse({"resposta": "O silêncio é a resposta."})
 
-        # 3. MÁGICA DO FALLBACK: Chamada aos provedores
-        resposta_llm, ia_nome = ai_provider.chat(
-            full_messages, 
-            temperature=temperature, 
-            max_tokens=max_tokens,
-            top_p=top_p,
-            frequency_penalty=frequency_penalty,
-            presence_penalty=presence_penalty
-        )
+        if pergunta.lower() in ["sair", "exit", "gassho", "obrigado", "ok", "quit"]:
+            return JSONResponse({"resposta": random.choice(DESPEDIDA_JS)})
 
-        # 4. Polimento Zen na resposta
-        if isinstance(resposta_llm, tuple):
-            resposta_llm = resposta_llm[0]
-            
-        resposta_llm = str(resposta_llm).strip()
-        
-        # Remove tags de pensamento (modelos R1)
-        if "</think>" in resposta_llm:
-            resposta_llm = resposta_llm.split("</think>")[-1].strip() 
+        session_id = request.cookies.get("chizu_session") or str(uuid4())
+        historico  = conversation_memory.setdefault(session_id, [])
 
-        # 5. O FILTRO DO SILÊNCIO: Captura erro de contexto ou erro de API (Fallback)
-        gatilho_silencio = "Caminhante, o silêncio envolve essa questão"
+        # Busca contexto diretamente por TF-IDF (sem modelo local, sem API externa)
+        contexto = buscar_contexto(pergunta, biblioteca_chizu)
 
-        if gatilho_silencio in resposta_llm or ia_nome == "Fallback":
-            import random
-            # Sorteia uma das frases da sua lista RESPOSTAS_ZEN
-            variacao = random.choice(RESPOSTAS_ZEN)
-            
-            # Formata a resposta final variada
-            return f"Caminhante, {variacao.lower()}\n\nVá meditar!!!.", "Mestre Chizu"
+        mensagens_base  = montar_prompt(pergunta, contexto)
+        prompt_completo = [mensagens_base[0]] + historico[-8:] + [mensagens_base[-1]]
 
-        # Se houver resposta válida no contexto, retorna normalmente
-        return resposta_llm, ia_nome
+        resposta_raw, ia_nome = ai_provider.chat(prompt_completo)
+        resposta_limpa   = resposta_raw.replace("(Silêncio)", "").replace("(pausa)", "").strip()
+        resposta_exibida = f"{resposta_limpa}\n\n— via {ia_nome}"
+
+        historico.append({"role": "user",      "content": pergunta})
+        historico.append({"role": "assistant", "content": resposta_limpa})
+        conversation_memory[session_id] = historico[-8:]
+
+        response = JSONResponse({"resposta": resposta_exibida})
+        response.set_cookie("chizu_session", session_id, max_age=60*60*24*7)
+        return response
 
     except Exception as e:
-        import traceback
-        import random
-        print(f"[LOG CHIZU] Falha total no sistema: {e}")
-        traceback.print_exc()
-        # Fallback extremo caso o código acima quebre por algum motivo
-        return f"Caminhante, {random.choice(RESPOSTAS_ZEN).lower()}\n\nVá meditar!!!.", "Mestre Chizu"
-    
-    except Exception as e:
-            print(f"[LOG CHIZU] Falha total no sistema: {e}")
-            traceback.print_exc() # Isso vai te mostrar o erro real no terminal
-            return random.choice(RESPOSTAS_ZEN), "Sistema (Fallback)" # Adicionei a vírgula e o nome
-        
-# =============================
-# Inicialização e Verificação
-# =============================
-
-# IMPORTANTE: Chamar o load_dotenv fora de qualquer função garante 
-# que as chaves fiquem disponíveis para todo o arquivo imediatamente.
-load_dotenv(override=True)
-
-def verificar_chave():
-    """Valida se todas as APIs do Mestre Zen estão prontas"""
-    chaves = [
-        "GROQ_API_KEY", 
-        "CEREBRAS_API_KEY", 
-        "GEMINI_API_KEY", 
-        "SAMBANOVA_API_KEY"
-    ]
-    
-    erros = 0
-    print("\n--- Verificando Chaves de API ---")
-    for chave in chaves:
-        valor = os.getenv(chave)
-        if not valor:
-            print(f"❌ {chave} não configurada.")
-            erros += 1
-        else:
-            # Mostra apenas os 4 primeiros caracteres por segurança
-            print(f"✅ {chave} carregada: {valor[:4]}...")
-    
-    if erros == 0:
-        print("✅ Sistema pronto: Groq, Cerebras, Gemini e SambaNova online.\n")
-    else:
-        print(f"⚠️ Atenção: {erros} chaves ausentes. Algumas funções podem falhar.\n")
-
-def aquecer_modelo():
-    print(random.choice(AQUECIMENTO))
+        print(f"❌ Erro no processamento: {e}")
+        return JSONResponse({"resposta": "Tremor na montanha digital. O mestre medita no caos."}, status_code=500)

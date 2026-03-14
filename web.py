@@ -20,11 +20,10 @@ load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
 try:
     from core.ai_provider import FreeAIProvider
     from core.engine import carregar_biblioteca, buscar_contexto, montar_prompt
-    # Se você removeu o web_tuning.py para o backup, comente a linha abaixo
-    from web_tuning import router as tuning_router
 except ImportError as e:
     print(f"❌ Erro de importação: {e}. Verifique a pasta 'core'.")
     sys.exit(1)
+
 
 # ============================================
 # Inicialização do Sistema
@@ -37,6 +36,20 @@ biblioteca_chizu = carregar_biblioteca()
 
 # Memória temporária em RAM
 conversation_memory = {}
+
+# ============================================
+# Embedding via Groq (sem modelo local)     # ← bloco novo aqui
+# ============================================
+async def embed_pergunta(texto: str) -> list:
+    async with httpx.AsyncClient(timeout=10) as client:
+        r = await client.post(
+            "https://api.groq.com/openai/v1/embeddings",
+            headers={"Authorization": f"Bearer {os.getenv('GROQ_API_KEY')}"},
+            json={"model": "llama3-embed-1024-float", "input": texto}
+        )
+        r.raise_for_status()
+        return r.json()["data"][0]["embedding"]
+    
 
 # =============================
 # Avatar e Arquivos Estáticos (AJUSTADO)
@@ -55,7 +68,7 @@ if os.path.exists("site"):
 
 # AJUSTE: Agora servimos a pasta /static corretamente
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.include_router(tuning_router, prefix="/tuning")
+
 
 # ============================================
 # Textos da Interface
@@ -116,7 +129,7 @@ async def get_index():
 @app.post("/ask")
 async def ask(request: Request):
     try:
-        data = await request.json()
+        data     = await request.json()
         pergunta = data.get("pergunta", "").strip()
 
         if not pergunta:
@@ -126,21 +139,19 @@ async def ask(request: Request):
             return JSONResponse({"resposta": random.choice(DESPEDIDA_JS)})
 
         session_id = request.cookies.get("chizu_session") or str(uuid4())
-        historico = conversation_memory.setdefault(session_id, [])
+        historico  = conversation_memory.setdefault(session_id, [])
 
+        # Gera embedding via API (sem modelo local)
         contexto = buscar_contexto(pergunta, biblioteca_chizu)
-        mensagens_base = montar_prompt(pergunta, contexto)
-        
-        # Injeta o histórico
-        prompt_completo = [mensagens_base[0]] + historico[-8:] + [mensagens_base[-1]]
+
+        mensagens_base   = montar_prompt(pergunta, contexto)
+        prompt_completo  = [mensagens_base[0]] + historico[-8:] + [mensagens_base[-1]]
 
         resposta_raw, ia_nome = ai_provider.chat(prompt_completo)
-
-        resposta_limpa = resposta_raw.replace("(Silêncio)", "").replace("(pausa)", "").strip()
+        resposta_limpa   = resposta_raw.replace("(Silêncio)", "").replace("(pausa)", "").strip()
         resposta_exibida = f"{resposta_limpa}\n\n— via {ia_nome}"
 
-        # CORREÇÃO AQUI: Chaves simples apenas!
-        historico.append({"role": "user", "content": pergunta})
+        historico.append({"role": "user",      "content": pergunta})
         historico.append({"role": "assistant", "content": resposta_limpa})
         conversation_memory[session_id] = historico[-8:]
 
@@ -149,6 +160,5 @@ async def ask(request: Request):
         return response
 
     except Exception as e:
-        print(f"❌ Erro no processamento: {e}")
-        # CORREÇÃO AQUI: Chaves simples apenas!
-        return JSONResponse({"resposta": "Tremor na montanha digital. O mestre medita no caos."}, status_code=500)
+        print(f"❌ Erro: {e}")
+        return JSONResponse({"resposta": "Tremor na montanha digital."}, status_code=500)

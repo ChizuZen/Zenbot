@@ -1,8 +1,6 @@
 fastapi
-uvicorn
-requests
-python-multipart
+uvicorn[standard]
 python-dotenv
-sentence-transformers
 numpy
-torch --index-url https://download.pytorch.org/whl/cpu
+scikit-learn
+requests
