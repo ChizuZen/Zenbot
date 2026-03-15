@@ -5,7 +5,7 @@ import json
 import base64
 from uuid import uuid4
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 
@@ -106,6 +106,7 @@ HTML_PAGE = f"""
 </html>
 """
 
+
 # ============================================
 # Rotas do Servidor
 # ============================================
@@ -113,7 +114,11 @@ HTML_PAGE = f"""
 async def get_index():
     return HTML_PAGE
 
-@app.post("/ask")
+@app.head("/")                   
+async def head_index():
+    return Response(status_code=200)
+
+@app.post("/ask")                 
 async def ask(request: Request):
     try:
         data     = await request.json()
