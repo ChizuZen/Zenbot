@@ -67,4 +67,4 @@ Este projeto foi concebido para ser aberto a ideias, sugestões e melhorias.
 Se você chegou até aqui e deseja contribuir, critique, sugira, questione e proponha.  
 O Chizu é, acima de tudo, um espaço de aprendizado coletivo.
 
-[Chizu.Zenbot@gmail.com](mailto:Chizu.Zenbot@gmail.com)
+## [Mestre@Chizu.ia.br](mailto:Mestre@Chizu.ia.br)

@@ -87,7 +87,7 @@ HTML_PAGE = f"""
         <div class="footer">
             digite "sair", "ok" ou "gassho" para encerrar<br>
             <a href="https://chizuzen.github.io/Zenbot/" target="_blank" class="doc-link">📖 Documentação do Projeto</a>
-            © 2026 • Chizu.Zenbot@gmail.com
+            © 2026 • Mestre@Chizu.ia.br
         </div>
     </div>
     <script>
