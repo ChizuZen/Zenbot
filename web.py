@@ -84,18 +84,18 @@ HTML_PAGE = f"""
                 <img src="{AVATAR_B64}" alt="Mestre Chizu">
             </div>
             <div class="header-quote">
-                Inspirado em<br>Shunryu Suzuki<br>Thich Nhat Hanh<br>Shunmyo Masuno<br>Haemin Sunim
+               Baseado em ensinamentos e textos dos Mestres Zen. Chizu é um guia para meditar, perguntar e descobrir o que habita além das palavras
             </div>
         </div>
         <div class="input-container">
             <input type="text" id="pergunta" placeholder="Fale com Chizu..." autofocus>
         </div>
         <div class="resposta" id="resposta"><em>O silêncio precede a resposta...</em></div>
-        <div class="footer">
-            digite "sair", "ok" ou "gassho" para encerrar<br>
-            <a href="https://chizuzen.github.io/Zenbot/" target="_blank" class="doc-link">📖 Documentação do Projeto</a>
-            © 2026 • Chizu.Zenbot@gmail.com
+        
+        <div class="footer" style="font-size: 0.7rem; opacity: 0.6; display: flex; justify-content: center; align-items: baseline; gap: 4px; white-space: nowrap;">
+            <a href="https://chizuzen.github.io/Zenbot/" target="_blank" class="doc-link" style="vertical-align: middle;">Documentação</a>•<a href="https://chizuzen.github.io/Zenbot/25-apoio/" target="_blank" class="doc-link" style="vertical-align: middle;">Apoiar Iniciativa</a>•<span style="vertical-align: middle;">PIX/E-mail: <strong style="font-weight: 600; vertical-align: middle;">Mestre@Chizu.ia.br</strong></span>
         </div>
+
     </div>
     <script>
         window.DESPEDIDA_JS = {json.dumps(DESPEDIDA_JS)};

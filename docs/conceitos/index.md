@@ -61,6 +61,11 @@ Cada conceito aqui apresentado busca equilibrar:
 - 🧪 [Protocolo de Testes e Blindagem](18-documentacao_testes.md)
 - 🌐 [Verificação de DNS](19-verificacao_dns.md)
 - 📊 [Monitoramento do Sistema](20-monitoramento.md)
+- 🛡️ [Firewall e Resiliência](21-firewall.md)
+- 🚧 [Web Application Firewall](22-cloudflare.md)
+- ⚠️ [Copyright](23-copyright.md)
+- ⚖️ [Aviso Legal](24-aviso-legal.md)
+- 🙏 [Apoie o Projeto](25-apoio.md)
 ---
 
 ## 🛤️ Conectando teoria e prática
