@@ -1,4 +1,3 @@
-import os
 import json
 import numpy as np
 from pathlib import Path
@@ -58,7 +57,6 @@ def buscar_contexto(pergunta: str, biblioteca, top_k: int = 3,
             return "VAZIO"
 
         # Busca TF-IDF apenas nos chunks do autor
-        import scipy.sparse as sp
         sub_matrix = _corpus_matrix[indices_autor]
         vetor  = _vectorizer.transform([pergunta])
         scores = cosine_similarity(vetor, sub_matrix).flatten()
