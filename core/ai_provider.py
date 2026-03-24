@@ -7,7 +7,7 @@ import time  # Importante para a pausa
 CONFIGS = {
     #"Anthropic": {"temperature": 0.45, "max_tokens": 512,   "top_p": 0.9, "frequency_penalty": 0.45, "presence_penalty": 0.25},
     "Gemini":    {"temperature": 0.75, "max_tokens": 2048,  "top_p": 0.95,"frequency_penalty": 0.20, "presence_penalty": 0.10},
-    "Groq":      {"temperature": 0.30, "max_tokens": 400,   "top_p": 0.85,"frequency_penalty": 0.50, "presence_penalty": 0.30},
+    "Groq":      {"temperature": 0.30, "max_tokens": 600,   "top_p": 0.85,"frequency_penalty": 0.50, "presence_penalty": 0.30},
     "Cerebras":  {"temperature": 0.50, "max_tokens": 512,   "top_p": 0.90,"frequency_penalty": 0.35, "presence_penalty": 0.20},
     "SambaNova": {"temperature": 0.60, "max_tokens": 600,   "top_p": 0.92,"frequency_penalty": 0.30, "presence_penalty": 0.15},
 }
@@ -20,14 +20,14 @@ _BASE = (
     "NUNCA os bloqueie — responda normalmente quando citados.\n"
     "Para QUALQUER OUTRO nome próprio de pessoa famosa, empresa, marca, "
     "produto, tecnologia, esporte ou política, responda ÚNICA e EXCLUSIVAMENTE:\n"
-    "'Caminhante, esse caminho não leva ao Zen. Vá Meditar!!!'\n"
+    "BLOQUEADO\n"
     "NÃO adicione mais nenhuma palavra. NÃO explique. NÃO filosofe.\n\n"
     "### REGRAS ZEN ###\n"
     "1. Comece SEMPRE com 'Caminhante,'.\n"
     "2. Use APENAS o CONTEXTO abaixo. NUNCA invente.\n"
     "3. OBRIGATÓRIO: Cite autor e livro. Ex: 'Como ensina Suzuki em Mente Zen...'.\n"
     "4. NUNCA mencione 'contexto', 'fonte' ou mecânica interna.\n"
-    "5. Se CONTEXTO VAZIO → 'Caminhante, esse caminho não leva ao Zen. Vá Meditar!!!'\n"
+    "5. Se CONTEXTO VAZIO → BLOQUEADO\n"
     "6. Conciso e poético. Máximo 10 frases. Sem listas.\n\n"
 )
 
@@ -44,9 +44,9 @@ class FreeAIProvider:
     def __init__(self):
         self.keys = {
             #"anthropic": os.getenv("ANTHROPIC_API_KEY"),
-            "gemini": os.getenv("GEMINI_API_KEY"),
-            "groq": os.getenv("GROQ_API_KEY"),
-            "cerebras": os.getenv("CEREBRAS_API_KEY"),            
+            "gemini":    os.getenv("GEMINI_API_KEY"),
+            "groq":      os.getenv("GROQ_API_KEY"),
+            "cerebras":  os.getenv("CEREBRAS_API_KEY"),
             "sambanova": os.getenv("SAMBANOVA_API_KEY")
         }
 
@@ -60,22 +60,23 @@ class FreeAIProvider:
         ]
 
     def chat(self, messages, temperature=0.45, max_tokens=512, top_p=0.9, frequency_penalty=0.45, presence_penalty=0.25):
+        # (chave_api, nome_ia, label_exibido, método)
         providers = [
-            #("Anthropic", self._anthropic_chat),
-            ("Gemini", self._gemini_chat),
-            ("Groq", self._groq_chat),
-            ("Cerebras", self._cerebras_chat),            
-            ("SambaNova", self._sambanova_chat)
+            #("anthropic", "Anthropic", "Claude Haiku · Anthropic", self._anthropic_chat),
+            ("gemini",    "Gemini",    "Gemini 2.5 Flash · Google", self._gemini_chat),
+            ("groq",      "Groq",      "Llama 3.3 70B · Groq",      self._groq_chat),
+            ("cerebras",  "Cerebras",  "Llama 3.1 8B · Cerebras",   self._cerebras_chat),
+            ("sambanova", "SambaNova", "Llama 3.1 8B · SambaNova",  self._sambanova_chat),
         ]
-        
+
         random.shuffle(providers)
 
-        for name, method in providers:
-            if not self.keys.get(name.lower()):
+        for key, nome, label, method in providers:
+            if not self.keys.get(key):
                 continue
             try:
-                messages_ajustadas = self._ajustar_system(messages, name)
-                cfg = CONFIGS.get(name, {
+                messages_ajustadas = self._ajustar_system(messages, nome)
+                cfg = CONFIGS.get(nome, {
                     "temperature": temperature,
                     "max_tokens": max_tokens,
                     "top_p": top_p,
@@ -90,17 +91,17 @@ class FreeAIProvider:
                     cfg["frequency_penalty"],
                     cfg["presence_penalty"]
                 )
-                return resposta, name       
+                return resposta, label
 
             except requests.exceptions.HTTPError as e:
                 if e.response.status_code == 429:
-                    print(f"[AI] {name} está exausto (429). Meditando por 2 segundos...")
+                    print(f"[AI] {nome} está exausto (429). Meditando por 2 segundos...")
                     time.sleep(2)
                 else:
-                    print(f"[AI] {name} falhou com erro HTTP: {e}")
+                    print(f"[AI] {nome} falhou com erro HTTP: {e}")
                 continue
             except Exception as e:
-                print(f"[AI] {name} falhou: {e}. Tentando próximo...")
+                print(f"[AI] {nome} falhou: {e}. Tentando próximo...")
                 continue
 
         return "Caminhante, o silêncio envolve essa questão;", "Fallback"
@@ -109,12 +110,12 @@ class FreeAIProvider:
     def _gemini_chat(self, messages, temperature, max_tokens, top_p, freq_pen, pres_pen):
         model_name = "gemini-2.5-flash"
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={self.keys['gemini']}"
-        
+
         contents = []
         for m in messages:
             role = "model" if m["role"] == "assistant" else "user"
             contents.append({"role": role, "parts": [{"text": m["content"]}]})
-        
+
         payload = {
             "contents": contents,
             "generationConfig": {
@@ -123,12 +124,12 @@ class FreeAIProvider:
                 "topP": top_p
             }
         }
-        
+
         r = requests.post(url, json=payload, timeout=20)
         r.raise_for_status()
         return r.json()["candidates"][0]["content"]["parts"][0]["text"]
 
-    def _groq_chat(self, messages, temperature=0.4, max_tokens=1000, top_p=0.9, frequency_penalty=0.10, presence_penalty=0.20):
+    def _groq_chat(self, messages, temperature, max_tokens, top_p, freq_pen, pres_pen):
         payload = {
             "model": "llama-3.3-70b-versatile",
             "messages": messages,
@@ -168,6 +169,7 @@ class FreeAIProvider:
         return r.json()["choices"][0]["message"]["content"]
 
     def _anthropic_chat(self, messages, temperature, max_tokens, top_p, freq_pen, pres_pen):
+        # Usado apenas para calibração local — comentado em produção
         system = ""
         msgs = []
         for m in messages:

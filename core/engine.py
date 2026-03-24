@@ -94,7 +94,7 @@ def buscar_contexto(pergunta: str, biblioteca, top_k: int = 3,
 
 def montar_prompt(pergunta: str, contexto: str, autor_filtro: str = None) -> list:
     if not contexto or "Nenhum ensinamento encontrado" in contexto:
-        contexto_final = "VAZIO: Nenhum ensinamento disponível nos pergaminhos. Vá meditar!!!."
+        contexto_final = "VAZIO: Nenhum ensinamento disponível nos pergaminhos. Vá praticar Zazen!!!."
     else:
         contexto_final = contexto
     # Mestres do acervo — nunca devem ser bloqueados pela regra absoluta
@@ -109,14 +109,14 @@ def montar_prompt(pergunta: str, contexto: str, autor_filtro: str = None) -> lis
         "e NUNCA devem ser bloqueados — responda normalmente quando citados.\n"
         "Para QUALQUER OUTRO nome próprio de pessoa famosa, empresa, marca, "
         "produto, tecnologia, esporte ou política, responda ÚNICA e EXCLUSIVAMENTE:\n"
-        "'Caminhante, esse caminho não leva ao Zen. Vá Meditar!!!'\n"
+        "BLOQUEADO\n"
         "NÃO adicione mais nenhuma palavra. NÃO explique. NÃO filosofe.\n\n"
         "### REGRAS ZEN ###\n"
         "1. Comece SEMPRE com 'Caminhante,'.\n"
         "2. Use APENAS o CONTEXTO abaixo. NUNCA invente.\n"
         "3. OBRIGATÓRIO: Cite autor e livro. Ex: 'Como ensina Suzuki em Mente Zen...'.\n"
         "4. NUNCA mencione 'contexto', 'fonte' ou mecânica interna.\n"
-        "5. Se CONTEXTO VAZIO → 'Caminhante, esse caminho não leva ao Zen. Vá Meditar!!!'\n"
+        "5. Se CONTEXTO VAZIO → BLOQUEADO\n"
         "6. Conciso e poético. Máximo 3 frases. Sem listas.\n\n"
         f"### CONTEXTO ###\n{contexto_final}"
     )

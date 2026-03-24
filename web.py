@@ -37,6 +37,20 @@ biblioteca_chizu = carregar_biblioteca()
 # Memória temporária em RAM
 conversation_memory = {}
 
+# Carrega frases zen para respostas de bloqueio aleatórias
+KOANS_PATH = os.path.join(BASE_DIR, "data", "koans.txt")
+koans_zen = []
+if os.path.exists(KOANS_PATH):
+    koans_zen = [k.strip() for k in open(KOANS_PATH, encoding="utf-8").readlines() if k.strip()]
+    print(f"✅ {len(koans_zen)} frases zen carregadas.")
+
+
+def resposta_bloqueio() -> str:
+    """Retorna uma frase zen aleatória quando o Chizu bloqueia a pergunta."""
+    if koans_zen:
+        return f"Caminhante, {random.choice(koans_zen)}"
+    return "Caminhante, esse caminho não leva ao Zen. Vá praticar Zazen!!!"
+
 
 # =============================
 # Avatar e Arquivos Estáticos (AJUSTADO)
@@ -143,7 +157,12 @@ async def whatsapp(request: Request):
             resposta_raw, ia_nome = ai_provider.chat(prompt_completo)
             resposta_limpa = resposta_raw.replace("(Silêncio)", "").replace("(pausa)", "").strip()
             resposta_limpa = resposta_limpa.lstrip("#").strip()
-            resposta_limpa = resposta_limpa[:1500]
+
+            # Substitui bloqueio fixo por frase zen aleatória
+            if "esse caminho não leva ao Zen" in resposta_limpa or resposta_limpa == "VAZIO":
+                resposta_limpa = resposta_bloqueio()
+
+            resposta_limpa = resposta_limpa[:1500] + f"\n\n— via {ia_nome}"
             historico.append({"role": "user", "content": pergunta})
             historico.append({"role": "assistant", "content": resposta_limpa})
             conversation_memory[telefone] = historico[-8:]
@@ -158,7 +177,7 @@ async def whatsapp(request: Request):
         print(f"❌ Erro WhatsApp: {e}")
         twiml = """<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Message>Caminhante, o vento não sopra hoje. Vá Meditar!</Message>
+    <Message>Caminhante, o vento não sopra hoje. Vá praticar Zazen!!!</Message>
 </Response>"""
         return Response(content=twiml, media_type="application/xml")
     
@@ -187,6 +206,11 @@ async def ask(request: Request):
 
         resposta_raw, ia_nome = ai_provider.chat(prompt_completo)
         resposta_limpa   = resposta_raw.replace("(Silêncio)", "").replace("(pausa)", "").strip()
+
+        # Substitui bloqueio fixo por frase zen aleatória
+        if "esse caminho não leva ao Zen" in resposta_limpa or resposta_limpa == "VAZIO":
+            resposta_limpa = resposta_bloqueio()
+
         resposta_exibida = f"{resposta_limpa}\n\n— via {ia_nome}"
 
         historico.append({"role": "user",      "content": pergunta})
