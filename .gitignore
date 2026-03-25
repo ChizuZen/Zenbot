@@ -13,3 +13,5 @@ venv/
 
 ### Dados Sensíveis/Grandes ###
 data/embeddings*.json
+### MkDocs ###
+site/

@@ -44,19 +44,31 @@ if os.path.exists(KOANS_PATH):
     koans_zen = [k.strip() for k in open(KOANS_PATH, encoding="utf-8").readlines() if k.strip()]
     print(f"✅ {len(koans_zen)} frases zen carregadas.")
 
+# Marcadores de bloqueio — única fonte da verdade
+MARCADORES_BLOQUEIO = ["BLOQUEADO", "VAZIO"]
+
 
 def resposta_bloqueio() -> str:
     """Retorna uma frase zen aleatória quando o Chizu bloqueia a pergunta."""
     if koans_zen:
-        return f"Caminhante, {random.choice(koans_zen)}"
-    return "Caminhante, esse caminho não leva ao Zen. Vá praticar Zazen!!!"
+        return f"Caminhante, {random.choice(koans_zen)}\n\nVá praticar Zazen."
+    return "Caminhante, o silêncio é a única resposta.\n\nVá praticar Zazen."
+
+
+def is_bloqueado(texto: str) -> bool:
+    """Verifica se a resposta da IA contém marcador de bloqueio."""
+    return any(marcador in texto for marcador in MARCADORES_BLOQUEIO)
+
+
+def limpar_resposta(texto: str) -> str:
+    """Remove artefatos comuns das respostas das IAs."""
+    return texto.replace("(Silêncio)", "").replace("(pausa)", "").lstrip("#").strip()
 
 
 # =============================
-# Avatar e Arquivos Estáticos (AJUSTADO)
+# Avatar e Arquivos Estáticos
 # =============================
 AVATAR_B64 = ""
-# Agora buscamos o avatar dentro da pasta /static
 avatar_path = os.path.join(BASE_DIR, "static", "img", "avatar.png")
 
 if os.path.exists(avatar_path):
@@ -67,9 +79,9 @@ if os.path.exists(avatar_path):
 if os.path.exists("site"):
     app.mount("/docs", StaticFiles(directory="site", html=True), name="docs")
 
-# AJUSTE: Agora servimos a pasta /static corretamente
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/legal", StaticFiles(directory="legal", html=True), name="legal")
+
 
 # ============================================
 # Textos da Interface
@@ -84,7 +96,7 @@ AGUARDANDO_JS = [
     "O vazio fala...",
     "Chizu ouve o invisível...",
     "A mente se aquieta...",
-    "O caminho se revela...",
+    "A resposta emerge...",
     "Chizu aguarda o momento...",
     "As palavras tomam forma...",
     "O mestre fecha os olhos...",
@@ -152,9 +164,11 @@ HTML_PAGE = f"""
 async def get_index():
     return HTML_PAGE
 
-@app.head("/")                   
+
+@app.head("/")
 async def head_index():
     return Response(status_code=200)
+
 
 @app.post("/whatsapp")
 async def whatsapp(request: Request):
@@ -169,16 +183,14 @@ async def whatsapp(request: Request):
             resposta_limpa = "Vá em paz. Gasshô! Que todos os seres possam se beneficiar."
         else:
             historico = conversation_memory.setdefault(telefone, [])
-            autor_filtro = None  # WhatsApp não usa filtro por autor
             contexto = buscar_contexto(pergunta, biblioteca_chizu)
-            mensagens_base = montar_prompt(pergunta, contexto, autor_filtro=autor_filtro)
+            mensagens_base = montar_prompt(pergunta, contexto, autor_filtro=None)
             prompt_completo = [mensagens_base[0]] + historico[-8:] + [mensagens_base[-1]]
-            resposta_raw, ia_nome = ai_provider.chat(prompt_completo)
-            resposta_limpa = resposta_raw.replace("(Silêncio)", "").replace("(pausa)", "").strip()
-            resposta_limpa = resposta_limpa.lstrip("#").strip()
 
-            # Substitui bloqueio fixo por frase zen aleatória
-            if "esse caminho não leva ao Zen" in resposta_limpa or "BLOQUEADO" in resposta_limpa or resposta_limpa == "VAZIO":
+            resposta_raw, ia_nome = ai_provider.chat(prompt_completo)
+            resposta_limpa = limpar_resposta(resposta_raw)
+
+            if is_bloqueado(resposta_limpa):
                 resposta_limpa = resposta_bloqueio()
 
             resposta_limpa = resposta_limpa[:1500] + f"\n\n— via {ia_nome}"
@@ -194,17 +206,18 @@ async def whatsapp(request: Request):
 
     except Exception as e:
         print(f"❌ Erro WhatsApp: {e}")
-        twiml = """<?xml version="1.0" encoding="UTF-8"?>
+        koan = resposta_bloqueio()
+        twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Message>Caminhante, o vento não sopra hoje. Vá praticar Zazen!!!</Message>
+    <Message>{koan}</Message>
 </Response>"""
         return Response(content=twiml, media_type="application/xml")
-    
-    
-@app.post("/ask")                 
+
+
+@app.post("/ask")
 async def ask(request: Request):
     try:
-        data     = await request.json()
+        data = await request.json()
         pergunta = data.get("pergunta", "").strip()
 
         if not pergunta:
@@ -214,25 +227,22 @@ async def ask(request: Request):
             return JSONResponse({"resposta": random.choice(DESPEDIDA_JS)})
 
         session_id = request.cookies.get("chizu_session") or str(uuid4())
-        historico  = conversation_memory.setdefault(session_id, [])
+        historico = conversation_memory.setdefault(session_id, [])
 
-        # Filtro por autor opcional (ex: {"pergunta": "...", "autor": "Eihei Dogen"})
         autor_filtro = data.get("autor", None)
         contexto = buscar_contexto(pergunta, biblioteca_chizu, autor_filtro=autor_filtro)
-
         mensagens_base = montar_prompt(pergunta, contexto, autor_filtro=autor_filtro)
-        prompt_completo  = [mensagens_base[0]] + historico[-8:] + [mensagens_base[-1]]
+        prompt_completo = [mensagens_base[0]] + historico[-8:] + [mensagens_base[-1]]
 
         resposta_raw, ia_nome = ai_provider.chat(prompt_completo)
-        resposta_limpa   = resposta_raw.replace("(Silêncio)", "").replace("(pausa)", "").strip()
+        resposta_limpa = limpar_resposta(resposta_raw)
 
-        # Substitui bloqueio fixo por frase zen aleatória
-        if "esse caminho não leva ao Zen" in resposta_limpa or "BLOQUEADO" in resposta_limpa or resposta_limpa == "VAZIO":
+        if is_bloqueado(resposta_limpa):
             resposta_limpa = resposta_bloqueio()
 
         resposta_exibida = f"{resposta_limpa}\n\n— via {ia_nome}"
 
-        historico.append({"role": "user",      "content": pergunta})
+        historico.append({"role": "user", "content": pergunta})
         historico.append({"role": "assistant", "content": resposta_limpa})
         conversation_memory[session_id] = historico[-8:]
 

@@ -112,14 +112,20 @@ def montar_prompt(pergunta: str, contexto: str, autor_filtro: str = None) -> lis
         "BLOQUEADO\n"
         "NÃO adicione mais nenhuma palavra. NÃO explique. NÃO filosofe.\n\n"
         "### REGRAS ZEN ###\n"
-        "1. Comece SEMPRE com 'Caminhante,'.\n"
-        "2. Use APENAS o CONTEXTO abaixo. NUNCA invente.\n"
-        "3. OBRIGATÓRIO: Cite autor e livro. Ex: 'Como ensina Suzuki em Mente Zen...'.\n"
+        "1. Comece SEMPRE com 'Caminhante,' — NUNCA seguido de 'como ensina', 'segundo' ou 'de acordo'.\n"
+        "2. Use APENAS o CONTEXTO abaixo. NUNCA invente. NUNCA crie personagens, histórias ou diálogos fictícios.\n"
+        "3. OBRIGATÓRIO: Mencione autor e livro de forma natural e poética, "
+        "sem fórmulas fixas. Varie o modo de introduzir. "
+        "Exemplos: 'Haemin Sunim, em Amor pelas Coisas Imperfeitas, sussurra...', "
+        "'Nas páginas de Silêncio, Thich Nhat Hanh nos lembra...', "
+        "'Dogen, no Shobogenzo, aponta para...'. "
+        "PROIBIDO começar com 'Como ensina'. PROIBIDO inventar citações, páginas ou referências.\n"
         "4. NUNCA mencione 'contexto', 'fonte' ou mecânica interna.\n"
         "5. Se CONTEXTO VAZIO → BLOQUEADO\n"
-        "6. Conciso e poético. Máximo 3 frases. Sem listas.\n\n"
+        "6. MÁXIMO 3 FRASES. Conte as frases. Se passar de 3, corte. Sem exceções.\n\n"
         f"### CONTEXTO ###\n{contexto_final}"
     )
+    
     if autor_filtro:
         system_prompt += (
             f"\n\n### AUTOR EXCLUSIVO — REGRA ABSOLUTA ###\n"
