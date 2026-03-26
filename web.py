@@ -184,7 +184,7 @@ async def whatsapp(request: Request):
         else:
             historico = conversation_memory.setdefault(telefone, [])
             contexto = buscar_contexto(pergunta, biblioteca_chizu)
-            mensagens_base = montar_prompt(pergunta, contexto, autor_filtro=None)
+            mensagens_base, perfil_nome = montar_prompt(pergunta, contexto, autor_filtro=autor_filtro)
             prompt_completo = [mensagens_base[0]] + historico[-8:] + [mensagens_base[-1]]
 
             resposta_raw, ia_nome = ai_provider.chat(prompt_completo)
@@ -231,7 +231,7 @@ async def ask(request: Request):
 
         autor_filtro = data.get("autor", None)
         contexto = buscar_contexto(pergunta, biblioteca_chizu, autor_filtro=autor_filtro)
-        mensagens_base = montar_prompt(pergunta, contexto, autor_filtro=autor_filtro)
+        mensagens_base, perfil_nome = montar_prompt(pergunta, contexto, autor_filtro=autor_filtro)
         prompt_completo = [mensagens_base[0]] + historico[-8:] + [mensagens_base[-1]]
 
         resposta_raw, ia_nome = ai_provider.chat(prompt_completo)
@@ -240,7 +240,7 @@ async def ask(request: Request):
         if is_bloqueado(resposta_limpa):
             resposta_limpa = resposta_bloqueio()
 
-        resposta_exibida = f"{resposta_limpa}\n\n— via {ia_nome}"
+        resposta_exibida = f"{resposta_limpa}\n\n— via {perfil_nome} · {ia_nome}"
 
         historico.append({"role": "user", "content": pergunta})
         historico.append({"role": "assistant", "content": resposta_limpa})
