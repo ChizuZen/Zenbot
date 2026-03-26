@@ -40,9 +40,9 @@ Cada conceito aqui apresentado busca equilibrar:
 
 ## Conceitos de Busca Semântica
 
-- [Embeddings](06-embeddings.md)
+
 - [Busca semântica](07-busca-semantica.md)
-- [Pipeline do Chizu](08-pipeline-do-zenbot.md)
+- [Pipeline do Chizu](08-pipeline.md)
 
 ## Conceitos do Chizu
 
@@ -53,8 +53,6 @@ Cada conceito aqui apresentado busca equilibrar:
 ## Arquitetura do Chizu
 
 - [Chunks e Embeddings](12-chunks-e-embeddings.md)
-- [Busca Semântica no Chizu](13-busca-semantica.md)
-- [RAG no Chizu](14-rag-no-zenbot.md)
 - [Pipeline de Textos](15-pipeline-de-textos.md)
 - [Arquitetura e Importações](16-dependencias-importacoes.md)
 - [Engenharia de Prompts](17-engenharia-de-prompts.md)

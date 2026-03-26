@@ -12,48 +12,62 @@ extra_css:
 
 nav:
 
-  - Visão Geral:
-      - Motivação: 01-motivacao.md
-      - Visão geral: 02-visao-geral.md
-      - Evolução: 03-evolucao-do-projeto.md
-      - Arquitetura: 04-arquitetura.md
+  - Projeto:
+    - Motivação: 01-motivacao.md
+    - Visão geral: 02-visao-geral.md
+    - Arquitetura: 04-arquitetura.md
+    - Roadmap: 09-roadmap.md
+    - Evolução: 03-evolucao-do-projeto.md    
+    - Diário de construção: 10-jornada-de-aprendizado.md
 
   - Desenvolvimento:
-      - Ferramentas: 05-ferramentas.md
-      - Fluxo de trabalho: 06-fluxo-de-trabalho.md
-      - Comandos úteis: 07-comandos-uteis.md
-      - Organização dos textos: 08-organizacao-dos-textos.md
-      - Roadmap: 09-roadmap.md
-      - Diário de construção: 10-jornada-de-aprendizado.md
+    - Ferramentas: 05-ferramentas.md
+    - Fluxo de trabalho: 06-fluxo-de-trabalho.md
+    - Comandos úteis: 07-comandos-uteis.md
+    - Organização dos textos: 08-organizacao-dos-textos.md
 
   - Conceitos:
-      - Introdução: conceitos/index.md
-      - Sistemas operacionais: conceitos/01-sistemas-operacionais.md
-      - Ferramentas de desenvolvimento: conceitos/02-ferramentas-de-desenvolvimento.md
-      - Servidores e deploy: conceitos/03-servidores-e-deploy.md
-      - Inteligência artificial: conceitos/04-inteligencia-artificial.md
-      - Modelos e LLMs: conceitos/05-modelos-e-llms.md
-      - Embeddings: conceitos/06-embeddings.md
-      - Busca semântica: conceitos/07-busca-semantica.md
-      - Pipeline do ZenBot: conceitos/08-pipeline-do-zenbot.md
-      - Metáfora Zen: conceitos/09-metafora-zen.md
-      - Validação de perguntas: conceitos/10-validacao-perguntas.md
-      - Chunks e embeddings: conceitos/12-chunks-e-embeddings.md
-      - Busca semântica no ZenBot: conceitos/13-busca-semantica.md
-      - RAG no ZenBot: conceitos/14-rag-no-zenbot.md
-      - Pipeline de textos: conceitos/15-pipeline-de-textos.md
-      - Ajustes do sistema: conceitos/11-ajustes.md
-      - Arquitetura e Importações: conceitos/16-dependencias-importacoes.md
-      - Engenharia de Prompts: conceitos/17-engenharia-de-prompts.md
-      - Protocolo de Testes e Blindagem: conceitos/18-documentacao_testes.md
-      - Verificação de DNS: conceitos/19-verificacao_dns.md
-      - Caixa Postal: conceitos/29-caixa-postal.md
-      - Monitoramento do Sistema: conceitos/20-monitoramento.md
-      - Firewall e Resiliência: conceitos/21-firewall.md  
-      - Web Application Firewall: conceitos/22-cloudflare.md
-      - Alexa: conceitos/26-alexa.md
-      - Whatsapp: conceitos/27-whatsapp.md
-      - Outros Mestres: conceitos/28-expansao-acervo-e-filtro-autor.md
-      - Copyright: conceitos/23-copyright.md
-      - Aviso Legal: conceitos/24-aviso-legal.md
-      - Apoie o Projeto: conceitos/25-apoio.md
+      -  Fundamentos:
+          - Introdução: conceitos/index.md
+          - Sistemas operacionais: conceitos/01-sistemas-operacionais.md
+          - Ferramentas de desenvolvimento: conceitos/02-ferramentas-de-desenvolvimento.md
+          - Servidores e deploy: conceitos/03-servidores-e-deploy.md
+
+      - Inteligência Artificial:    
+          - Inteligência artificial: conceitos/04-inteligencia-artificial.md
+          - Modelos e LLMs: conceitos/05-modelos-e-llms.md
+          - Embeddings e Chunks: conceitos/06-embeddings-e-chunks.md
+          - Busca semântica: conceitos/07-busca-semantica.md
+
+      - Arquitetura do Chizu: 
+          - Pipeline: conceitos/08-pipeline.md
+          - RAG: conceitos/14-rag-no-zenbot.md
+          - Arquitetura e Importações: conceitos/16-dependencias-importacoes.md          
+          - Engenharia de Prompts: conceitos/17-engenharia-de-prompts.md          
+          - Metáfora Zen: conceitos/09-metafora-zen.md
+          - Validação de Perguntas: conceitos/10-validacao-perguntas.md
+          - Ajustes do Sistema: conceitos/11-ajustes.md 
+          - Protocolo de Teste: conceitos/18-documentacao_testes.md 
+  
+      - Infraestrutura e Deploy: 
+          - Verificação de DNS: conceitos/19-verificacao_dns.md
+          - Caixa Postal: conceitos/29-caixa-postal.md
+          - Monitoramento do Sistema: conceitos/20-monitoramento.md
+          - Firewall e Resiliência: conceitos/21-firewall.md  
+          - Web Application Firewall: conceitos/22-cloudflare.md
+          
+      - Canais e Integrações:     
+          - Alexa: conceitos/26-alexa.md
+          - Whatsapp: conceitos/27-whatsapp.md
+          - Outros Mestres: conceitos/28-expansao-acervo-e-filtro-autor.md
+
+      - Outros Conceitos:    
+          - Chunks e Embeddings: conceitos/12-chunks-e-embeddings.md
+          - Busca Semântica : conceitos/07-busca-semantica.md    
+          - Pipeline de Rextos: conceitos/15-pipeline-de-textos.md
+
+          
+  - Sobre:
+    - Copyright: conceitos/23-copyright.md
+    - Aviso Legal: conceitos/24-aviso-legal.md
+    - Apoie o Projeto: conceitos/25-apoio.md
