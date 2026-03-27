@@ -118,6 +118,7 @@ PERFIS_MESTRES = {
 # Estilos por IA — usados pelo ai_provider
 # ============================================
 ESTILOS_IA = {
+    #"Anthropic": "### SEU ESTILO ###\nSeja preciso e poético. Prefira metáforas da natureza.\n\n",
     "Gemini":    "### SEU ESTILO ###\nSeja criativo e surpreendente. Use imagens inesperadas.\n\n",
     "Groq":      "### SEU ESTILO ###\nSeja direto e conciso. Uma ideia central, sem rodeios.\n\n",
     "Cerebras":  "### SEU ESTILO ###\nSeja simples e acessível. Linguagem clara e calorosa.\n\n",

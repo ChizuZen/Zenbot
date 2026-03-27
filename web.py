@@ -240,7 +240,7 @@ async def ask(request: Request):
         if is_bloqueado(resposta_limpa):
             resposta_limpa = resposta_bloqueio()
 
-        resposta_exibida = f"{resposta_limpa}\n\n— via {perfil_nome} · {ia_nome}"
+        resposta_exibida = f"{resposta_limpa}\n\n— via  {perfil_nome} · {ia_nome}"
 
         historico.append({"role": "user", "content": pergunta})
         historico.append({"role": "assistant", "content": resposta_limpa})
