@@ -23,6 +23,7 @@ nav:
   - Conceitos:
       - Fundamentos:
           - Introdução: conceitos/index.md
+          - Glossário: conceitos/30-glossario.md  
           - Sistemas operacionais: conceitos/01-sistemas-operacionais.md
           - Ferramentas de desenvolvimento: conceitos/02-ferramentas-de-desenvolvimento.md
           - Servidores e deploy: conceitos/03-servidores-e-deploy.md

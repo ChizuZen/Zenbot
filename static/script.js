@@ -12,8 +12,9 @@ const AUTORES_MAP = {
     'hanh':    'Thich Nhat Hanh',
 };
 
-const input = document.getElementById('pergunta');
+const input       = document.getElementById('pergunta');
 const respostaDiv = document.getElementById('resposta');
+const btnMic      = document.getElementById('btn-mic');
 
 function randomMsg(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -31,8 +32,74 @@ function parsearPergunta(texto) {
     return { pergunta: texto, autor: null };
 }
 
+// Remove markdown e linha "— via ..." antes de falar
+function limparParaVoz(texto) {
+    return texto
+        .replace(/— via .*$/gm, '')
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/#{1,6}\s/g, '')
+        .replace(/<[^>]+>/g, '')
+        .trim();
+}
+
+// Síntese de voz
+function falar(texto) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const fala = new SpeechSynthesisUtterance(limparParaVoz(texto));
+    fala.lang  = 'pt-BR';
+    fala.rate  = 0.9;
+    fala.pitch = 1.0;
+    window.speechSynthesis.speak(fala);
+}
+
+// Reconhecimento de voz
+let reconhecendo = false;
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+function iniciarMicrofone() {
+    if (!SpeechRecognition) {
+        respostaDiv.innerHTML = '<em>Seu navegador não suporta reconhecimento de voz.</em>';
+        return;
+    }
+    if (reconhecendo) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang             = 'pt-BR';
+    recognition.interimResults   = false;
+    recognition.maxAlternatives  = 1;
+
+    recognition.onstart = () => {
+        reconhecendo = true;
+        btnMic.classList.add('ouvindo');
+        btnMic.title      = 'Ouvindo...';
+        input.placeholder = 'Ouvindo...';
+    };
+
+    recognition.onresult = (e) => {
+        const texto = e.results[0][0].transcript;
+        input.value = texto;
+        fazerPergunta();
+    };
+
+    recognition.onerror = () => {
+        respostaDiv.innerHTML = '<em>(não consegui ouvir — tente novamente)</em>';
+    };
+
+    recognition.onend = () => {
+        reconhecendo = false;
+        btnMic.classList.remove('ouvindo');
+        btnMic.title      = 'Falar com Chizu';
+        input.placeholder = 'Fale com Chizu...';
+    };
+
+    recognition.start();
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     respostaDiv.innerHTML = `<em>O silêncio precede a resposta...</em>`;
+    if (btnMic) btnMic.addEventListener('click', iniciarMicrofone);
 });
 
 async function fazerPergunta() {
@@ -40,32 +107,30 @@ async function fazerPergunta() {
     if (!textoRaw) return;
 
     if (PALAVRAS_SAIDA.includes(textoRaw.toLowerCase())) {
-        respostaDiv.innerHTML = ` ${randomMsg(window.DESPEDIDA_JS)}`;
-        input.value = '';
+        const despedida = randomMsg(window.DESPEDIDA_JS);
+        respostaDiv.innerHTML = ` ${despedida}`;
+        falar(despedida);
+        input.value    = '';
         input.disabled = true;
         return;
     }
 
     const { pergunta, autor } = parsearPergunta(textoRaw);
-
-    input.disabled = true;
-    input.placeholder = autor
-        ? `Consultando ${autor}...`
-        : "Chizu medita...";
+    input.disabled    = true;
+    input.placeholder = autor ? `Consultando ${autor}...` : "Chizu medita...";
     respostaDiv.innerHTML = `<em>${randomMsg(window.AGUARDANDO_JS)}</em>`;
 
     try {
-        // Monta payload — inclui autor só se foi informado via @
         const payload = { pergunta };
         if (autor) payload.autor = autor;
 
         const response = await fetch('/ask', {
-            method: 'POST',
+            method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body:    JSON.stringify(payload)
         });
 
-        const data = await response.json();
+        const data    = await response.json();
         const resposta = data.resposta;
 
         const respostaHTML = resposta
@@ -77,22 +142,25 @@ async function fazerPergunta() {
             .replace(/\n/g, '<br>')
             .replace(/\. ([A-ZÁÉÍÓÚÂÊÎÔÛÃÕÀÇ])/g, '.</p><p>$1');
 
+        // Ordem: Ouvir · WhatsApp · Email
         respostaDiv.innerHTML = `
             <p>${respostaHTML}</p>
             <div class="share-buttons">
+                <button id="btn-falar">Ouvir</button>
                 <button id="btn-whatsapp">WhatsApp</button>
                 <button id="btn-email">Email</button>
             </div>
         `;
 
+        document.getElementById('btn-falar').addEventListener('click',    () => falar(resposta));
         document.getElementById('btn-whatsapp').addEventListener('click', () => compartilharWhatsApp(resposta));
-        document.getElementById('btn-email').addEventListener('click', () => compartilharEmail(resposta));
+        document.getElementById('btn-email').addEventListener('click',    () => compartilharEmail(resposta));
 
     } catch (error) {
         respostaDiv.innerHTML = '<em>(o vento levou sua pergunta...)</em>';
     } finally {
-        input.disabled = false;
-        input.value = '';
+        input.disabled    = false;
+        input.value       = '';
         input.placeholder = "Fale com Chizu...";
         input.focus();
     }
@@ -109,6 +177,6 @@ function compartilharWhatsApp(texto) {
 
 function compartilharEmail(texto) {
     const assunto = encodeURIComponent("Um ensinamento do Mestre Chizu");
-    const corpo = encodeURIComponent("Mestre Chizu:\n\n" + texto + "\n\nhttp://chizu.ia.br");
+    const corpo   = encodeURIComponent("Mestre Chizu:\n\n" + texto + "\n\nhttp://chizu.ia.br");
     window.open(`mailto:?subject=${assunto}&body=${corpo}`, '_blank');
 }

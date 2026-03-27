@@ -116,7 +116,7 @@ HTML_PAGE = f"""
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chizu · Mestre Zen</title>
     <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
-    <link rel="stylesheet" href="/static/style.css?v=2">
+    <link rel="stylesheet" href="/static/style.css?v=3">
 </head>
 <body>
     <div class="container">
@@ -131,11 +131,17 @@ HTML_PAGE = f"""
         </div>
         <div class="input-container">
             <input type="text" id="pergunta" placeholder="Fale com Chizu..." autofocus autocomplete="off" spellcheck="false">
+            <button id="btn-mic" title="Falar com Chizu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+            </button>
             <button id="btn-enviar" onclick="fazerPergunta()">&#10148;</button>
         </div>
-
         <div class="resposta" id="resposta"><em>O silêncio precede a resposta...</em></div>
-        
         <footer class="footer">
             <div class="footer-links">
                 <a href="/legal" class="doc-link">Legal</a>
@@ -146,7 +152,6 @@ HTML_PAGE = f"""
             </div>
             <p class="gassho-quote">Gassho 🙏 | Que todos os seres se beneficiem.</p>
         </footer>
-        
     </div>
     <script>
         window.DESPEDIDA_JS = {json.dumps(DESPEDIDA_JS)};

@@ -10,7 +10,6 @@ body {
     padding: 1rem;
     color: #2c3e2f;
 }
-
 .container {
     max-width: 600px;
     width: 100%;
@@ -32,7 +31,6 @@ body {
     padding-bottom: 1.5rem;
     border-bottom: 1px solid #f4f1ea;
 }
-
 .header-info { flex: 1; text-align: left; }
 .header-info h1 {
     font-size: 2.2rem;
@@ -45,13 +43,11 @@ body {
     color: #6b5e4a;
     font-style: italic;
 }
-
 .header-card img {
     height: 110px;
     width: auto;
     border-radius: 15px;
 }
-
 .header-quote {
     flex: 1;
     text-align: right;
@@ -60,7 +56,7 @@ body {
     line-height: 1.5;
 }
 
-/* --- INPUT CONTAINER COM BOTÃO INTEGRADO --- */
+/* --- INPUT CONTAINER --- */
 .input-container {
     display: flex;
     align-items: center;
@@ -69,18 +65,16 @@ body {
     background: white;
     transition: border-color 0.2s, box-shadow 0.2s;
     padding-right: 0.4rem;
+    gap: 0.3rem;
 }
-
 .input-container:focus-within {
     border-color: #8c6d46;
     box-shadow: 0 0 8px rgba(140, 109, 70, 0.2);
     background-color: #fdfcfb;
 }
-
 .input-container:hover {
     border-color: #c4b6a9;
 }
-
 .input-container input {
     flex: 1;
     padding: 1.2rem 1.6rem;
@@ -92,12 +86,47 @@ body {
     font-family: inherit;
     color: #2c3e2f;
 }
-
 .input-container input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px white inset !important;
     -webkit-text-fill-color: #2c3e2f !important;
 }
 
+/* --- BOTÃO MICROFONE --- */
+#btn-mic {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #8c6d46;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.1s, color 0.2s;
+    padding: 0;
+}
+#btn-mic:hover  {
+    background: #f4f1ea;
+}
+#btn-mic:active {
+    transform: scale(0.93);
+}
+
+/* Animação quando está ouvindo */
+#btn-mic.ouvindo {
+    color: #c0612a;
+    background: #fff0e6;
+    animation: pulsar 1.2s ease-in-out infinite;
+}
+@keyframes pulsar {
+    0%   { box-shadow: 0 0 0 0 rgba(192, 97, 42, 0.3); }
+    70%  { box-shadow: 0 0 0 8px rgba(192, 97, 42, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(192, 97, 42, 0); }
+}
+
+/* --- BOTÃO ENVIAR --- */
 #btn-enviar {
     flex-shrink: 0;
     width: 42px;
@@ -115,7 +144,6 @@ body {
     padding: 0;
     line-height: 1;
 }
-
 #btn-enviar:hover  { background: #6b5234; }
 #btn-enviar:active { transform: scale(0.93); }
 
@@ -130,7 +158,6 @@ body {
     display: flex;
     flex-direction: column;
 }
-
 .share-buttons {
     display: flex;
     justify-content: flex-start;
@@ -140,7 +167,7 @@ body {
     padding-top: 8px;
 }
 
-/* Links Harmonizados com o Footer */
+/* Links harmonizados com o footer */
 .doc-link, .share-buttons button {
     color: #8c6d46 !important;
     text-decoration: underline !important;
@@ -152,5 +179,4 @@ body {
     font-family: inherit;
     font-size: 0.9rem !important;
 }
-
 .footer { margin-top: 1rem !important; }
