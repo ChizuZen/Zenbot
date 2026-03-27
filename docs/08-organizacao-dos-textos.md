@@ -1,134 +1,188 @@
-# Organização dos Textos no Projeto Chizu
+# Organização dos Textos
 
-Este documento descreve como os textos são organizados, tratados e preparados para se tornarem a **base de conhecimento do ZenBot**.
-
-O objetivo é transformar conteúdos brutos em **informação estruturada, pesquisável e semanticamente significativa**.
-
----
-
-## Visão Geral
-
-O Chizu utiliza textos como fonte principal de conhecimento. Esses textos passam por um **processo de transformação**, que inclui:
-
-Texto bruto → Limpeza → Fragmentação → Embeddings → Busca Semântica
-
-Esse fluxo garante que o sistema consiga **entender o significado dos conteúdos**, e não apenas localizar palavras.
+Este documento descreve como os livros zen foram transformados em base de conhecimento do Chizu —
+desde os PDFs e TXTs originais até o arquivo `embeddings_bge.json` que alimenta o sistema em produção.
 
 ---
 
-## Tipos de Textos Utilizados
+## Visão geral do processo
 
-Os principais formatos são:
+O fluxo completo acontece em duas etapas, executadas localmente antes do deploy:
 
-- PDFs
-- Arquivos de texto (.txt)
-- Textos extraídos da web
-- Conteúdos preparados manualmente
+```
+PDFs e TXTs → preparar_textos.py → chunks_preparados.txt
+chunks_preparados.txt → gerar_embeddings.py → embeddings_bge.json
+```
 
-Esses materiais ficam organizados principalmente na pasta:
-textos/
-
----
-
-## Limpeza dos Textos
-
-Após a extração, os textos passam por um processo de **limpeza**, que inclui:
-
-- Remoção de caracteres estranhos.
-- Correção de espaçamentos.
-- Padronização de parágrafos.
-- Eliminação de ruídos visuais.
-
-Objetivo: deixar o texto **mais claro, contínuo e semanticamente consistente**.
+O arquivo `embeddings_bge.json` é o único que vai para o servidor. Os textos originais e os scripts ficam na máquina local.
 
 ---
 
-## Fragmentação (Chunks)
+## Estrutura de pastas local
 
-Textos longos são divididos em **pequenos blocos**, chamados de *chunks*.
+Os scripts e textos ficam organizados numa pasta separada do projeto principal:
 
-### Por que fragmentar?
+```
+CLAUDE_LIVROS/
+├── data/
+│   ├── chunks_preparados.txt
+│   └── embeddings_bge.json
+├── sripts/
+│   ├── preparar_textos.py
+│   └── gerar_embeddings.py
+└── textos/
+    ├── Eihei_Dogen/
+    ├── Haemin_Sunim/
+    ├── Osho/
+    ├── Shunmyo_Masuno/
+    ├── Shunryu Suzuki/
+    └── Thich_Nhat_Hanh/
+```
 
-- Facilita a indexação.
-- Melhora a busca semântica.
-- Permite respostas mais precisas.
-
-Cada chunk representa uma **ideia completa ou um pequeno trecho coerente**.
-
----
-
-## Geração de Embeddings
-
-Cada fragmento é convertido em um **vetor semântico (embedding)**.
-
-Embeddings são **representações matemáticas do significado dos textos**, permitindo que o sistema:
-
-- Compare ideias.
-- Meça similaridade.
-- Realize busca por sentido, e não apenas por palavras.
-
----
-
-## Armazenamento dos Dados
-
-Os dados gerados são organizados principalmente em:
-data/
-
-Contendo:
-
-- Vetores de embeddings.
-- Índices de busca.
-- Arquivos auxiliares para desempenho.
+Cada pasta de autor contém os PDFs e TXTs originais das obras.
 
 ---
 
-## Pipeline de Preparação dos Textos
+## Acervo atual
 
-O processo completo segue a sequência:
-
-1. Extração do texto.
-2. Limpeza.
-3. Fragmentação.
-4. Geração dos embeddings.
-5. Armazenamento.
-6. Indexação para busca.
-
-Este conjunto de etapas forma o **pipeline de preparação do conhecimento**.
+| Autor | Obras |
+|---|---|
+| Eihei Dogen | Cem e Oito Portais da Lei Maravilhosa, Instruções para o Cozinheiro-Chefe, Shobogenzo Zuimonki (introdução + 5 livros), Textos de Mestre Dogen |
+| Haemin Sunim | As Coisas que Você Só Vê Quando Desacelera, Amor pelas Coisas Imperfeitas, Quando as Coisas Não Saem Como Você Espera |
+| Osho | Zen: Sua História e Seus Ensinamentos |
+| Shunmyo Masuno | A Arte de Viver Simples, Não se Preocupe |
+| Shunryu Suzuki | Mente Zen, Mente de Principiante |
+| Thich Nhat Hanh | Silêncio |
 
 ---
 
-## Organização dos Arquivos
+## Etapa 1 — preparar_textos.py
 
-A separação clara entre:
+O script `preparar_textos.py` percorre todas as obras do acervo e gera o arquivo intermediário `chunks_preparados.txt`.
 
-- Textos brutos
-- Textos limpos
-- Fragmentos
-- Dados vetoriais
+### Extração do texto
 
-permite:
+Para PDFs, o script usa a biblioteca **PyMuPDF** (`fitz`):
 
-- Facilidade de manutenção.
-- Reprocessamento simples.
-- Evolução contínua da base de conhecimento.
+```python
+import fitz
+
+with fitz.open(str(caminho)) as doc:
+    for pagina in doc:
+        texto.append(pagina.get_text())
+```
+
+Para arquivos TXT, lê diretamente com encoding UTF-8.
+
+### Limpeza
+
+Após a extração, o texto passa por limpeza para remover ruídos comuns de PDFs:
+
+```python
+texto = re.sub(r'\n{3,}', '\n\n', texto)   # múltiplas linhas em branco
+texto = re.sub(r'-\n', '', texto)           # hífens de quebra de linha
+texto = re.sub(r' {2,}', ' ', texto)        # espaços duplos
+texto = re.sub(r'^\s*\d+\s*$', '', texto,   # números de página isolados
+               flags=re.MULTILINE)
+```
+
+### Fragmentação — chunks
+
+O texto limpo é dividido em blocos de **1000 caracteres** com **200 caracteres de sobreposição** (overlap).
+
+O overlap garante que ideias que atravessam a fronteira entre dois chunks não se percam — o final de um chunk aparece também no início do próximo.
+
+Chunks com menos de 100 caracteres são descartados como ruído.
+
+### Formato de saída
+
+O arquivo `chunks_preparados.txt` usa um formato legível, pensado para inspeção antes de gerar o JSON final:
+
+```
+==== NOVO CHUNK ====
+AUTOR: Thich Nhat Hanh
+FONTE: Silêncio
+TEXTO:
+Quando nos libertamos de nossas ideias e pensamentos...
+---
+```
+
+Esse formato intermediário permite revisar os chunks e corrigir problemas antes de gerar o banco definitivo.
 
 ---
 
-##  Princípios da Organização
+## Etapa 2 — gerar_embeddings.py
 
-- Clareza  
-- Simplicidade  
-- Modularidade  
-- Reprodutibilidade  
-- Qualidade semântica  
+O script `gerar_embeddings.py` lê o `chunks_preparados.txt` e gera o `embeddings_bge.json`.
+
+### O que o script faz
+
+Lê cada bloco do arquivo intermediário, extrai autor, fonte e texto, adiciona um ID sequencial e salva em JSON:
+
+```json
+{
+  "id": 1,
+  "autor": "Thich Nhat Hanh",
+  "fonte": "Silêncio",
+  "texto": "Quando nos libertamos de nossas ideias e pensamentos..."
+}
+```
+
+### Por que o nome "embeddings"?
+
+O arquivo se chama `embeddings_bge.json` por razões históricas — numa versão anterior o sistema usava vetores semânticos reais gerados pelo modelo `bge-small`. Hoje o sistema usa **TF-IDF em runtime**, calculado na memória quando o servidor sobe. O JSON armazena apenas os chunks de texto com metadados, não os vetores.
+
+### Relatório gerado
+
+Ao final da execução o script exibe a distribuição por autor:
+
+```
+✅ 847 chunks salvos em data/embeddings_bge.json
+
+📊 Distribuição por autor:
+   Eihei Dogen              312 chunks
+   Haemin Sunim             198 chunks
+   Osho                      87 chunks
+   Shunmyo Masuno           124 chunks
+   Shunryu Suzuki            63 chunks
+   Thich Nhat Hanh           63 chunks
+```
 
 ---
 
-## Conclusão
+## Como executar
 
-A organização dos textos é o **coração do Chizu**. Um bom preparo dos dados garante:
+Instale a dependência necessária:
 
-- Respostas melhores.
-- Maior coerência.
-- Melhor experiência para o usuário.
-- Base sólida para evolução futura.
+```bash
+pip install pymupdf
+```
+
+Execute na ordem:
+
+```bash
+python sripts/preparar_textos.py
+python sripts/gerar_embeddings.py
+```
+
+Após a execução, copie o `embeddings_bge.json` para a pasta `data/` do projeto principal e faça o deploy.
+
+---
+
+## Como adicionar um novo livro
+
+Para incluir uma nova obra no acervo:
+
+Adicione o arquivo PDF ou TXT na pasta do autor correspondente dentro de `textos/`.
+
+Registre o livro no mapeamento dentro de `preparar_textos.py`:
+
+```python
+("Autor/nome-do-arquivo.pdf", "Nome do Autor", "Título da Obra"),
+```
+
+Execute os dois scripts novamente e substitua o `embeddings_bge.json` em produção.
+
+---
+
+*Ver também: [Pipeline](conceitos/08-pipeline.md) — como o `embeddings_bge.json` é usado em runtime para responder perguntas.*

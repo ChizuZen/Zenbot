@@ -8,7 +8,7 @@
         <meta name="author" content="Projeto Chizu">
         <link rel="canonical" href="https://chizuzen.github.io/Zenbot/10-jornada-de-aprendizado/">
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Diário de construção - ZenBot</title>
+        <title>Diário de construção - Chizu Mestre Zen</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/fontawesome.min.css" rel="stylesheet">
         <link href="../css/brands.min.css" rel="stylesheet">
@@ -25,7 +25,7 @@
     <body>
         <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href="..">ZenBot</a>
+                <a class="navbar-brand" href="..">Chizu Mestre Zen</a>
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -35,11 +35,8 @@
                 <div id="navbar-collapse" class="navbar-collapse collapse">
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
-                            <li class="nav-item">
-                                <a href=".." class="nav-link">Início</a>
-                            </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Visão Geral</a>
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Projeto</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
@@ -56,6 +53,14 @@
                                     
 <li>
     <a href="../04-arquitetura/" class="dropdown-item">Arquitetura</a>
+</li>
+                                    
+<li>
+    <a href="../09-roadmap/" class="dropdown-item">Roadmap</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Diário de construção</a>
 </li>
                                 </ul>
                             </li>
@@ -81,89 +86,150 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Planejamento</a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../09-roadmap/" class="dropdown-item">Roadmap</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Jornada</a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="./" class="dropdown-item active" aria-current="page">Diário de construção</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Conceitos</a>
                                 <ul class="dropdown-menu">
                                     
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Fundamentos</a>
+    <ul class="dropdown-menu">
+            
 <li>
     <a href="../conceitos/" class="dropdown-item">Introdução</a>
 </li>
-                                    
+            
 <li>
     <a href="../conceitos/01-sistemas-operacionais/" class="dropdown-item">Sistemas operacionais</a>
 </li>
-                                    
+            
 <li>
     <a href="../conceitos/02-ferramentas-de-desenvolvimento/" class="dropdown-item">Ferramentas de desenvolvimento</a>
 </li>
-                                    
+            
 <li>
     <a href="../conceitos/03-servidores-e-deploy/" class="dropdown-item">Servidores e deploy</a>
 </li>
+    </ul>
+  </li>
                                     
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Inteligência Artificial</a>
+    <ul class="dropdown-menu">
+            
 <li>
     <a href="../conceitos/04-inteligencia-artificial/" class="dropdown-item">Inteligência artificial</a>
 </li>
-                                    
+            
 <li>
     <a href="../conceitos/05-modelos-e-llms/" class="dropdown-item">Modelos e LLMs</a>
 </li>
-                                    
+            
 <li>
-    <a href="../conceitos/06-embeddings/" class="dropdown-item">Embeddings</a>
+    <a href="../conceitos/06-embeddings-e-chunks/" class="dropdown-item">Embeddings e Chunks</a>
 </li>
-                                    
+            
 <li>
     <a href="../conceitos/07-busca-semantica/" class="dropdown-item">Busca semântica</a>
 </li>
+    </ul>
+  </li>
                                     
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Arquitetura do Chizu</a>
+    <ul class="dropdown-menu">
+            
 <li>
-    <a href="../conceitos/08-pipeline-do-zenbot/" class="dropdown-item">Pipeline do ZenBot</a>
+    <a href="../conceitos/08-pipeline/" class="dropdown-item">Pipeline</a>
 </li>
-                                    
+            
+<li>
+    <a href="../conceitos/14-rag-no-zenbot/" class="dropdown-item">RAG</a>
+</li>
+            
+<li>
+    <a href="../conceitos/16-dependencias-importacoes/" class="dropdown-item">Arquitetura e Importações</a>
+</li>
+            
+<li>
+    <a href="../conceitos/17-engenharia-de-prompts/" class="dropdown-item">Engenharia de Prompts</a>
+</li>
+            
 <li>
     <a href="../conceitos/09-metafora-zen/" class="dropdown-item">Metáfora Zen</a>
 </li>
+            
+<li>
+    <a href="../conceitos/10-validacao-perguntas/" class="dropdown-item">Validação de Perguntas</a>
+</li>
+            
+<li>
+    <a href="../conceitos/11-ajustes/" class="dropdown-item">Ajustes do Sistema</a>
+</li>
+            
+<li>
+    <a href="../conceitos/18-documentacao_testes/" class="dropdown-item">Protocolo de Teste</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Infraestrutura e Deploy</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../conceitos/19-verificacao_dns/" class="dropdown-item">Verificação de DNS</a>
+</li>
+            
+<li>
+    <a href="../conceitos/20-monitoramento/" class="dropdown-item">Monitoramento do Sistema</a>
+</li>
+            
+<li>
+    <a href="../conceitos/21-firewall/" class="dropdown-item">Firewall e Resiliência</a>
+</li>
+            
+<li>
+    <a href="../conceitos/22-cloudflare/" class="dropdown-item">Web Application Firewall</a>
+</li>
+            
+<li>
+    <a href="../conceitos/29-caixa-postal/" class="dropdown-item">Caixa Postal</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Canais e Integrações</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../conceitos/26-alexa/" class="dropdown-item">Alexa</a>
+</li>
+            
+<li>
+    <a href="../conceitos/27-whatsapp/" class="dropdown-item">Whatsapp</a>
+</li>
+            
+<li>
+    <a href="../conceitos/28-expansao-acervo-e-filtro-autor/" class="dropdown-item">Outros Mestres</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Sobre</a>
+                                <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../conceitos/10-validacao-perguntas/" class="dropdown-item">Validação de perguntas</a>
+    <a href="../conceitos/23-copyright/" class="dropdown-item">Copyright</a>
 </li>
                                     
 <li>
-    <a href="../conceitos/11-ajustes/" class="dropdown-item">Ajustes do sistema</a>
+    <a href="../conceitos/24-aviso-legal/" class="dropdown-item">Aviso Legal</a>
 </li>
                                     
 <li>
-    <a href="../conceitos/12-chunks-e-embeddings/" class="dropdown-item">Chunks e embeddings</a>
-</li>
-                                    
-<li>
-    <a href="../conceitos/13-busca-semantica/" class="dropdown-item">Busca semântica no ZenBot</a>
-</li>
-                                    
-<li>
-    <a href="../conceitos/14-rag-no-zenbot/" class="dropdown-item">RAG no ZenBot</a>
-</li>
-                                    
-<li>
-    <a href="../conceitos/15-pipeline-de-textos/" class="dropdown-item">Pipeline de textos</a>
+    <a href="../conceitos/25-apoio/" class="dropdown-item">Apoie o Projeto</a>
 </li>
                                 </ul>
                             </li>
@@ -181,7 +247,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../conceitos/" class="nav-link">
+                                <a rel="next" href="../05-ferramentas/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -203,45 +269,57 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#jornada-de-aprendizado-diario-de-construcao-do-zenbot" class="nav-link">🛤️ Jornada de Aprendizado — Diário de Construção do ZenBot</a>
+            <li class="nav-item" data-bs-level="1"><a href="#jornada-de-aprendizado-diario-de-construcao-do-chizu" class="nav-link">Jornada de Aprendizado — Diário de Construção do Chizu</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#o-ponto-de-partida" class="nav-link">🌱 O ponto de partida</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#primeiros-passos" class="nav-link">🔎 Primeiros passos</a>
+            <li class="nav-item" data-bs-level="2"><a href="#o-ponto-de-partida" class="nav-link">O ponto de partida</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#descoberta-dos-embeddings-e-da-busca-semantica" class="nav-link">🧠 Descoberta dos embeddings e da busca semântica</a>
+            <li class="nav-item" data-bs-level="2"><a href="#primeiros-passos" class="nav-link">Primeiros passos</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#evolucao-da-arquitetura" class="nav-link">🏗️ Evolução da arquitetura</a>
+            <li class="nav-item" data-bs-level="2"><a href="#descoberta-dos-embeddings-e-da-busca-semantica" class="nav-link">Descoberta dos embeddings e da busca semântica</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#desafios-tecnicos-enfrentados" class="nav-link">🔧 Desafios técnicos enfrentados</a>
+            <li class="nav-item" data-bs-level="2"><a href="#evolucao-da-arquitetura" class="nav-link">Evolução da arquitetura</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#a-integracao-da-metafora-zen" class="nav-link">🧘 A integração da metáfora Zen</a>
+            <li class="nav-item" data-bs-level="2"><a href="#a-arquitetura-das-quatro-inteligencias" class="nav-link">A arquitetura das quatro inteligências</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#a-documentacao-como-parte-do-sistema" class="nav-link">🌍 A documentação como parte do sistema</a>
+            <li class="nav-item" data-bs-level="2"><a href="#execucao-local-do-sistema" class="nav-link">Execução local do sistema</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#transformacoes-percebidas" class="nav-link">📈 Transformações percebidas</a>
+            <li class="nav-item" data-bs-level="2"><a href="#evolucao-da-documentacao" class="nav-link">Evolução da documentação</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#proposito-maior" class="nav-link">🎯 Propósito maior</a>
+            <li class="nav-item" data-bs-level="2"><a href="#desafios-tecnicos-enfrentados" class="nav-link">Desafios técnicos enfrentados</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#conclusao" class="nav-link">☯️ Conclusão</a>
+            <li class="nav-item" data-bs-level="2"><a href="#a-integracao-da-metafora-zen" class="nav-link">A integração da metáfora Zen</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#a-documentacao-como-parte-do-sistema" class="nav-link">A documentação como parte do sistema</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#transformacoes-percebidas" class="nav-link">Transformações percebidas</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#proposito-maior" class="nav-link">Propósito maior</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#conclusao" class="nav-link">Conclusão</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -252,12 +330,12 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="jornada-de-aprendizado-diario-de-construcao-do-zenbot">🛤️ Jornada de Aprendizado — Diário de Construção do ZenBot</h1>
-<p>Este documento registra a <strong>trajetória real de aprendizado, experimentação, erros, descobertas e evolução</strong> durante a construção do projeto ZenBot.</p>
+<h1 id="jornada-de-aprendizado-diario-de-construcao-do-chizu">Jornada de Aprendizado — Diário de Construção do Chizu</h1>
+<p>Este documento registra a <strong>trajetória real de aprendizado, experimentação, erros, descobertas e evolução</strong> durante a construção do projeto Chizu.</p>
 <p>Mais do que um diário técnico, ele é um <strong>mapa da transformação intelectual</strong>, mostrando como ideias abstratas se tornaram sistemas concretos.</p>
 <hr />
-<h2 id="o-ponto-de-partida">🌱 O ponto de partida</h2>
-<p>O ZenBot nasceu de uma inquietação simples:</p>
+<h2 id="o-ponto-de-partida">O ponto de partida</h2>
+<p>O Chizu nasceu de uma inquietação simples:</p>
 <blockquote>
 <p>Como transformar o estudo de inteligência artificial em algo prático, profundo e realmente compreendido?</p>
 </blockquote>
@@ -265,7 +343,7 @@
 <p>A escolha do tema Zen não foi estética.<br />
 Ela representa a busca por <strong>clareza, simplicidade, atenção e consciência</strong> também no desenvolvimento de software.</p>
 <hr />
-<h2 id="primeiros-passos">🔎 Primeiros passos</h2>
+<h2 id="primeiros-passos">Primeiros passos</h2>
 <p>A jornada começou com:</p>
 <ul>
 <li>Estudo de Python moderno</li>
@@ -276,7 +354,7 @@ Ela representa a busca por <strong>clareza, simplicidade, atenção e consciênc
 <p>Nesse momento, o foco não era desempenho, mas <strong>compreensão real do funcionamento interno</strong>.</p>
 <p>Cada erro era tratado como parte essencial do processo.</p>
 <hr />
-<h2 id="descoberta-dos-embeddings-e-da-busca-semantica">🧠 Descoberta dos embeddings e da busca semântica</h2>
+<h2 id="descoberta-dos-embeddings-e-da-busca-semantica">Descoberta dos embeddings e da busca semântica</h2>
 <p>Um dos grandes saltos conceituais aconteceu ao compreender que:</p>
 <blockquote>
 <p>Um bom chatbot não depende apenas de modelos grandes, mas da <strong>forma como a informação é organizada e recuperada</strong>.</p>
@@ -290,8 +368,8 @@ Ela representa a busca por <strong>clareza, simplicidade, atenção e consciênc
 </ul>
 <p>Essa etapa redefiniu completamente a arquitetura do projeto.</p>
 <hr />
-<h2 id="evolucao-da-arquitetura">🏗️ Evolução da arquitetura</h2>
-<p>O ZenBot deixou de ser um simples gerador de texto e passou a se tornar um <strong>sistema estruturado de conhecimento</strong>, composto por:</p>
+<h2 id="evolucao-da-arquitetura">Evolução da arquitetura</h2>
+<p>O Chizu deixou de ser um simples gerador de texto e passou a se tornar um <strong>sistema estruturado de conhecimento</strong>, composto por:</p>
 <ul>
 <li>Base textual cuidadosamente selecionada</li>
 <li>Pipeline de processamento</li>
@@ -301,7 +379,44 @@ Ela representa a busca por <strong>clareza, simplicidade, atenção e consciênc
 </ul>
 <p>Esse processo consolidou uma visão mais madura de engenharia de software e arquitetura de sistemas.</p>
 <hr />
-<h2 id="desafios-tecnicos-enfrentados">🔧 Desafios técnicos enfrentados</h2>
+<h2 id="a-arquitetura-das-quatro-inteligencias">A arquitetura das quatro inteligências</h2>
+<p>Com a evolução do projeto, o Chizu passou a operar com um sistema de <strong>redundância e cooperação entre múltiplas inteligências artificiais</strong>.</p>
+<p>Atualmente o sistema utiliza <strong>quatro provedores de IA</strong>, formando um conselho de modelos que podem responder às consultas.</p>
+<p>Essa abordagem traz várias vantagens:</p>
+<ul>
+<li>maior <strong>resiliência contra falhas</strong></li>
+<li>redução de problemas de <strong>rate limit</strong></li>
+<li>possibilidade de <strong>comparar estilos de resposta</strong></li>
+<li>maior <strong>continuidade do serviço</strong></li>
+</ul>
+<p>Se um modelo não responde ou está indisponível, outro assume a tarefa.</p>
+<p>Essa arquitetura transforma o Chizu em um sistema <strong>mais robusto e confiável</strong>.</p>
+<hr />
+<h2 id="execucao-local-do-sistema">Execução local do sistema</h2>
+<p>Outro marco importante foi a capacidade de <strong>executar todo o sistema localmente</strong>.</p>
+<p>Isso permitiu:</p>
+<ul>
+<li>testes rápidos</li>
+<li>depuração mais eficiente</li>
+<li>experimentação com parâmetros dos modelos</li>
+<li>evolução da arquitetura sem depender sempre do deploy</li>
+</ul>
+<p>Rodar o Chizu localmente tornou o processo de desenvolvimento <strong>muito mais ágil e controlado</strong>.</p>
+<hr />
+<h2 id="evolucao-da-documentacao">Evolução da documentação</h2>
+<p>Com o crescimento do projeto, a documentação também evoluiu significativamente.</p>
+<p>Utilizando <strong>Markdown + MkDocs</strong>, foi possível construir uma base de conhecimento clara e navegável.</p>
+<p>Entre as melhorias realizadas:</p>
+<ul>
+<li>reorganização das páginas</li>
+<li>simplificação do CSS</li>
+<li>melhoria no layout e na legibilidade</li>
+<li>geração automática do site de documentação</li>
+<li>integração com GitHub Pages</li>
+</ul>
+<p>A documentação deixou de ser apenas um registro e passou a funcionar como <strong>uma extensão do próprio sistema</strong>.</p>
+<hr />
+<h2 id="desafios-tecnicos-enfrentados">Desafios técnicos enfrentados</h2>
 <p>Durante o desenvolvimento, diversos desafios surgiram:</p>
 <ul>
 <li>Organização de código e módulos</li>
@@ -309,11 +424,11 @@ Ela representa a busca por <strong>clareza, simplicidade, atenção e consciênc
 <li>Deploy em ambiente público (Render + GitHub Pages)</li>
 <li>Exposição segura de APIs</li>
 <li>Criação de documentação clara e navegável</li>
-<li>Automação da geração de HTML via Pandoc</li>
+<li>Automação da geração de HTML e páginas de documentação</li>
 </ul>
 <p>Cada obstáculo foi tratado como <strong>oportunidade de aprendizado profundo</strong>, não apenas como algo a ser resolvido rapidamente.</p>
 <hr />
-<h2 id="a-integracao-da-metafora-zen">🧘 A integração da metáfora Zen</h2>
+<h2 id="a-integracao-da-metafora-zen">A integração da metáfora Zen</h2>
 <p>Com o amadurecimento do projeto, ficou claro que:</p>
 <blockquote>
 <p>Arquitetura técnica também é arquitetura mental.</p>
@@ -324,7 +439,7 @@ Ela representa a busca por <strong>clareza, simplicidade, atenção e consciênc
 <li>Simplicidade acima de sofisticação excessiva</li>
 <li>Consistência acima de velocidade</li>
 </ul>
-<p>O pipeline do ZenBot passou a representar simbolicamente:</p>
+<p>O pipeline do Chizu passou a representar simbolicamente:</p>
 <p><strong>Perguntar → Buscar → Refletir → Responder</strong></p>
 <p>Assim como no Zen:</p>
 <blockquote>
@@ -332,7 +447,7 @@ Ela representa a busca por <strong>clareza, simplicidade, atenção e consciênc
 Antes de falar, compreende-se.</p>
 </blockquote>
 <hr />
-<h2 id="a-documentacao-como-parte-do-sistema">🌍 A documentação como parte do sistema</h2>
+<h2 id="a-documentacao-como-parte-do-sistema">A documentação como parte do sistema</h2>
 <p>Outro marco importante foi compreender que:</p>
 <blockquote>
 <p>Documentação não é algo externo ao projeto — ela é parte essencial dele.</p>
@@ -344,9 +459,9 @@ Antes de falar, compreende-se.</p>
 <li>Consolidação do aprendizado</li>
 <li>Compartilhamento aberto da jornada</li>
 </ul>
-<p>Esse processo transformou o ZenBot em um <strong>ambiente vivo de estudo e reflexão técnica</strong>.</p>
+<p>Esse processo transformou o Chizu em um <strong>ambiente vivo de estudo e reflexão técnica</strong>.</p>
 <hr />
-<h2 id="transformacoes-percebidas">📈 Transformações percebidas</h2>
+<h2 id="transformacoes-percebidas">Transformações percebidas</h2>
 <p>Ao longo dessa jornada, algumas mudanças tornaram-se evidentes:</p>
 <ul>
 <li>Pensamento mais sistêmico</li>
@@ -357,8 +472,8 @@ Antes de falar, compreende-se.</p>
 </ul>
 <p>Mais do que aprender ferramentas, houve uma <strong>mudança de mentalidade</strong>.</p>
 <hr />
-<h2 id="proposito-maior">🎯 Propósito maior</h2>
-<p>O ZenBot não é apenas um chatbot.</p>
+<h2 id="proposito-maior">Propósito maior</h2>
+<p>O Chizu não é apenas um chatbot.</p>
 <p>Ele é:</p>
 <ul>
 <li>Um laboratório pessoal</li>
@@ -368,12 +483,12 @@ Antes de falar, compreende-se.</p>
 </ul>
 <p>Seu verdadeiro valor está no <strong>processo</strong>, não apenas no resultado.</p>
 <hr />
-<h2 id="conclusao">☯️ Conclusão</h2>
+<h2 id="conclusao">Conclusão</h2>
 <p>Esta jornada mostra que:</p>
 <blockquote>
 <p>Aprender tecnologia é, no fundo, aprender a pensar.</p>
 </blockquote>
-<p>O ZenBot é um espelho desse processo.</p>
+<p>O Chizu é um espelho desse processo.</p>
 <p>Ele não busca respostas rápidas, mas <strong>compreensão profunda</strong>.</p>
 <p>E essa jornada continua.</p>
 <p>Sempre.</p></div>

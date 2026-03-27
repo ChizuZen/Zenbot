@@ -52,8 +52,6 @@ Cada conceito aqui apresentado busca equilibrar:
 
 ## Arquitetura do Chizu
 
-- [Chunks e Embeddings](12-chunks-e-embeddings.md)
-- [Pipeline de Textos](15-pipeline-de-textos.md)
 - [Arquitetura e Importações](16-dependencias-importacoes.md)
 - [Engenharia de Prompts](17-engenharia-de-prompts.md)
 - [Protocolo de Testes e Blindagem](18-documentacao_testes.md)

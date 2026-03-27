@@ -8,7 +8,7 @@
         <meta name="author" content="Projeto Chizu">
         <link rel="canonical" href="https://chizuzen.github.io/Zenbot/">
         <link rel="shortcut icon" href="img/favicon.ico">
-        <title>ZenBot</title>
+        <title>Chizu Mestre Zen</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/fontawesome.min.css" rel="stylesheet">
         <link href="css/brands.min.css" rel="stylesheet">
@@ -25,7 +25,7 @@
     <body class="homepage">
         <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href=".">ZenBot</a>
+                <a class="navbar-brand" href=".">Chizu Mestre Zen</a>
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -35,11 +35,8 @@
                 <div id="navbar-collapse" class="navbar-collapse collapse">
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
-                            <li class="nav-item">
-                                <a href="." class="nav-link active" aria-current="page">Início</a>
-                            </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Visão Geral</a>
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Projeto</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
@@ -56,6 +53,14 @@
                                     
 <li>
     <a href="04-arquitetura/" class="dropdown-item">Arquitetura</a>
+</li>
+                                    
+<li>
+    <a href="09-roadmap/" class="dropdown-item">Roadmap</a>
+</li>
+                                    
+<li>
+    <a href="10-jornada-de-aprendizado/" class="dropdown-item">Diário de construção</a>
 </li>
                                 </ul>
                             </li>
@@ -81,89 +86,150 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Planejamento</a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="09-roadmap/" class="dropdown-item">Roadmap</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Jornada</a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="10-jornada-de-aprendizado/" class="dropdown-item">Diário de construção</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Conceitos</a>
                                 <ul class="dropdown-menu">
                                     
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Fundamentos</a>
+    <ul class="dropdown-menu">
+            
 <li>
     <a href="conceitos/" class="dropdown-item">Introdução</a>
 </li>
-                                    
+            
 <li>
     <a href="conceitos/01-sistemas-operacionais/" class="dropdown-item">Sistemas operacionais</a>
 </li>
-                                    
+            
 <li>
     <a href="conceitos/02-ferramentas-de-desenvolvimento/" class="dropdown-item">Ferramentas de desenvolvimento</a>
 </li>
-                                    
+            
 <li>
     <a href="conceitos/03-servidores-e-deploy/" class="dropdown-item">Servidores e deploy</a>
 </li>
+    </ul>
+  </li>
                                     
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Inteligência Artificial</a>
+    <ul class="dropdown-menu">
+            
 <li>
     <a href="conceitos/04-inteligencia-artificial/" class="dropdown-item">Inteligência artificial</a>
 </li>
-                                    
+            
 <li>
     <a href="conceitos/05-modelos-e-llms/" class="dropdown-item">Modelos e LLMs</a>
 </li>
-                                    
+            
 <li>
-    <a href="conceitos/06-embeddings/" class="dropdown-item">Embeddings</a>
+    <a href="conceitos/06-embeddings-e-chunks/" class="dropdown-item">Embeddings e Chunks</a>
 </li>
-                                    
+            
 <li>
     <a href="conceitos/07-busca-semantica/" class="dropdown-item">Busca semântica</a>
 </li>
+    </ul>
+  </li>
                                     
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Arquitetura do Chizu</a>
+    <ul class="dropdown-menu">
+            
 <li>
-    <a href="conceitos/08-pipeline-do-zenbot/" class="dropdown-item">Pipeline do ZenBot</a>
+    <a href="conceitos/08-pipeline/" class="dropdown-item">Pipeline</a>
 </li>
-                                    
+            
+<li>
+    <a href="conceitos/14-rag-no-zenbot/" class="dropdown-item">RAG</a>
+</li>
+            
+<li>
+    <a href="conceitos/16-dependencias-importacoes/" class="dropdown-item">Arquitetura e Importações</a>
+</li>
+            
+<li>
+    <a href="conceitos/17-engenharia-de-prompts/" class="dropdown-item">Engenharia de Prompts</a>
+</li>
+            
 <li>
     <a href="conceitos/09-metafora-zen/" class="dropdown-item">Metáfora Zen</a>
 </li>
+            
+<li>
+    <a href="conceitos/10-validacao-perguntas/" class="dropdown-item">Validação de Perguntas</a>
+</li>
+            
+<li>
+    <a href="conceitos/11-ajustes/" class="dropdown-item">Ajustes do Sistema</a>
+</li>
+            
+<li>
+    <a href="conceitos/18-documentacao_testes/" class="dropdown-item">Protocolo de Teste</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Infraestrutura e Deploy</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="conceitos/19-verificacao_dns/" class="dropdown-item">Verificação de DNS</a>
+</li>
+            
+<li>
+    <a href="conceitos/20-monitoramento/" class="dropdown-item">Monitoramento do Sistema</a>
+</li>
+            
+<li>
+    <a href="conceitos/21-firewall/" class="dropdown-item">Firewall e Resiliência</a>
+</li>
+            
+<li>
+    <a href="conceitos/22-cloudflare/" class="dropdown-item">Web Application Firewall</a>
+</li>
+            
+<li>
+    <a href="conceitos/29-caixa-postal/" class="dropdown-item">Caixa Postal</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Canais e Integrações</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="conceitos/26-alexa/" class="dropdown-item">Alexa</a>
+</li>
+            
+<li>
+    <a href="conceitos/27-whatsapp/" class="dropdown-item">Whatsapp</a>
+</li>
+            
+<li>
+    <a href="conceitos/28-expansao-acervo-e-filtro-autor/" class="dropdown-item">Outros Mestres</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Sobre</a>
+                                <ul class="dropdown-menu">
                                     
 <li>
-    <a href="conceitos/10-validacao-perguntas/" class="dropdown-item">Validação de perguntas</a>
+    <a href="conceitos/23-copyright/" class="dropdown-item">Copyright</a>
 </li>
                                     
 <li>
-    <a href="conceitos/11-ajustes/" class="dropdown-item">Ajustes do sistema</a>
+    <a href="conceitos/24-aviso-legal/" class="dropdown-item">Aviso Legal</a>
 </li>
                                     
 <li>
-    <a href="conceitos/12-chunks-e-embeddings/" class="dropdown-item">Chunks e embeddings</a>
-</li>
-                                    
-<li>
-    <a href="conceitos/13-busca-semantica/" class="dropdown-item">Busca semântica no ZenBot</a>
-</li>
-                                    
-<li>
-    <a href="conceitos/14-rag-no-zenbot/" class="dropdown-item">RAG no ZenBot</a>
-</li>
-                                    
-<li>
-    <a href="conceitos/15-pipeline-de-textos/" class="dropdown-item">Pipeline de textos</a>
+    <a href="conceitos/25-apoio/" class="dropdown-item">Apoie o Projeto</a>
 </li>
                                 </ul>
                             </li>
@@ -175,16 +241,6 @@
                                 <i class="fa fa-search"></i> Search
                             </a>
                         </li>
-                            <li class="nav-item">
-                                <a rel="prev" class="nav-link disabled">
-                                    <i class="fa fa-arrow-left"></i> Previous
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a rel="next" href="01-motivacao/" class="nav-link">
-                                    Next <i class="fa fa-arrow-right"></i>
-                                </a>
-                            </li>
                     </ul>
                 </div>
             </div>
@@ -203,21 +259,21 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#zenbot-documentacao-geral" class="nav-link">ZenBot — Documentação Geral</a>
+            <li class="nav-item" data-bs-level="1"><a href="#chizu-mestre-zen-digital" class="nav-link">Chizu — Mestre Zen Digital</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#objetivo-principal" class="nav-link">🎯 Objetivo principal</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#estrutura-da-documentacao" class="nav-link">📚 Estrutura da documentação</a>
+            <li class="nav-item" data-bs-level="2"><a href="#o-que-e-o-chizu" class="nav-link">O que é o Chizu</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#conceitos-fundamentais" class="nav-link">🧠 Conceitos Fundamentais</a>
+            <li class="nav-item" data-bs-level="2"><a href="#onde-o-chizu-esta" class="nav-link">Onde o Chizu está</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#colaboracao" class="nav-link">🤝 Colaboração</a>
+            <li class="nav-item" data-bs-level="2"><a href="#estrutura-da-documentacao" class="nav-link">Estrutura da documentação</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#colaboracao" class="nav-link">Colaboração</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -228,60 +284,98 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="zenbot-documentacao-geral">ZenBot — Documentação Geral</h1>
-<p>Bem-vindo ao ZenBot.</p>
-<p>O ZenBot é um projeto experimental que une tecnologia, inteligência artificial e aprendizado contínuo.<br />
-Ele foi criado tanto como um laboratório prático de estudo quanto como uma ferramenta real de consulta e reflexão.</p>
-<p>Esta documentação foi pensada para ser:</p>
-<ul>
-<li>Clara  </li>
-<li>Didática  </li>
-<li>Progressiva  </li>
-<li>Aberta à colaboração  </li>
-</ul>
-<p>Aqui você encontrará não apenas o código, mas todo o <strong>raciocínio, decisões técnicas, conceitos envolvidos e aprendizados</strong> ao longo da construção do projeto.</p>
+<h1 id="chizu-mestre-zen-digital">Chizu — Mestre Zen Digital</h1>
+<p>Bem-vindo ao Chizu.</p>
+<p>O Chizu é um projeto experimental que une tecnologia, inteligência artificial e espiritualidade zen.
+Nasceu como um laboratório prático de aprendizado e se tornou uma ferramenta real de consulta e reflexão.</p>
+<p>Esta documentação foi pensada para ser clara, didática, progressiva e aberta à colaboração.
+Aqui você encontrará não apenas o código, mas todo o raciocínio, decisões técnicas, conceitos envolvidos e aprendizados ao longo da construção do projeto.</p>
 <hr />
-<h2 id="objetivo-principal">🎯 Objetivo principal</h2>
-<p>Criar um chatbot baseado em inteligência artificial capaz de responder perguntas a partir de uma base textual organizada, utilizando:</p>
-<ul>
-<li>API, interface que permite sistemas diferentes se comunicarem.</li>
-<li>Backend, parte do sistema que executa no servidor.</li>
-<li>Modelos de linguagem, sistemas de IA treinados para compreender e gerar texto.</li>
-<li>Embeddings, representações matemáticas do significado dos textos.</li>
-<li>Busca semântica, técnica que encontra informações pelo sentido, não apenas por palavras.</li>
-</ul>
-<h2 id="estrutura-da-documentacao">📚 Estrutura da documentação</h2>
-<h3 id="projeto">🔭 Projeto</h3>
-<ul>
-<li>🚀 <a href="01-motivacao/">Motivação</a></li>
-<li>🔭 <a href="02-visao-geral/">Visão geral do projeto</a></li>
-<li>📈 <a href="03-evolucao-do-projeto/">Evolução do projeto</a></li>
-<li>🏛️ <a href="04-arquitetura/">Arquitetura</a></li>
-</ul>
-<h3 id="desenvolvimento">🧰 Desenvolvimento</h3>
-<ul>
-<li>🧰 <a href="05-ferramentas/">Ferramentas</a></li>
-<li>🔄 <a href="06-fluxo-de-trabalho/">Fluxo de trabalho</a></li>
-<li>💻 <a href="07-comandos-uteis/">Comandos úteis</a></li>
-<li>📑 <a href="08-organizacao-dos-textos/">Organização dos textos</a></li>
-</ul>
-<h3 id="planejamento">🗺️ Planejamento</h3>
-<ul>
-<li>🗺️ <a href="09-roadmap/">Roadmap</a></li>
-</ul>
-<h3 id="jornada">🛤️ Jornada</h3>
-<ul>
-<li>🛤️ <a href="10-jornada-de-aprendizado/">Jornada de aprendizado</a></li>
-</ul>
+<h2 id="o-que-e-o-chizu">O que é o Chizu</h2>
+<p>O Mestre Chizu responde perguntas com base nos ensinamentos de seis mestres zen:
+Eihei Dogen, Haemin Sunim, Osho, Shunmyo Masuno, Shunryu Suzuki e Thich Nhat Hanh.</p>
+<p>Antes de responder, o sistema busca trechos reais das obras de cada mestre usando RAG — Geração Aumentada por Recuperação — garantindo que as respostas sejam fundamentadas nos textos do acervo.</p>
+<p>Você pode consultar um mestre específico usando o comando <code>@nome</code>. Exemplos:</p>
+<table>
+<thead>
+<tr>
+<th>Comando</th>
+<th>Mestre consultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@Dogen o que é zazen?</code></td>
+<td>Eihei Dogen</td>
+</tr>
+<tr>
+<td><code>@Osho o que é iluminação?</code></td>
+<td>Osho</td>
+</tr>
+<tr>
+<td><code>@Suzuki o que é mente zen?</code></td>
+<td>Shunryu Suzuki</td>
+</tr>
+<tr>
+<td><code>@Masuno como viver simples?</code></td>
+<td>Shunmyo Masuno</td>
+</tr>
+<tr>
+<td><code>@Haemin como lidar com a pressa?</code></td>
+<td>Haemin Sunim</td>
+</tr>
+<tr>
+<td><code>@Thich como meditar?</code></td>
+<td>Thich Nhat Hanh</td>
+</tr>
+</tbody>
+</table>
 <hr />
-<h2 id="conceitos-fundamentais">🧠 Conceitos Fundamentais</h2>
-<p>Os conceitos técnicos usados no ZenBot estão organizados em uma seção própria.</p>
-<p>👉 <a href="conceitos/">Explorar os conceitos</a></p>
-<h2 id="colaboracao">🤝 Colaboração</h2>
+<h2 id="onde-o-chizu-esta">Onde o Chizu está</h2>
+<p>O Chizu está disponível em três canais:</p>
+<ul>
+<li>Web — <a href="http://chizu.ia.br">chizu.ia.br</a></li>
+<li>WhatsApp — integração ativa via Twilio</li>
+<li>Alexa — skill publicada na Alexa Skill Store</li>
+</ul>
+<p>Para entrar em contato: <a href="mailto:mestre@chizu.ia.br">mestre@chizu.ia.br</a></p>
+<hr />
+<h2 id="estrutura-da-documentacao">Estrutura da documentação</h2>
+<h3 id="projeto">Projeto</h3>
+<ul>
+<li><a href="01-motivacao/">Motivação</a></li>
+<li><a href="02-visao-geral/">Visão geral</a></li>
+<li><a href="03-evolucao-do-projeto/">Evolução do projeto</a></li>
+<li><a href="04-arquitetura/">Arquitetura</a></li>
+<li><a href="09-roadmap/">Roadmap</a></li>
+<li><a href="10-jornada-de-aprendizado/">Diário de construção</a></li>
+</ul>
+<h3 id="desenvolvimento">Desenvolvimento</h3>
+<ul>
+<li><a href="05-ferramentas/">Ferramentas</a></li>
+<li><a href="06-fluxo-de-trabalho/">Fluxo de trabalho</a></li>
+<li><a href="07-comandos-uteis/">Comandos úteis</a></li>
+<li><a href="08-organizacao-dos-textos/">Organização dos textos</a></li>
+</ul>
+<h3 id="conceitos">Conceitos</h3>
+<p>Os conceitos técnicos usados no Chizu estão organizados em cinco grupos:</p>
+<ul>
+<li>Fundamentos — sistemas operacionais, ferramentas e servidores</li>
+<li>Inteligência Artificial — modelos, embeddings e busca semântica</li>
+<li>Arquitetura do Chizu — pipeline, RAG, prompts e testes</li>
+<li>Infraestrutura e Deploy — DNS, e-mail, monitoramento e firewall</li>
+<li>Canais e Integrações — Alexa, WhatsApp e filtro por mestre</li>
+</ul>
+<p><a href="conceitos/">Explorar os conceitos</a></p>
+<hr />
+<h2 id="colaboracao">Colaboração</h2>
 <p>Este projeto foi concebido para ser aberto a ideias, sugestões e melhorias.</p>
-<p>Se você chegou até aqui e deseja contribuir, critique, sugira, questione e proponha.<br />
-O ZenBot é, acima de tudo, um espaço de aprendizado coletivo.</p>
-<p><a href="mailto:Chizu.Zenbot@gmail.com">Chizu.Zenbot@gmail.com</a></p></div>
+<p>Se você chegou até aqui e deseja contribuir, critique, sugira, questione e proponha.
+O Chizu é, acima de tudo, um espaço de aprendizado coletivo.</p>
+<p><a href="mailto:mestre@chizu.ia.br">mestre@chizu.ia.br</a></p>
+<hr />
+<p>Gassho 🙏</p>
+<p><strong>Que todos os seres possam se beneficiar deste esforço.</strong></p></div>
             </div>
         </div>
 
@@ -363,5 +457,5 @@ O ZenBot é, acima de tudo, um espaço de aprendizado coletivo.</p>
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2026-03-08 17:15:30.697322+00:00
+Build Date UTC : 2026-03-27 02:24:48.309793+00:00
 -->
