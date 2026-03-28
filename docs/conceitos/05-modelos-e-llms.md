@@ -1,218 +1,136 @@
-# Modelos e LLMs (Large Language Models)
+# Modelos e LLMs
 
-Este capítulo explica o que são **modelos de linguagem**, o que significa **LLM (Large Language Model)** e como esses sistemas funcionam por dentro.
-
----
-
-##  O que é um modelo?
-
-Em inteligência artificial, um **modelo** é uma estrutura matemática treinada para reconhecer padrões.
-
-Ele aprende observando **milhões ou bilhões de exemplos** e, a partir disso, passa a prever:
-
-- Próxima palavra
-- Próxima frase
-- Próxima resposta
-- Relações de significado
-- Estruturas da linguagem
-
-Em termos simples:
-
-> Um modelo é uma máquina que aprende a prever o que vem depois.
+Este capítulo explica o que são modelos de linguagem, o que significa LLM e como esses sistemas funcionam por dentro — de forma simples e direta.
 
 ---
 
-##  O que é um modelo de linguagem?
+## O que é um modelo
 
-Um **modelo de linguagem** é treinado especificamente com **textos**.
+Em inteligência artificial, um modelo é uma estrutura matemática treinada para reconhecer padrões.
 
-Ele aprende:
+Ele aprende observando milhões ou bilhões de exemplos e, a partir disso, passa a prever a próxima palavra, a próxima frase, relações de significado e estruturas da linguagem.
 
-- Gramática
-- Vocabulário
-- Estilo
-- Contexto
-- Relações semânticas
-
-Isso permite que ele:
-
-- Responda perguntas
-- Explique conceitos
-- Produza textos coerentes
-- Dialogue de forma natural
+Em termos simples: um modelo é uma máquina que aprende a prever o que vem depois.
 
 ---
 
-##  O que significa LLM?
+## O que é um modelo de linguagem
 
-**LLM** = **Large Language Model**  
-(Modelo de Linguagem de Grande Escala)
+Um modelo de linguagem é treinado especificamente com textos. Ele aprende gramática, vocabulário, estilo, contexto e relações de significado entre palavras.
 
-"Grande" significa:
-
-- Bilhões de parâmetros
-- Trilhões de exemplos de texto
-- Infraestrutura computacional massiva
-
-Exemplos famosos:
-
-- GPT
-- LLaMA
-- Claude
-- Gemini
-- Mistral
+Isso permite que ele responda perguntas, explique conceitos, produza textos coerentes e dialogue de forma natural.
 
 ---
 
-##  O que são parâmetros?
+## O que significa LLM
 
-Parâmetros são os **números internos** que o modelo ajusta durante o aprendizado.
+LLM significa **Large Language Model** — Modelo de Linguagem de Grande Escala.
 
-Eles funcionam como:
+"Grande" se refere a bilhões de parâmetros, trilhões de exemplos de texto usados no treinamento e infraestrutura computacional massiva.
 
-> Conexões neurais artificiais.
-
-Quanto mais parâmetros:
-
-- Maior capacidade de aprendizado
-- Maior compreensão de contexto
-- Maior qualidade de geração textual
-
-Modelos modernos possuem:
-
-- 7 bilhões
-- 13 bilhões
-- 70 bilhões
-- 175 bilhões ou mais de parâmetros
+Exemplos conhecidos: GPT, LLaMA, Claude, Gemini, Mistral.
 
 ---
 
-##  Como um LLM funciona por dentro?
+## O que são parâmetros
 
-De forma simplificada:
+Parâmetros são os números internos que o modelo ajusta durante o aprendizado. Funcionam como conexões neurais artificiais — quanto mais parâmetros, maior a capacidade de aprender e compreender contexto.
 
-1. Recebe um texto de entrada
-2. Converte palavras em números
-3. Processa esses números em várias camadas
-4. Calcula probabilidades
-5. Gera a próxima palavra
-6. Repete o processo milhares de vezes
-
-Isso acontece **em milissegundos**.
+Modelos modernos possuem entre 7 bilhões e 175 bilhões de parâmetros ou mais.
 
 ---
 
-##  Como um LLM gera texto?
+## Como um LLM gera texto
 
-Ele responde sempre a uma pergunta fundamental:
+O modelo responde sempre a uma pergunta fundamental: qual é a palavra mais provável a vir agora?
 
-> Qual é a palavra mais provável a vir agora?
+Ele não escolhe apenas a mais provável — equilibra probabilidade, coerência, variedade e criatividade. Por isso os textos parecem humanos.
 
-Ele não escolhe apenas a mais provável — ele equilibra:
+De forma simplificada, o processo é:
 
-- Probabilidade
-- Coerência
-- Variedade
-- Criatividade
+```
+Recebe texto de entrada
+      ↓
+Converte palavras em números
+      ↓
+Processa em várias camadas matemáticas
+      ↓
+Calcula probabilidades para cada palavra
+      ↓
+Escolha a próxima palavra
+      ↓
+Repete o processo até completar a resposta
+```
 
-Por isso os textos parecem humanos.
-
----
-
-##  O papel do prompt
-
-O **prompt** é a instrução que você dá ao modelo.
-
-Ele funciona como:
-
-> O estado mental inicial da IA.
-
-Pequenas mudanças no prompt geram **grandes diferenças no comportamento**.
-
-No Chizu, o prompt define:
-
-- Tom reflexivo
-- Estilo zen
-- Profundidade das respostas
-- Didatismo
-- Clareza
+Tudo isso acontece em milissegundos.
 
 ---
 
-##  LLM + Busca Semântica = Chizu
+## O papel do prompt
 
-O Chizu não depende apenas do LLM.
+O prompt é a instrução que você dá ao modelo — o ponto de partida de toda resposta.
 
-Ele combina:
-
-- LLM → capacidade de escrever bem
-- Busca semântica → encontrar textos relevantes
-- Embeddings → mapear significados
-
-Fluxo:
-Pergunta → Embeddings → Busca → Textos relevantes → LLM → Resposta
-
-
-Assim:
-
-- O LLM não alucina tanto
-- As respostas ficam fiéis aos textos
-- O conteúdo mantém coerência filosófica
+Pequenas mudanças no prompt geram grandes diferenças no comportamento. No Chizu, o prompt define a identidade do Mestre, o perfil do mestre sorteado, as regras zen e o contexto recuperado do acervo.
 
 ---
 
-##  Limitações dos LLMs
+## Limitações importantes
 
-Apesar de poderosos, eles:
+Apesar de poderosos, os LLMs têm limitações sérias:
 
-- Podem inventar respostas
-- Não sabem quando estão errados
-- Não possuem consciência
-- Não entendem o mundo real diretamente
+* Podem inventar respostas com aparência de verdade — fenômeno chamado de **alucinação**
+* Não sabem quando estão errados
+* Não possuem consciência nem compreensão real do mundo
+* Seu conhecimento tem uma data de corte — não sabem o que aconteceu depois do treinamento
 
-Por isso o Chizu usa:
-
-> **Textos confiáveis + busca semântica**
+Por isso o Chizu não depende apenas do LLM. Ele usa textos reais do acervo como base — o modelo escreve, mas a sabedoria vem dos mestres.
 
 ---
 
-##  Por que usar LLM no Chizu?
+## Os modelos usados no Chizu
 
-Porque permite:
+O Chizu não usa um único modelo — usa quatro provedores em rodízio, sorteados a cada pergunta:
 
-- Linguagem natural
-- Diálogo fluido
-- Reflexão profunda
-- Respostas longas e bem estruturadas
-- Tom humano
+| Provedor | Modelo | Característica |
+|---|---|---|
+| Google | Gemini 2.5 Flash | Criativo, respostas mais longas |
+| Groq | Llama 3.3 70B | Direto, muito rápido |
+| Cerebras | Llama 3.1 8B | Baixíssima latência |
+| SambaNova | Llama 3.1 8B | Consistente em diálogos |
 
-Sem LLM:
-
-> O Chizu seria apenas um motor de busca técnico.
-
----
-
-##  Metáfora Zen
-
-O LLM é como:
-
-> Um calígrafo extremamente habilidoso que escreve belamente qualquer pensamento que você colocar em sua mente.
-
-Mas:
-
-> A sabedoria ainda vem dos textos.
+Se um provedor falhar ou atingir o limite de requisições, o Chizu tenta automaticamente o próximo. Isso garante que o sistema continue funcionando mesmo quando uma IA está indisponível.
 
 ---
 
-##  Conceito-chave
+## Como o Chizu usa o LLM
 
-> O LLM não é o sábio.  
-> Ele é apenas o instrumento que expressa a sabedoria.
+O Chizu combina dois sistemas:
+
+* **TF-IDF** — busca os trechos mais relevantes do acervo para a pergunta feita
+* **LLM** — recebe esses trechos como contexto e gera a resposta em linguagem natural
+
+```
+Pergunta do usuário
+      ↓
+TF-IDF busca os 3 chunks mais relevantes no acervo
+      ↓
+Chunks são inseridos no prompt como contexto
+      ↓
+LLM gera a resposta na voz do mestre sorteado
+      ↓
+Resposta chega ao usuário com identificação do mestre e da IA
+```
+
+Assim o LLM não precisa inventar — ele tem textos reais dos mestres zen para se basear.
 
 ---
 
-##  Próximo capítulo
+## Metáfora Zen
 
- **06 — Embeddings**
+O LLM é como um calígrafo extremamente habilidoso — escreve com beleza e fluidez qualquer pensamento que você colocar em sua mente.
 
-Aqui veremos como o Chizu transforma palavras em números e consegue "entender significado".
+Mas a sabedoria ainda vem dos textos. O LLM não é o sábio — é o instrumento que expressa a sabedoria.
+
+---
+
+*Ver também: [Embeddings e Chunks](06-embeddings-e-chunks.md) · [Pipeline](08-pipeline.md) · [Ajustes do Sistema](11-ajustes.md)*

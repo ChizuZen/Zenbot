@@ -9,7 +9,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 load_dotenv()
 
 BASE_DIR        = Path(__file__).resolve().parent.parent
-EMBEDDINGS_PATH = BASE_DIR / "data" / "embeddings_bge.json"
+EMBEDDINGS_PATH = BASE_DIR / "data" / "acervo_zen.json"
 _biblioteca     = None
 _vectorizer     = None
 _corpus_matrix  = None

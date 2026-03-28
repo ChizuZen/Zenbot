@@ -1,94 +1,164 @@
-#  Ajustes Finos — Parâmetros, Rate Limit e Estabilidade do Chizu
+# Ajustes do Sistema
 
-Esta página documenta os **ajustes técnicos fundamentais** para garantir estabilidade, qualidade de resposta e prevenção de erros **HTTP 429 — Too Many Requests** no Chizu.
+Esta página documenta os parâmetros que controlam o comportamento das IAs no Chizu — o que cada um significa, qual o valor atual e o efeito prático nas respostas.
 
-O objetivo é permitir **controle fino do comportamento do modelo**, especialmente durante testes, deploy e uso em produção.
-
----
-
-#  O que é o erro 429?
-
-O erro **HTTP 429** indica que **o limite de requisições permitido pela API foi excedido**.
-
-Na prática:
-- Muitas requisições em pouco tempo
-- Payloads grandes demais
-- Respostas longas demais
-- Falta de controle de concorrência
-
-Isso causa:
-- Falhas intermitentes
-- Travamentos aparentes
-- Experiência ruim para o usuário
+Todos os valores ficam em `core/ai_provider.py` no dicionário `CONFIGS`.
 
 ---
 
-#  Estratégia geral para evitar 429
+## O que são parâmetros de geração
 
-1. **Reduzir tokens**
-2. **Reduzir tamanho do prompt**
-3. **Reduzir concorrência**
-4. **Adicionar retry com backoff exponencial**
-5. **Fallback local com koans/aforismos**
+Quando o Chizu envia uma pergunta para uma IA, junto com o prompt vai um conjunto de instruções numéricas que controlam como a resposta será gerada. São esses parâmetros que determinam se a resposta será mais criativa ou mais conservadora, mais longa ou mais curta, mais variada ou mais repetitiva.
+
+Cada provedor tem sua própria calibração — porque cada modelo responde de forma diferente aos mesmos valores.
 
 ---
 
-#  Parâmetros recomendados do payload
+## Parâmetros e seus significados
 
-### Valores seguros para produção
+### temperature — criatividade
+
+Controla o grau de aleatoriedade na escolha das palavras.
+
+* Valores baixos (0.2 – 0.4) — respostas mais previsíveis, precisas, conservadoras
+* Valores altos (0.7 – 1.0) — respostas mais criativas, variadas, às vezes surpreendentes
+
+Para o Chizu, um valor médio equilibra a poesia zen com a coerência do conteúdo.
+
+---
+
+### max_tokens — tamanho da resposta
+
+Define o limite máximo de tokens que a IA pode gerar.
+Um token equivale aproximadamente a 3/4 de uma palavra em português.
+
+* Valores baixos (200 – 300) — respostas curtas, dentro das 3 frases exigidas pelo prompt
+* Valores altos (1000+) — respostas longas, risco de ultrapassar o limite e ser cortada no meio
+
+Se uma resposta aparecer cortada no meio de uma frase, aumentar `max_tokens` é a primeira correção.
+
+---
+
+### top_p — diversidade do vocabulário
+
+Trabalha junto com a temperature. Define a fatia de palavras mais prováveis que o modelo considera a cada escolha.
+
+* `top_p = 1.0` — considera todas as palavras possíveis
+* `top_p = 0.85` — considera apenas as palavras mais prováveis, excluindo as muito improváveis
+
+Valores entre 0.85 e 0.95 são os mais equilibrados para texto poético.
+
+---
+
+### frequency_penalty — penalidade de repetição de palavras
+
+Penaliza palavras que já foram usadas na resposta, reduzindo a chance de repetirem.
+
+* `0.0` — sem penalidade, o modelo pode repetir palavras livremente
+* `0.5` — penalidade moderada, reduz repetições visíveis
+* `1.0` — penalidade forte, força variedade de vocabulário
+
+Útil para evitar respostas que repetem "caminhante", "silêncio" ou "zen" em excesso.
+
+---
+
+### presence_penalty — penalidade de repetição de temas
+
+Penaliza tópicos que já foram abordados, incentivando o modelo a explorar novos ângulos.
+
+* `0.0` — sem penalidade, o modelo pode ficar no mesmo tema
+* `0.3` — penalidade leve, suave incentivo à variedade temática
+
+Valores altos podem fazer o modelo mudar de assunto de forma abrupta — usar com moderação.
+
+---
+
+## Configuração atual por provedor
+
+Os valores foram calibrados individualmente para cada IA, respeitando as características de cada modelo.
 
 ```python
-temperature = 0.4
-max_tokens = 250
-top_p = 0.9
-presence_penalty = 0.3
-frequency_penalty = 0.3
-
-| Parâmetro         | Função                    | Justificativa                                   |
-| ----------------- | ------------------------- | ----------------------------------------------- |
-| temperature       | Criatividade              | 0.4 mantém equilíbrio entre coerência e fluidez |
-| max_tokens        | Tamanho da resposta       | Limitar evita estouro de quota                  |
-| top_p             | Diversidade               | 0.9 mantém naturalidade sem exagero             |
-| presence_penalty  | Evitar repetição temática | Melhora fluidez                                 |
-| frequency_penalty | Evitar repetição textual  | Reduz loops                                     |
+CONFIGS = {
+    "Gemini":    {
+        "temperature": 0.75,
+        "max_tokens": 2048,
+        "top_p": 0.95,
+        "frequency_penalty": 0.20,
+        "presence_penalty": 0.10
+    },
+    "Groq":      {
+        "temperature": 0.30,
+        "max_tokens": 600,
+        "top_p": 0.85,
+        "frequency_penalty": 0.50,
+        "presence_penalty": 0.30
+    },
+    "Cerebras":  {
+        "temperature": 0.50,
+        "max_tokens": 512,
+        "top_p": 0.90,
+        "frequency_penalty": 0.35,
+        "presence_penalty": 0.20
+    },
+    "SambaNova": {
+        "temperature": 0.60,
+        "max_tokens": 600,
+        "top_p": 0.92,
+        "frequency_penalty": 0.30,
+        "presence_penalty": 0.15
+    },
+}
 ```
 
-#  Ajustes Finos — Parâmetros e Estabilidade (Multi-IA)
+---
+
+## Tabela comparativa
+
+| Provedor | temperature | max_tokens | top_p | freq_penalty | pres_penalty |
+|---|---|---|---|---|---|
+| Gemini | 0.75 | 2048 | 0.95 | 0.20 | 0.10 |
+| Groq | 0.30 | 600 | 0.85 | 0.50 | 0.30 |
+| Cerebras | 0.50 | 512 | 0.90 | 0.35 | 0.20 |
+| SambaNova | 0.60 | 600 | 0.92 | 0.30 | 0.15 |
 
 ---
 
-##  Estratégia de Alta Disponibilidade (Multi-IA)
+## Leitura da tabela
 
-Para mitigar erros de cota (**HTTP 429**) ou modelos descontinuados (**HTTP 404**), o sistema implementa um **Fallback Dinâmico** (rodízio automático) entre 4 provedores de última geração:
+**Gemini** — temperature mais alta e max_tokens generoso. Respostas mais criativas e longas. Pode ocasionalmente ultrapassar as 3 frases — o prompt precisa ser rigoroso.
 
-1.  **Gemini 2.5-Flash-Lite (Google)**: Provedor principal. Utiliza a API estável `v1` para garantir respostas profundas e rápidas.
-2.  **Cerebras**: Primeira linha de reserva. Focado em baixíssima latência (LPU), ideal para interações instantâneas.
-3.  **SambaNova**: Segunda linha de reserva. Utiliza arquitetura RDU, excelente para manter a coerência em diálogos longos.
-4.  **Groq**: Terceira linha de reserva. Garante a entrega da resposta em milissegundos se todos os outros falharem.
+**Groq** — temperature mais baixa e frequency_penalty alto. Respostas mais diretas e menos repetitivas. Ideal para respostas concisas e precisas.
 
----
+**Cerebras** — valores intermediários. Equilibrado entre criatividade e coerência.
 
-##  Parâmetros Calibrados (Março/2026)
-
-Os parâmetros abaixo foram refinados para equilibrar a serenidade do Mestre Chizu com a necessidade de respostas fluidas e não repetitivas.
-
-### Configuração Atual (`engine.py`)
-
-| Parâmetro | Valor | Função Técnica | Justificativa Zen |
-| :--- | :--- | :--- | :--- |
-| `temperature` | **0.45** | Criatividade/Aleatoriedade | Um toque de inspiração sem perder a sobriedade. |
-| `max_tokens` | **200** | Limite de tamanho | Respostas completas que cabem no "fôlego" do Render. |
-| `top_p` | **0.9** | Diversidade de núcleo | Mantém a naturalidade das palavras escolhidas. |
-| `frequency_penalty`| **0.2** | Penalidade de repetição | Evita que o mestre use as mesmas palavras em sequência. |
-| `presence_penalty` | **0.1** | Penalidade de presença | Incentiva a abordagem de novos ângulos no ensinamento. |
+**SambaNova** — temperature moderada com presence_penalty baixo. Tende a aprofundar o tema escolhido com mais consistência.
 
 ---
 
-##  Monitoramento e Logs de Auditoria
+## Erro 429 — Too Many Requests
 
-Para garantir a transparência do sistema, cada requisição gera um log unificado no console do servidor (Render/Terminal). Isso permite identificar qual "cérebro" foi utilizado para cada resposta:
+Ocorre quando o limite de requisições de um provedor é atingido. O Chizu trata esse erro automaticamente:
 
-```text
-[LOG] Estilo: system_prompt.txt | Provedor: Gemini
-INFO: 177.104.74.30:0 - "POST /ask HTTP/1.1" 200 OK
-```
+* Pausa de 2 segundos (`time.sleep(2)`)
+* Tenta o próximo provedor na fila
+
+Se todos os provedores falharem, retorna uma frase do `koans.txt` + "Vá praticar Zazen."
+
+Para reduzir a frequência de erros 429, diminuir `max_tokens` é a medida mais eficaz — respostas menores consomem menos cota.
+
+---
+
+## Parâmetros do RAG
+
+Além dos parâmetros das IAs, há dois parâmetros em `core/engine.py` que controlam a busca no acervo:
+
+| Parâmetro | Valor atual | Significado |
+|---|---|---|
+| `top_k` | 3 | Número de chunks recuperados por pergunta |
+| `threshold` | 0.05 | Score mínimo de similaridade para incluir um chunk |
+
+Se as respostas estiverem retornando `VAZIO` com frequência, reduzir o `threshold` para `0.03` pode ajudar. Se estiverem trazendo trechos pouco relevantes, aumentar para `0.1`.
+
+---
+
+*Ver também: [Engenharia de Prompts](17-engenharia-de-prompts.md) · [Protocolo de Testes](18-documentacao_testes.md) · [Glossário](30-glossario.md)*
