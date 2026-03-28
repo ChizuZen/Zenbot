@@ -1,7 +1,7 @@
 site_name: Chizu Mestre Zen
-site_description: Documentação do projeto ZenBot e do Mestre Chizu
+site_description: Documentação do projeto Chizu — Mestre Zen
 site_author: Projeto Chizu
-site_url: https://chizuzen.github.io/Zenbot/
+site_url: https://chizu-ia.github.io/chizu/
 theme:
   name: mkdocs
   language: pt
@@ -35,7 +35,7 @@ nav:
           - Busca semântica: conceitos/07-busca-semantica.md
       - Arquitetura do Chizu:
           - Pipeline: conceitos/08-pipeline.md
-          - RAG: conceitos/14-rag-no-zenbot.md
+          - RAG: conceitos/14-rag-no-chizu.md
           - Arquitetura e Importações: conceitos/16-dependencias-importacoes.md
           - Engenharia de Prompts: conceitos/17-engenharia-de-prompts.md
           - Metáfora Zen: conceitos/09-metafora-zen.md
