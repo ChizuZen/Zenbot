@@ -146,11 +146,11 @@ HTML_PAGE = f"""
             <div class="footer-links">
                 <a href="/legal" class="doc-link">Legal</a>
                 <span class="separator">•</span>
-                <a href="https://docs.chizu.ia.br/conceitos/" target="_blank" class="doc-link">Documentação</a>
+                <a href="https://docs.chizu.ia.br/" target="_blank" class="doc-link">Documentação</a>
                 <span class="separator">•</span>
                 <span class="email-info">mestre@chizu.ia.br</span>
             </div>
-            <p class="gassho-quote">Gassho 🙏 | Que todos os seres se beneficiem.....</p>
+            <p class="gassho-quote">Gassho 🙏 | Que todos os seres se beneficiem.</p>
         </footer>
     </div>
     <script>
