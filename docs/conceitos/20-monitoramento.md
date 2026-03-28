@@ -112,7 +112,7 @@ ativo, esse cenário não se repetirá.
 | Tipo | Nome | Valor |
 |---|---|---|
 | A | chizu.ia.br | 216.24.57.1 |
-| CNAME | www.chizu.ia.br | zenbot-6ot0.onrender.com |
+| CNAME | www.chizu.ia.br | chizu.onrender.com |
 
 Registros configurados no [Registro.br](https://registro.br) com propagação
 via Cloudflare. Tempo de propagação observado: **menos de 30 minutos**.

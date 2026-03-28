@@ -117,4 +117,4 @@ A segurança via Cloudflare facilita a conformidade com os requisitos da Amazon 
 ---
 
 ##  Conclusão
-A combinação de um **Middleware leve** (para proteção interna residual) com o **Cloudflare WAF** (para proteção de borda) cria uma arquitetura de "Resiliência Total", permitindo que o Zenbot foque seus recursos computacionais no processamento de IA e filosofia Zen.
+A combinação de um **Middleware leve** (para proteção interna residual) com o **Cloudflare WAF** (para proteção de borda) cria uma arquitetura de "Resiliência Total", permitindo que o Chizu foque seus recursos computacionais no processamento de IA e filosofia Zen.

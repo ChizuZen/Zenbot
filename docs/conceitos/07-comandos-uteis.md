@@ -58,7 +58,7 @@ Acesse em: [http://localhost:8001](http://localhost:8001)
 mkdocs serve
 ```
 
-Acesse em: [http://localhost:8000/Zenbot/](http://localhost:8000/Zenbot/)
+Acesse em: [http://localhost:8000/](http://localhost:8000/)
 
 ---
 
@@ -232,9 +232,9 @@ dig chizu.ia.br
 | Serviço | URL |
 |---|---|
 | Chizu local | http://localhost:8001 |
-| Documentação local | http://localhost:8000/Zenbot/ |
+| Documentação local | http://localhost:8000/ |
 | Render — painel | https://dashboard.render.com/web/srv-d6d5iknfte5s73d62img |
-| GitHub Actions | https://github.com/ChizuZen/Zenbot/actions |
+| GitHub Actions | https://github.com/chizu-ia/chizu/actions |
 | Chizu em produção | http://chizu.ia.br |
 
 ---

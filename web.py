@@ -146,7 +146,7 @@ HTML_PAGE = f"""
             <div class="footer-links">
                 <a href="/legal" class="doc-link">Legal</a>
                 <span class="separator">•</span>
-                <a href="https://chizuzen.github.io/Zenbot/conceitos/" target="_blank" class="doc-link">Documentação</a>
+                <a href="https://docs.chizu.ia.br/conceitos/" target="_blank" class="doc-link">Documentação</a>
                 <span class="separator">•</span>
                 <span class="email-info">mestre@chizu.ia.br</span>
             </div>
