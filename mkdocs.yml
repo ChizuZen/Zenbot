@@ -35,7 +35,7 @@ nav:
           - Busca semântica: conceitos/07-busca-semantica.md
       - Arquitetura do Chizu:
           - Pipeline: conceitos/08-pipeline.md
-          - RAG: conceitos/14-rag-no-chizu.md
+          - RAG: conceitos/14-rag-no-zenbot.md
           - Arquitetura e Importações: conceitos/16-dependencias-importacoes.md
           - Engenharia de Prompts: conceitos/17-engenharia-de-prompts.md
           - Metáfora Zen: conceitos/09-metafora-zen.md
