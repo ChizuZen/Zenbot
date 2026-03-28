@@ -150,7 +150,7 @@ HTML_PAGE = f"""
                 <span class="separator">•</span>
                 <span class="email-info">mestre@chizu.ia.br</span>
             </div>
-            <p class="gassho-quote">Gassho 🙏 | Que todos os seres se beneficiem.</p>
+            <p class="gassho-quote">Gassho 🙏 | Que todos os seres se beneficiem.....</p>
         </footer>
     </div>
     <script>
