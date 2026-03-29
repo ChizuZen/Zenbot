@@ -48,13 +48,6 @@ body {
     width: auto;
     border-radius: 15px;
 }
-.header-quote {
-    flex: 1;
-    text-align: right;
-    font-size: 0.85rem;
-    color: #8c8375;
-    line-height: 1.5;
-}
 
 /* --- INPUT CONTAINER --- */
 .input-container {
@@ -107,14 +100,12 @@ body {
     transition: background 0.2s, transform 0.1s, color 0.2s;
     padding: 0;
 }
-#btn-mic:hover  {
+#btn-mic:hover {
     background: #f4f1ea;
 }
 #btn-mic:active {
     transform: scale(0.93);
 }
-
-/* Animação quando está ouvindo */
 #btn-mic.ouvindo {
     color: #c0612a;
     background: #fff0e6;
@@ -144,10 +135,10 @@ body {
     padding: 0;
     line-height: 1;
 }
-#btn-enviar:hover { color: #6b5234; background: #f4f1ea; }
+#btn-enviar:hover  { color: #6b5234; background: #f4f1ea; }
 #btn-enviar:active { transform: scale(0.93); }
 
-/* --- RESPOSTA E LINKS --- */
+/* --- RESPOSTA --- */
 .resposta {
     margin-top: 1rem;
     padding: 1.5rem 2rem 1rem 2rem;
@@ -158,29 +149,20 @@ body {
     display: flex;
     flex-direction: column;
 }
-.share-buttons {
-    display: flex;
-    justify-content: flex-start;
-    gap: 15px;
-    margin-top: 5px;
-    border-top: 1px dashed #e0d6cc;
-    padding-top: 8px;
-}
 
-/* Links harmonizados com o footer */
-.doc-link, .share-buttons button {
+/* --- FOOTER --- */
+.footer {
+    margin-top: 1rem !important;
+}
+.doc-link {
     color: #8c6d46 !important;
     text-decoration: underline !important;
     text-underline-offset: 4px;
-    background: none !important;
-    border: none !important;
-    padding: 0 !important;
-    cursor: pointer;
     font-family: inherit;
     font-size: 0.9rem !important;
 }
-.footer { margin-top: 1rem !important; }
 
+/* --- RESPONSIVO - MOBILE --- */
 @media (max-width: 768px) {
     body {
         padding: 0.5rem;
@@ -214,5 +196,5 @@ body {
     }
     .doc-link {
         font-size: 0.8rem !important;
-    }    
+    }
 }

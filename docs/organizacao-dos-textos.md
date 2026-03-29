@@ -1,7 +1,7 @@
 # Organização dos Textos
 
 Este documento descreve como os livros zen foram transformados em base de conhecimento do Chizu —
-desde os PDFs e TXTs originais até o arquivo `embeddings_bge.json` que alimenta o sistema em produção.
+desde os PDFs e TXTs originais até o arquivo `acervo_zen.json` que alimenta o sistema em produção.
 
 ---
 
@@ -11,10 +11,10 @@ O fluxo completo acontece em duas etapas, executadas localmente antes do deploy:
 
 ```
 PDFs e TXTs → preparar_textos.py → chunks_preparados.txt
-chunks_preparados.txt → gerar_embeddings.py → embeddings_bge.json
+chunks_preparados.txt → gerar_embeddings.py → acervo_zen.json
 ```
 
-O arquivo `embeddings_bge.json` é o único que vai para o servidor. Os textos originais e os scripts ficam na máquina local.
+O arquivo `acervo_zen.json` é o único que vai para o servidor. Os textos originais e os scripts ficam na máquina local.
 
 ---
 
@@ -26,7 +26,7 @@ Os scripts e textos ficam organizados numa pasta separada do projeto principal:
 CLAUDE_LIVROS/
 ├── data/
 │   ├── chunks_preparados.txt
-│   └── embeddings_bge.json
+│   └── acervo_zen.json
 ├── sripts/
 │   ├── preparar_textos.py
 │   └── gerar_embeddings.py
@@ -113,7 +113,7 @@ Esse formato intermediário permite revisar os chunks e corrigir problemas antes
 
 ## Etapa 2 — gerar_embeddings.py
 
-O script `gerar_embeddings.py` lê o `chunks_preparados.txt` e gera o `embeddings_bge.json`.
+O script `gerar_embeddings.py` lê o `chunks_preparados.txt` e gera o `acervo_zen.json`.
 
 ### O que o script faz
 
@@ -128,16 +128,16 @@ Lê cada bloco do arquivo intermediário, extrai autor, fonte e texto, adiciona 
 }
 ```
 
-### Por que o nome "embeddings"?
+### O que o arquivo armazena
 
-O arquivo se chama `embeddings_bge.json` por razões históricas — numa versão anterior o sistema usava vetores semânticos reais gerados pelo modelo `bge-small`. Hoje o sistema usa **TF-IDF em runtime**, calculado na memória quando o servidor sobe. O JSON armazena apenas os chunks de texto com metadados, não os vetores.
+O `acervo_zen.json` não contém vetores ou embeddings — armazena apenas os chunks de texto com metadados de autor e fonte. Os vetores TF-IDF são calculados em memória quando o servidor sobe, a partir dos textos deste arquivo.
 
 ### Relatório gerado
 
 Ao final da execução o script exibe a distribuição por autor:
 
 ```
-✅ 847 chunks salvos em data/embeddings_bge.json
+✅ 847 chunks salvos em data/acervo_zen.json
 
 📊 Distribuição por autor:
    Eihei Dogen              312 chunks
@@ -165,7 +165,7 @@ python sripts/preparar_textos.py
 python sripts/gerar_embeddings.py
 ```
 
-Após a execução, copie o `embeddings_bge.json` para a pasta `data/` do projeto principal e faça o deploy.
+Após a execução, copie o `acervo_zen.json` para a pasta `data/` do projeto principal e faça o deploy.
 
 ---
 
@@ -181,8 +181,8 @@ Registre o livro no mapeamento dentro de `preparar_textos.py`:
 ("Autor/nome-do-arquivo.pdf", "Nome do Autor", "Título da Obra"),
 ```
 
-Execute os dois scripts novamente e substitua o `embeddings_bge.json` em produção.
+Execute os dois scripts novamente e substitua o `acervo_zen.json` em produção.
 
 ---
 
-*Ver também: [Pipeline](pipeline.md) — como o `embeddings_bge.json` é usado em runtime para responder perguntas.*
+*Ver também: [Pipeline](pipeline.md) — como o `acervo_zen.json` é usado em runtime para responder perguntas.*

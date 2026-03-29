@@ -2,89 +2,34 @@
 
 Bem-vindo ao Chizu.
 
-O Chizu é um projeto experimental que une tecnologia, inteligência artificial e espiritualidade zen.
-Nasceu como um laboratório prático de aprendizado e se tornou uma ferramenta real de consulta e reflexão.
+O Chizu é um projeto que une inteligência artificial e sabedoria zen. Ele responde perguntas com base nos ensinamentos de seis mestres — Eihei Dogen, Haemin Sunim, Osho, Shunmyo Masuno, Shunryu Suzuki e Thich Nhat Hanh — buscando trechos reais das obras antes de cada resposta.
 
-Esta documentação foi pensada para ser clara, didática, progressiva e aberta à colaboração.
-Aqui você encontrará não apenas o código, mas todo o raciocínio, decisões técnicas, conceitos envolvidos e aprendizados ao longo da construção do projeto.
-
----
-
-## O que é o Chizu
-
-O Mestre Chizu responde perguntas com base nos ensinamentos de seis mestres zen:
-Eihei Dogen, Haemin Sunim, Osho, Shunmyo Masuno, Shunryu Suzuki e Thich Nhat Hanh.
-
-Antes de responder, o sistema busca trechos reais das obras de cada mestre usando RAG — Geração Aumentada por Recuperação — garantindo que as respostas sejam fundamentadas nos textos do acervo.
-
-Você pode consultar um mestre específico usando o comando `@nome`. Exemplos:
-
-| Comando | Mestre consultado |
-|---|---|
-| `@Dogen o que é zazen?` | Eihei Dogen |
-| `@Osho o que é iluminação?` | Osho |
-| `@Suzuki o que é mente zen?` | Shunryu Suzuki |
-| `@Masuno como viver simples?` | Shunmyo Masuno |
-| `@Haemin como lidar com a pressa?` | Haemin Sunim |
-| `@Thich como meditar?` | Thich Nhat Hanh |
+Mais do que um chatbot, o Chizu é um caminho. Construí-lo, documentá-lo e mantê-lo é também uma prática zen — presente, simples, sem ego, sem busca de reconhecimento. Que todos os seres se beneficiem.
 
 ---
 
 ## Onde o Chizu está
 
-O Chizu está disponível em três canais:
-
 * Web — [chizu.ia.br](http://chizu.ia.br)
 * WhatsApp — integração ativa via Twilio
 * Alexa — skill publicada na Alexa Skill Store
-
-Para entrar em contato: [mestre@chizu.ia.br](mailto:mestre@chizu.ia.br)
-
----
-
-## Estrutura da documentação
-
-### Projeto
-
-* [Motivação](motivacao.md)
-* [Visão geral](visao-geral.md)
-* [Evolução do projeto](evolucao.md)
-* [Arquitetura](arquitetura.md)
-* [Roadmap](roadmap-detalhado.md)
-* [Diário de construção](jornada.md)
-
-### Desenvolvimento
-
-* [Ferramentas](ferramentas.md)
-* [Fluxo de trabalho](fluxo-de-trabalho.md)
-* [Comandos úteis](comandos-uteis.md)
-* [Organização dos textos](organizacao-dos-textos.md)
-
-### Conceitos
-
-Os conceitos técnicos usados no Chizu estão organizados em cinco grupos:
-
-* Fundamentos — sistemas operacionais, ferramentas e servidores
-* Inteligência Artificial — modelos, embeddings e busca semântica
-* Arquitetura do Chizu — pipeline, RAG, prompts e testes
-* Infraestrutura e Deploy — DNS, e-mail, monitoramento e firewall
-* Canais e Integrações — Alexa, WhatsApp e filtro por mestre
-
-[Explorar os conceitos](conceitos-introducao.md)
+* E-mail — [mestre@chizu.ia.br](mailto:mestre@chizu.ia.br)
 
 ---
 
-## Colaboração
+## Por onde começar
 
-Este projeto foi concebido para ser aberto a ideias, sugestões e melhorias.
+A documentação foi escrita para diferentes perfis. Escolha o caminho que combina com você:
 
-Se você chegou até aqui e deseja contribuir, critique, sugira, questione e proponha.
-O Chizu é, acima de tudo, um espaço de aprendizado coletivo.
+* [Quero usar o Chizu](roadmap.md#caminho-1-quero-usar-o-chizu)
+* [Quero entender os conceitos de IA](roadmap.md#caminho-2-quero-entender-os-conceitos-de-ia)
+* [Quero entender o projeto tecnicamente](roadmap.md#caminho-3-quero-entender-o-projeto-tecnicamente)
+* [Sou o mantenedor do site](roadmap.md#caminho-4-sou-o-mantenedor-do-site)
 
-[mestre@chizu.ia.br](mailto:mestre@chizu.ia.br)
+> O campo de busca no topo do site funciona em todas as páginas — basta digitar qualquer termo.
 
 ---
 
 Gassho 🙏
 
-**Que todos os seres possam se beneficiar deste esforço.**
+**Que todos os seres se beneficiem.**

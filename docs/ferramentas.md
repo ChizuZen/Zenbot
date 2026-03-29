@@ -1,165 +1,90 @@
-#  Ferramentas Utilizadas no Projeto Chizu
+# Ferramentas
 
-Este documento apresenta as principais ferramentas utilizadas no desenvolvimento do Chizu, explicando de forma simples **o que cada uma faz e por que foi escolhida**.
-
----
-
-## Linguagem de Programação
-
-### Python
-
-Python é a linguagem principal do projeto.
-
-**Por que foi escolhida:**
-
-- Simplicidade de leitura.
-- Grande ecossistema de bibliotecas.
-- Forte integração com ferramentas de Inteligência Artificial.
-- Ampla comunidade e documentação.
+Esta página apresenta as principais ferramentas usadas no desenvolvimento e na operação do Chizu — o que cada uma faz e por que foi escolhida.
 
 ---
 
-## Framework Web
+## Linguagem e servidor
 
-### FastAPI (framework para criação de APIs web em Python)
+**Python**
+Linguagem principal do projeto. Simples, legível e com um ecossistema rico para IA e processamento de texto.
 
-Utilizado para criar a **interface web do Chizut**.
+**FastAPI**
+Framework web que transforma o código Python em uma API acessível pela internet. Rápido, assíncrono e com documentação automática das rotas.
 
-**Funções principais:**
-
-- Receber perguntas via HTTP.
-- Processar requisições.
-- Retornar respostas em formato JSON.
-
-**Vantagens:**
-
-- Muito rápido.
-- Fácil de usar.
-- Gera documentação automática da API.
+**Uvicorn**
+Servidor ASGI que executa o FastAPI. É quem coloca o sistema no ar localmente e no Render.
 
 ---
 
 ## Inteligência Artificial
 
-### APIs de IA (interfaces de programação de aplicações)
+**Gemini (Google)**
+Modelo principal. Temperature mais alta, respostas mais criativas.
 
-São utilizadas para:
+**Groq (Llama 3.3 70B)**
+Modelo direto e muito rápido. Ideal para respostas concisas.
 
-- Gerar respostas em linguagem natural.
-- Criar embeddings (vetores semânticos).
+**Cerebras (Llama 3.1 8B)**
+Latência baixíssima. Boa para respostas rápidas.
 
-**Funções principais:**
+**SambaNova (Llama 3.1 8B)**
+Consistente em diálogos. Bom para aprofundar temas.
 
-- Compreensão da pergunta.
-- Geração de texto.
-- Representação semântica dos conteúdos.
-
----
-
-## Controle de Versão
-
-### Git + GitHub
-
-Utilizados para:
-
-- Controle de versões do código.
-- Backup do projeto.
-- Histórico de alterações.
-- Compartilhamento e colaboração.
-
-**Funções principais:**
-
-- Registrar cada modificação.
-- Permitir retorno a versões anteriores.
-- Facilitar colaboração futura.
+Os quatro operam em rodízio automático com fallback — se um falhar, o próximo assume.
 
 ---
 
-## Deploy e Hospedagem
+## Processamento de texto
 
-### Render (plataforma de deploy em nuvem)
+**PyMuPDF (fitz)**
+Extrai texto de arquivos PDF com alta fidelidade. Usado nos scripts de preparação do acervo.
 
-Utilizado para publicar o Chizu na internet.
+**scikit-learn (TF-IDF)**
+Indexa os chunks do acervo e calcula a similaridade entre a pergunta e os textos. É o motor da busca semântica do Chizu.
 
-**Funções principais:**
-
-- Hospedagem do backend.
-- Gerenciamento do servidor.
-- Execução contínua da aplicação.
-
----
-
-## Exposição Temporária
-
-### ngrok (túnel seguro para exposição local)
-
-Utilizado durante os testes para:
-
-- Expor o servidor local na internet.
-- Permitir testes externos.
-- Depuração remota.
+**NumPy**
+Operações matemáticas sobre os vetores TF-IDF.
 
 ---
 
-## Ambiente de Desenvolvimento
+## Infraestrutura
 
-### macOS + Terminal
+**Render**
+Hospedagem do servidor Python na nuvem. Plano gratuito com hibernação — o UptimeRobot mantém o servidor acordado.
 
-Sistema operacional e ambiente principal de desenvolvimento.
+**Cloudflare**
+Gerencia DNS, proxy reverso, firewall WAF e roteamento de e-mail. Todo o tráfego passa pelo Cloudflare antes de chegar ao Render.
 
-**Ferramentas principais:**
+**GitHub**
+Controle de versão do código. Cada `git push` dispara o deploy automático no Render.
 
-- Terminal (linha de comando).
-- Editor de código.
-- Git.
-- Python.
-
----
-
-##  Editor de Código
-
-### VS Code (editor de código)
-
-Utilizado para:
-
-- Escrever e organizar o código.
-- Navegar entre arquivos.
-- Gerenciar o projeto.
+**UptimeRobot**
+Monitora o servidor a cada 13 minutos e envia alerta por e-mail se cair.
 
 ---
 
-##  Gerenciamento de Dependências
+## Documentação
 
-### venv (ambiente virtual Python)
+**MkDocs**
+Gera o site de documentação a partir de arquivos Markdown. Simples, rápido e integrado ao GitHub Pages.
 
-Utilizado para:
-
-- Isolar as bibliotecas do projeto.
-- Evitar conflitos entre versões.
-- Manter o ambiente limpo e controlado.
+**GitHub Pages**
+Hospeda a documentação estática em `docs.chizu.ia.br`.
 
 ---
 
-## Organização e Documentação
+## Desenvolvimento local
 
-### Markdown
+**VS Code**
+Editor de código principal.
 
-Utilizado para:
+**Git**
+Controle de versão — commits, branches e push para o GitHub.
 
-- Criar documentação clara.
-- Manter registros organizados.
-- Facilitar leitura no GitHub.
+**venv**
+Ambiente virtual Python — isola as dependências do projeto do sistema operacional.
 
 ---
 
-## Conclusão
-
-O conjunto dessas ferramentas permite que o Chizu seja:
-
-- Modular
-- Escalável
-- Didático
-- Fácil de manter
-- Acessível para estudo e colaboração
-
-Cada ferramenta foi escolhida não apenas pela eficiência técnica, mas também pelo seu **valor educacional**.
+*Ver também: [Comandos Úteis](comandos-uteis.md) · [Arquitetura](arquitetura.md)*

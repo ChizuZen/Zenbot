@@ -1,5 +1,5 @@
-site_name: Chizu Mestre Zen
-site_description: Documentação do projeto Chizu — Mestre Zen
+site_name: Chizu — Mestre Zen Digital
+site_description: Documentação do Chizu — mestre zen digital alimentado por inteligência artificial
 site_author: Projeto Chizu
 site_url: https://docs.chizu.ia.br/
 theme:
@@ -8,54 +8,45 @@ theme:
 extra_css:
   - style.css
 nav:
-  - Início: index.md
-  - Projeto:
+  - Chizu:
+    - Início: index.md
     - Por que Chizu?: por-que-chizu.md
-    - Motivação: motivacao.md
-    - Visão geral: visao-geral.md
-    - Evolução: evolucao.md
-    - Marco — Identidade Própria: marco-identidade.md
-    - Arquitetura: arquitetura.md
-    - Roadmap: roadmap.md
-    - Diário de construção: jornada.md
-  - Desenvolvimento:
-    - Ferramentas: ferramentas.md
-    - Fluxo de trabalho: fluxo-de-trabalho.md
-    - Comandos úteis: comandos-uteis.md
-    - Comandos úteis (dev): comandos-uteis-dev.md
-    - Organização dos textos: organizacao-dos-textos.md
-    - Organização dos textos (dev): organizacao-dos-textos-dev.md
-    - Pipeline: pipeline.md
-    - Arquitetura e Importações: dependencias-importacoes.md
-    - Engenharia de Prompts: engenharia-de-prompts.md
-    - Ajustes do Sistema: ajustes.md
-    - Protocolo de Teste: protocolo-de-testes.md
-  - Conceitos:
-    - Introdução: conceitos-introducao.md
-    - Glossário: glossario.md
-    - Sistemas operacionais: sistemas-operacionais.md
-    - Ferramentas de desenvolvimento: ferramentas-de-desenvolvimento.md
-    - Servidores e deploy: servidores-e-deploy.md
-    - Inteligência artificial: inteligencia-artificial.md
-    - Modelos e LLMs: modelos-e-llms.md
-    - Embeddings e Chunks: embeddings-e-chunks.md
-    - Busca semântica: busca-semantica.md
-    - RAG: rag.md
-    - Metáfora Zen: metafora-zen.md
-    - Validação de Perguntas: validacao-perguntas.md
-    - Arquitetura interna: arquitetura-interna.md
-    - Roadmap detalhado: roadmap-detalhado.md
-    - Outros Mestres: outros-mestres.md
-  - Infraestrutura:
-    - Verificação de DNS: verificacao-dns.md
-    - Monitoramento do Sistema: monitoramento.md
-    - Firewall e Resiliência: firewall.md
-    - Web Application Firewall: cloudflare.md
-    - Caixa Postal: caixa-postal.md
-  - Canais:
+    - O que é o Chizu: visao-geral.md
+    - Jornada do Projeto: jornada.md
+    - Roadmap — Escolha seu Caminho: roadmap.md
+  - Usuário:
+    - Como usar o Chizu: visao-geral.md
+    - Consultar um Mestre: consultar-mestre.md
     - Voz: voz.md
     - Alexa: alexa.md
-    - Whatsapp: whatsapp.md
+    - WhatsApp: whatsapp.md
+  - Conceitos de IA:
+    - Glossário: glossario.md
+    - Inteligência Artificial: inteligencia-artificial.md
+    - Modelos e LLMs: modelos-e-llms.md
+    - Embeddings e Chunks: embeddings-e-chunks.md
+    - Busca Semântica: busca-semantica.md
+    - RAG — A Mágica: rag.md
+    - Metáfora Zen: metafora-zen.md
+  - Técnico:
+    - Arquitetura: arquitetura.md
+    - Ferramentas: ferramentas.md
+    - Organização dos Textos: organizacao-dos-textos.md
+    - Pipeline: pipeline.md
+    - Engenharia de Prompts: engenharia-de-prompts.md
+    - Ajustes do Sistema: ajustes.md
+    - Validação de Perguntas: validacao-perguntas.md
+    - Protocolo de Testes: protocolo-de-testes.md
+    - Bibliotecas Usadas: dependencias-importacoes.md
+  - Mantenedor:
+    - Fluxo de Trabalho: fluxo-de-trabalho.md
+    - Comandos Úteis: comandos-uteis.md
+    - Cloudflare e DNS: cloudflare.md
+    - Verificação de DNS: verificacao-dns.md
+    - Caixa Postal: caixa-postal.md
+    - Roteamento de E-mail: email-routing.md
+    - Monitoramento: monitoramento.md
+    - Firewall e Resiliência: firewall.md
   - Sobre:
     - Copyright: copyright.md
     - Aviso Legal: aviso-legal.md

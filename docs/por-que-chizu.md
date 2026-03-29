@@ -6,13 +6,31 @@ Todo projeto carrega um nome. E todo nome carrega uma história.
 
 ## O nome
 
-**Chizu** (地図) é uma palavra japonesa que significa **mapa**.
+**Chizu** é uma palavra japonesa que carrega mais de um significado — e cada um deles ressoa com o espírito do projeto.
+
+---
+
+### 地図 — Mapa
+
+A tradução mais comum de Chizu é **mapa**.
 
 Não um mapa de ruas ou territórios — mas um mapa de ideias, de caminhos internos, de sabedoria acumulada.
 
 Um mapa não diz onde você deve ir. Ele mostra o terreno, aponta direções possíveis e deixa que você escolha o seu caminho.
 
-Era exatamente isso que queríamos criar.
+---
+
+### 知 — Sabedoria
+
+O prefixo **Chi** (知) está ligado ao conhecimento e à sabedoria — evocando a busca pela clareza mental e pelo aprendizado contínuo que fundamenta o projeto.
+
+---
+
+### A sonoridade zen
+
+Curto. Direto. Harmônico.
+
+A estética do Zen valoriza o que é simples e preciso. **Chizu** não explica demais, não promete demais. É apenas um nome — e nesse silêncio, abre espaço para o que vier.
 
 ---
 
@@ -26,17 +44,19 @@ Que podem ser lidos como *"a luz antiga que desponta cedo"* — uma metáfora ze
 
 ---
 
-## O Zen presente em tudo
+## Criar como prática zen
 
-O Zen não é uma religião nem uma filosofia fechada. É uma forma de estar — presente, simples, atento.
+O Chizu não nasceu de um desafio pessoal nem de uma competição. Nasceu como uma prática — da mesma forma que um monge zen varre o pátio do mosteiro, não para impressionar ninguém, mas porque varrer é a prática.
 
-E olhando para este projeto, o Zen está em quase tudo:
+Escrever código, organizar documentação, calibrar respostas, resolver problemas de DNS às onze da noite — tudo isso é carregar água e cortar lenha. A prática que não tem fim porque o fim não é o ponto.
+
+O Zen está presente em cada decisão do projeto:
 
 **Na presença** — cada resposta nasce do momento da pergunta. Não há memória permanente, não há julgamento acumulado. Cada conversa começa do zero, como uma mente de principiante.
 
 **No caminho** — o Chizu não foi construído de uma vez. Nasceu linha por linha, erro por erro, descoberta por descoberta. O processo foi sempre mais importante que o resultado.
 
-**Na busca da simplicidade** — uma interface limpa, respostas curtas, código organizado. Nada de supérfluo. Como ensinava Masuno: elimine o que não serve, e o essencial aparece.
+**Na simplicidade** — uma interface limpa, respostas curtas, código organizado. Nada de supérfluo. Como ensinava Masuno: elimine o que não serve, e o essencial aparece.
 
 **No anonimato** — este projeto não carrega um nome em destaque. Não busca reconhecimento pessoal. O que importa é o que o Chizu oferece a quem chega até ele.
 
@@ -46,27 +66,13 @@ E olhando para este projeto, o Zen está em quase tudo:
 
 ---
 
-## O que o Chizu representa
-
-O Chizu não é um oráculo. Não dá respostas definitivas.
-
-Ele é um interlocutor zen — alguém que ouve sua pergunta, busca nos ensinamentos dos mestres e devolve uma perspectiva. O caminho, sempre, é seu.
-
-Cada resposta cita o autor e a obra de onde veio. Não porque seja obrigação — mas porque transparência é também uma prática zen. Saber de onde vem a sabedoria faz parte de honrá-la.
-
----
-
 ## Um convite ao leigo
 
-Este projeto nasceu de uma inquietação simples:
-
-> *Será que alguém sem formação técnica consegue construir um sistema de inteligência artificial do zero?*
+Será que alguém sem formação técnica consegue construir um sistema de inteligência artificial do zero?
 
 A resposta, depois de meses de tentativas, erros, aprendizados e código, é: **sim**.
 
 Não é fácil. Mas é possível. E o caminho é muito mais rico do que o destino.
-
-Se você chegou até aqui sem saber o que é uma API, um embedding ou um modelo de linguagem — e agora sabe — então o Chizu já cumpriu parte do seu propósito.
 
 A documentação deste projeto foi escrita intencionalmente para quem está começando. Cada conceito é explicado do zero. Cada decisão técnica é justificada. Cada erro é registrado.
 
@@ -74,17 +80,19 @@ Porque aprender em público é também uma forma de generosidade.
 
 ---
 
-## Para quem é este projeto
+## O que o Chizu tem hoje
 
-Para o curioso que quer entender como a IA funciona por dentro.
+| Camada | Endereço |
+|---|---|
+| O mestre fala | chizu.ia.br |
+| O mestre ensina | docs.chizu.ia.br |
+| O mestre recebe | mestre@chizu.ia.br |
+| O código vive | github.com/chizu-ia/chizu |
+| O servidor respira | chizu.onrender.com |
 
-Para o praticante zen que quer um companheiro de reflexão.
+Nenhum banner. Nenhuma notificação. Nenhum pop-up. Nenhum cookie de rastreamento. Nenhuma publicidade.
 
-Para quem acha que tecnologia é coisa de especialista — e quer mudar de ideia.
-
-Para quem acredita que um projeto pode ser ao mesmo tempo útil, bonito e educativo.
-
-Para quem já entendeu que o verdadeiro aprendizado não tem linha de chegada.
+Apenas o mestre. Apenas você. Apenas a pergunta.
 
 ---
 
@@ -104,4 +112,4 @@ Gassho 🙏
 
 ---
 
-*Ver também: [Motivação](motivacao.md) · [Metáfora Zen](metafora-zen.md)*
+*Ver também: [Metáfora Zen](metafora-zen.md) · [Roadmap](roadmap.md)*

@@ -1,56 +1,52 @@
-# Visão Geral
+# O que é o Chizu
 
-O Chizu é um chatbot baseado em inteligência artificial capaz de responder perguntas a partir de uma base textual previamente organizada.
+O Chizu é um mestre zen digital — um sistema de inteligência artificial que responde perguntas com base nos ensinamentos reais de seis mestres zen.
 
-Ele combina técnicas modernas de processamento de linguagem natural com uma arquitetura simples, modular e escalável.
-
----
-
-## O que o Chizu faz?
-
-De forma resumida, o Chizu:
-
-1. Recebe uma pergunta do usuário.
-2. Analisa semanticamente essa pergunta.
-3. Busca, em sua base de textos, os trechos mais relacionados.
-4. Monta um contexto.
-5. Envia esse contexto para um modelo de linguagem.
-6. Retorna uma resposta clara e contextualizada.
+Antes de responder, o Chizu busca trechos das obras do acervo que tenham relação com a pergunta feita. A IA então lê esses trechos e constrói uma resposta em linguagem natural, poética e fundamentada — citando sempre o autor e o livro de onde veio o ensinamento.
 
 ---
 
-## Componentes principais
+## Os seis mestres do acervo
 
-- **Backend**, parte do sistema que roda no servidor e controla toda a lógica.
-- **API**, interface que permite que aplicações externas façam perguntas.
-- **Modelos de linguagem**, inteligências artificiais capazes de compreender texto.
-- **Embeddings**, vetores numéricos que representam o significado das palavras.
-- **Busca semântica**, mecanismo que encontra informações por similaridade de sentido.
-
----
-
-## Por que usar embeddings?
-
-Buscas tradicionais trabalham com palavras-chave.  
-O Chizu trabalha com **significado**.
-
-Isso permite que:
-
-> Perguntas diferentes, mas com o mesmo sentido, produzam boas respostas.
-
-Exemplo:
-
-- "O que é mente zen?"
-- "Explique o conceito de mente zen"
-
-Mesmo usando palavras diferentes, o sistema encontra os textos corretos.
+| Mestre | Obras principais |
+|---|---|
+| Eihei Dogen | Shobogenzo Zuimonki, Instruções para o Cozinheiro-Chefe |
+| Haemin Sunim | As Coisas que Você Só Vê Quando Desacelera, Amor pelas Coisas Imperfeitas |
+| Osho | Zen: Sua História e Seus Ensinamentos |
+| Shunmyo Masuno | A Arte de Viver Simples, Não se Preocupe |
+| Shunryu Suzuki | Mente Zen, Mente de Principiante |
+| Thich Nhat Hanh | Silêncio |
 
 ---
 
-## Onde o Chizu roda?
+## Como funciona em resumo
 
-O Chizu funciona como uma aplicação web hospedada em um servidor, utilizando:
+```
+Você faz uma pergunta
+      ↓
+O sistema busca os trechos mais relevantes no acervo
+      ↓
+Sorteia o perfil de um mestre por afinidade com o conteúdo
+      ↓
+Uma das IAs disponíveis gera a resposta
+      ↓
+Você recebe: ensinamento + identificação do mestre e da IA
+```
 
-- FastAPI, framework web moderno em Python.
-- Render, plataforma de hospedagem.
-- ngrok, ferramenta para testes locais de acesso remoto.
+---
+
+## Onde o Chizu está disponível
+
+* **Web** — [chizu.ia.br](http://chizu.ia.br) — interface de texto e voz
+* **WhatsApp** — integração via Twilio
+* **Alexa** — skill de voz publicada na Alexa Skill Store
+
+---
+
+## O que o Chizu não é
+
+O Chizu não é um oráculo. Não dá respostas definitivas. Não inventa ensinamentos. Se uma pergunta estiver fora do acervo, ele diz claramente que não encontrou o ensinamento — e convida à prática.
+
+---
+
+*Ver também: [Por que Chizu?](por-que-chizu.md) · [RAG — A Mágica](rag.md)*

@@ -129,6 +129,7 @@ HTML_PAGE = f"""
                 <img src="{AVATAR_B64}" alt="Mestre Chizu">
             </div>
         </div>
+
         <div class="input-container">
             <input type="text" id="pergunta" placeholder="Fale com Chizu..." autofocus autocomplete="off" spellcheck="false">
             <button id="btn-mic" title="Falar com Chizu">
@@ -141,17 +142,18 @@ HTML_PAGE = f"""
             </button>
             <button id="btn-enviar" onclick="fazerPergunta()">&#10148;</button>
         </div>
+
+
         <div class="resposta" id="resposta"><em>O silêncio precede a resposta...</em></div>
+
         <footer class="footer">
+            <p class="gassho-quote">Que todos os seres se beneficiem.<br>mestre@chizu.ia.br</p>            
             <div class="footer-links">
                 <a href="/legal" class="doc-link">Legal</a>
                 <span class="separator">•</span>
                 <a href="https://docs.chizu.ia.br/" target="_blank" class="doc-link">Documentação</a>
-                <span class="separator">•</span>
-                <span class="email-info">mestre@chizu.ia.br</span>
             </div>
-            <p class="gassho-quote">Gassho 🙏 | Que todos os seres se beneficiem.</p>
-        </footer>
+        </footer>            
     </div>
     <script>
         window.DESPEDIDA_JS = {json.dumps(DESPEDIDA_JS)};

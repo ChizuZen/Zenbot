@@ -29,7 +29,7 @@ chizu/
 │   ├── ai_provider.py
 │   └── engine.py
 ├── data/
-│   ├── embeddings_bge.json
+│   ├── acervo_zen.json
 │   └── koans.txt
 ├── docs/
 ├── legal/
@@ -76,7 +76,7 @@ core/
 
 * Define os perfis de personalidade dos seis mestres zen
 * Define as regras zen e os estilos por IA
-* Carrega a biblioteca de ensinamentos (`embeddings_bge.json`) em memória
+* Carrega a biblioteca de ensinamentos (`acervo_zen.json`) em memória
 * Executa a busca TF-IDF para encontrar os trechos mais relevantes
 * Sorteia o perfil do mestre por afinidade com o contexto
 * Monta o prompt completo para envio à IA
@@ -94,7 +94,7 @@ Gerencia o Conselho de IAs:
 
 ## Camada de Dados
 
-### data/embeddings_bge.json
+### data/acervo_zen.json
 
 A memória permanente do Chizu. Contém todos os chunks de texto extraídos das obras dos mestres, com metadados de autor e fonte:
 
@@ -138,7 +138,7 @@ Pergunta do usuário
       ↓
 web.py recebe via /ask ou /whatsapp
       ↓
-engine.py busca contexto (TF-IDF sobre embeddings_bge.json)
+engine.py busca contexto (TF-IDF sobre acervo_zen.json)
       ↓
 engine.py sorteia perfil do mestre por afinidade
       ↓

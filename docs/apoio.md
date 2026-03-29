@@ -1,35 +1,23 @@
-# Apoie o Projeto Chizu
+# Apoie o Projeto
 
-O **Chizu** é um projeto que nasceu do desejo de unir tecnologia de ponta e sabedoria milenar. Para que ele continue crescendo e se mantendo disponível para todos, contamos com uma infraestrutura robusta e profissional.
+O Chizu é gratuito e sem anúncios. Não há monetização, não há dado coletado para vender. A única intenção é que seja útil.
 
-## Por que apoiar?
+Manter o sistema no ar tem custos reais — hospedagem, domínio, APIs de IA. Se os ensinamentos do Chizu foram úteis para você de alguma forma, sinta-se convidado a contribuir.
 
-Manter o sistema online e em constante evolução exige recursos técnicos e financeiros diários, incluindo:
-
-* **Infraestrutura:** Hospedagem de alta disponibilidade e registro de domínios.
-* **Inteligência Artificial:** Acessos via API às diversas IAs que compõem nossa arquitetura de "Resiliência Total".
-* **Serviços de Terceiros:** Ferramentas de busca semântica, bancos de dados vetoriais e sistemas de monitoramento.
-
-## Faça parte desta jornada
-
-Se as mensagens do Chizu de alguma forma tiveram eco no seu espírito ou foram úteis no seu dia a dia, sinta-se convidado(a) a apoiar esta iniciativa. 
-
-Qualquer contribuição é fundamental para que o site permaneça no ar e continue sendo aprimorado.
-
-### Contribua via PIX
-
-<div align="center" style="background-color: #ffffff; padding: 20px; border-radius: 10px; border: 1px solid #eee; margin-top: 20px;">
-    <p style="color: #333;">Escaneie o QR Code abaixo com o app do seu banco:</p>
-   <img src="https://chizu.ia.br/static/img/qrcode-pix.png" alt="QR Code PIX Chizu" width="250"/>
-    <p style="margin-top: 10px; color: #333;"><strong>Chave PIX:</strong><br><code>mestre@chizu.ia.br</code></p>
-</div>
-
-
+Qualquer valor é bem-vindo e vai diretamente para manter o projeto vivo.
 
 ---
 
-*Desde já, nossa profunda gratidão por qualquer forma de apoio e por caminhar junto com o Chizu nesta jornada de conhecimento e tecnologia.*
+## Contribua via PIX
+
+<div align="center" style="background-color: #ffffff; padding: 20px; border-radius: 10px; border: 1px solid #eee; margin-top: 20px;">
+    <p style="color: #333;">Escaneie o QR Code com o app do seu banco:</p>
+    <img src="https://chizu.ia.br/static/img/qrcode-pix.png" alt="QR Code PIX Chizu" width="250"/>
+    <p style="margin-top: 10px; color: #333;"><strong>Chave PIX:</strong><br><code>mestre@chizu.ia.br</code></p>
+</div>
+
+---
 
 Gassho 🙏
 
-**Que todos os seres possam se beneficiar deste esforço.**
+**Que todos os seres se beneficiem.**
