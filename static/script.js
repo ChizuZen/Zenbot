@@ -41,6 +41,9 @@ function limparParaVoz(texto) {
         .trim();
 }
 
+// --- SÍNTESE DE VOZ ---
+let falando = false;
+
 function falar(texto) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
@@ -48,7 +51,38 @@ function falar(texto) {
     fala.lang  = 'pt-BR';
     fala.rate  = 0.9;
     fala.pitch = 1.0;
+    fala.onstart = () => {
+        falando = true;
+        atualizarBotaoVoz();
+    };
+    fala.onend = () => {
+        falando = false;
+        atualizarBotaoVoz();
+    };
     window.speechSynthesis.speak(fala);
+}
+
+function pausarVoz() {
+    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.pause();
+        falando = false;
+        atualizarBotaoVoz();
+    } else if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        falando = true;
+        atualizarBotaoVoz();
+    }
+}
+
+function pararVoz() {
+    window.speechSynthesis.cancel();
+    falando = false;
+    atualizarBotaoVoz();
+}
+
+function atualizarBotaoVoz() {
+    const btnFalar = document.getElementById('btn-falar');
+    if (btnFalar) btnFalar.textContent = falando ? '⏸' : '▶';
 }
 
 // --- MICROFONE ---
@@ -73,7 +107,7 @@ function iniciarMicrofone() {
         btnMic.classList.add('ouvindo');
         btnMic.title      = 'Solte para enviar';
         input.placeholder = 'Ouvindo...';
-        respostaDiv.innerHTML = '<em>🎙️ Chizu ouvindo...</em>';
+        respostaDiv.innerHTML = '<em>Chizu ouvindo...</em>';
     };
 
     recognition.onresult = (e) => {
@@ -134,7 +168,7 @@ async function fazerPergunta() {
     const { pergunta, autor } = parsearPergunta(textoRaw);
     input.disabled    = true;
     input.placeholder = autor ? `Consultando ${autor}...` : 'Chizu medita...';
-    respostaDiv.innerHTML = `<em>${randomMsg(window.AGUARDANDO_JS)} — Chizu refletindo...</em>`;
+    respostaDiv.innerHTML = `<em>${randomMsg(window.AGUARDANDO_JS)} Chizu refletindo...</em>`;
 
     try {
         const payload = { pergunta };
@@ -158,16 +192,21 @@ async function fazerPergunta() {
             .replace(/\n/g, '<br>')
             .replace(/\. ([A-ZÁÉÍÓÚÂÊÎÔÛÃÕÀÇ])/g, '.</p><p>$1');
 
+
         respostaDiv.innerHTML = `
             <p>${respostaHTML}</p>
             <div class="share-buttons">
-                <button id="btn-falar">Ouvir</button>
+                <button id="btn-falar"   title="Ouvir">Ouvir</button>
+                <button id="btn-pausar"  title="Pausar">Pausar</button>
+                <button id="btn-parar"   title="Parar">Parar</button>
                 <button id="btn-whatsapp">WhatsApp</button>
                 <button id="btn-email">Email</button>
             </div>
-        `;
+        `;        
 
         document.getElementById('btn-falar').addEventListener('click',    () => falar(resposta));
+        document.getElementById('btn-pausar').addEventListener('click',   () => pausarVoz());
+        document.getElementById('btn-parar').addEventListener('click',    () => pararVoz());
         document.getElementById('btn-whatsapp').addEventListener('click', () => compartilharWhatsApp(resposta));
         document.getElementById('btn-email').addEventListener('click',    () => compartilharEmail(resposta));
 
