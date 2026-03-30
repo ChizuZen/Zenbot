@@ -145,14 +145,13 @@ HTML_PAGE = f"""
 
 
         <div class="resposta" id="resposta"><em>O silêncio precede a resposta...</em></div>
-
-        <footer class="footer">
-            <p class="gassho-quote">Que todos os seres se beneficiem.<br>mestre@chizu.ia.br</p>            
+        <footer class="footer">                        
             <div class="footer-links">
                 <a href="/legal" class="doc-link">Legal</a>
                 <span class="separator">•</span>
                 <a href="https://docs.chizu.ia.br/" target="_blank" class="doc-link">Documentação</a>
             </div>
+            <p class="gassho-quote">Que todos os seres se beneficiem.<br>mestre@chizu.ia.br</p>
         </footer>            
     </div>
     <script>

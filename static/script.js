@@ -168,7 +168,7 @@ async function fazerPergunta() {
     const { pergunta, autor } = parsearPergunta(textoRaw);
     input.disabled    = true;
     input.placeholder = autor ? `Consultando ${autor}...` : 'Chizu medita...';
-    respostaDiv.innerHTML = `<em>${randomMsg(window.AGUARDANDO_JS)} Chizu refletindo...</em>`;
+    respostaDiv.innerHTML = `<em>${randomMsg(window.AGUARDANDO_JS)}<br><br>     Chizu refletindo...</em>`;
 
     try {
         const payload = { pergunta };
