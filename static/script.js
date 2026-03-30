@@ -20,7 +20,6 @@ function randomMsg(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Extrai autor e pergunta limpa quando usuário usa @
 function parsearPergunta(texto) {
     const match = texto.match(/^@(\w+)\s+(.*)/);
     if (match) {
@@ -32,7 +31,6 @@ function parsearPergunta(texto) {
     return { pergunta: texto, autor: null };
 }
 
-// Remove markdown e linha "— via ..." antes de falar
 function limparParaVoz(texto) {
     return texto
         .replace(/— via .*$/gm, '')
@@ -43,7 +41,6 @@ function limparParaVoz(texto) {
         .trim();
 }
 
-// Síntese de voz
 function falar(texto) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
@@ -54,7 +51,7 @@ function falar(texto) {
     window.speechSynthesis.speak(fala);
 }
 
-// Reconhecimento de voz
+// --- MICROFONE ---
 let reconhecendo = false;
 let recognition  = null;
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -70,18 +67,17 @@ function iniciarMicrofone() {
     recognition.lang            = 'pt-BR';
     recognition.interimResults  = false;
     recognition.maxAlternatives = 1;
-    recognition.continuous      = true;
 
     recognition.onstart = () => {
         reconhecendo = true;
         btnMic.classList.add('ouvindo');
         btnMic.title      = 'Solte para enviar';
         input.placeholder = 'Ouvindo...';
+        respostaDiv.innerHTML = '<em>🎙️ Chizu ouvindo...</em>';
     };
 
     recognition.onresult = (e) => {
-        const texto = e.results[e.results.length - 1][0].transcript;
-        input.value = texto;
+        input.value = e.results[0][0].transcript;
     };
 
     recognition.onerror = () => {
@@ -89,6 +85,7 @@ function iniciarMicrofone() {
         btnMic.classList.remove('ouvindo');
         btnMic.title      = 'Falar com Chizu';
         input.placeholder = 'Fale com Chizu...';
+        respostaDiv.innerHTML = '<em>Não consegui ouvir — tente novamente.</em>';
     };
 
     recognition.onend = () => {
@@ -109,6 +106,7 @@ function pararMicrofone(e) {
     }
 }
 
+// --- INICIALIZAÇÃO ---
 window.addEventListener('DOMContentLoaded', () => {
     respostaDiv.innerHTML = `<em>O silêncio precede a resposta...</em>`;
     if (btnMic) {
@@ -119,13 +117,14 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// --- ENVIO DA PERGUNTA ---
 async function fazerPergunta() {
     const textoRaw = input.value.trim();
     if (!textoRaw) return;
 
     if (PALAVRAS_SAIDA.includes(textoRaw.toLowerCase())) {
         const despedida = randomMsg(window.DESPEDIDA_JS);
-        respostaDiv.innerHTML = ` ${despedida}`;
+        respostaDiv.innerHTML = `<em>${despedida}</em>`;
         falar(despedida);
         input.value    = '';
         input.disabled = true;
@@ -134,8 +133,8 @@ async function fazerPergunta() {
 
     const { pergunta, autor } = parsearPergunta(textoRaw);
     input.disabled    = true;
-    input.placeholder = autor ? `Consultando ${autor}...` : "Chizu medita...";
-    respostaDiv.innerHTML = `<em>${randomMsg(window.AGUARDANDO_JS)}</em>`;
+    input.placeholder = autor ? `Consultando ${autor}...` : 'Chizu medita...';
+    respostaDiv.innerHTML = `<em>${randomMsg(window.AGUARDANDO_JS)} — Chizu refletindo...</em>`;
 
     try {
         const payload = { pergunta };
@@ -177,7 +176,7 @@ async function fazerPergunta() {
     } finally {
         input.disabled    = false;
         input.value       = '';
-        input.placeholder = "Fale com Chizu...";
+        input.placeholder = 'Fale com Chizu...';
         input.focus();
     }
 }
