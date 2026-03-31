@@ -13,6 +13,8 @@ EMBEDDINGS_PATH = BASE_DIR / "data" / "acervo_zen.json"
 _biblioteca     = None
 _vectorizer     = None
 _corpus_matrix  = None
+_anedotas       = None        # cache das anedotas separadas
+_anedota_matrix = None        # matriz TF-IDF só das anedotas
 
 # ============================================
 # Autores disponíveis no acervo
@@ -153,16 +155,59 @@ def sortear_perfil(contexto: str) -> tuple[str, str]:
 # ============================================
 def carregar_biblioteca():
     global _biblioteca, _vectorizer, _corpus_matrix
+    global _anedotas, _anedota_matrix
+
     if not EMBEDDINGS_PATH.exists():
         print(f"⚠️ Arquivo {EMBEDDINGS_PATH} não encontrado!")
         return []
+
     with open(EMBEDDINGS_PATH, "r", encoding="utf-8") as f:
-        _biblioteca = json.load(f)
+        todos = json.load(f)
+
+    # Separa ensinamentos dos mestres e anedotas
+    _biblioteca = [item for item in todos if item.get("tipo") != "anedota"]
+    _anedotas   = [item for item in todos if item.get("tipo") == "anedota"]
+
+    # Matriz TF-IDF dos ensinamentos (RAG principal)
     textos         = [item["texto"] for item in _biblioteca]
     _vectorizer    = TfidfVectorizer(max_features=8000)
     _corpus_matrix = _vectorizer.fit_transform(textos)
-    print(f"✅ Biblioteca carregada: {len(_biblioteca)} ensinamentos.")
+
+    # Matriz TF-IDF das anedotas (brinde final)
+    if _anedotas:
+        textos_anedotas = [item["texto"] for item in _anedotas]
+        _anedota_matrix = _vectorizer.transform(textos_anedotas)
+
+    print(f"✅ Biblioteca carregada: {len(_biblioteca)} ensinamentos + {len(_anedotas)} anedotas.")
     return _biblioteca
+
+
+# ============================================
+# Buscar Anedota (brinde final)
+# ============================================
+def buscar_anedota(pergunta: str) -> str:
+    """
+    Busca a anedota mais relevante para a pergunta usando TF-IDF.
+    Se a relevância for muito baixa, sorteia aleatoriamente.
+    Retorna o texto formatado com o título como único identificador.
+    """
+    if not _anedotas or _anedota_matrix is None or _vectorizer is None:
+        return ""
+
+    vetor  = _vectorizer.transform([pergunta])
+    scores = cosine_similarity(vetor, _anedota_matrix).flatten()
+    idx    = int(np.argmax(scores))
+
+    if scores[idx] < 0.03:
+        idx = random.randrange(len(_anedotas))
+
+    item   = _anedotas[idx]
+    titulo = item.get("titulo", "").strip()
+    texto  = item.get("texto", "").strip()
+
+    if titulo:
+        return f"✦ {titulo}\n\n{texto}"
+    return texto
 
 
 # ============================================

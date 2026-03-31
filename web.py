@@ -19,7 +19,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
 # --- IMPORTAÇÕES DO NOVO SISTEMA (CORE) ---
 try:
     from core.ai_provider import FreeAIProvider
-    from core.engine import carregar_biblioteca, buscar_contexto, montar_prompt
+    from core.engine import carregar_biblioteca, buscar_contexto, montar_prompt, buscar_anedota
 except ImportError as e:
     print(f"❌ Erro de importação: {e}. Verifique a pasta 'core'.")
     sys.exit(1)
@@ -236,8 +236,15 @@ async def ask(request: Request):
 
         if is_bloqueado(resposta_limpa):
             resposta_limpa = resposta_bloqueio()
+            return JSONResponse({"resposta": resposta_limpa})
 
-        resposta_exibida = f"{resposta_limpa}\n\n— via  {perfil_nome} · {ia_nome}"
+        # Brinde: anedota relacionada ao tema
+        anedota = buscar_anedota(pergunta)
+        if anedota:
+            resposta_exibida = f"{resposta_limpa}\n\n— via  {perfil_nome} · {ia_nome}\n\n───\n\n{anedota}"
+        else:
+            resposta_exibida = f"{resposta_limpa}\n\n— via  {perfil_nome} · {ia_nome}"
+
         return JSONResponse({"resposta": resposta_exibida})
 
     except Exception as e:
