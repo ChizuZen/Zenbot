@@ -107,6 +107,11 @@ def limpar_resposta(texto: str) -> str:
     return texto.replace("(Silêncio)", "").replace("(pausa)", "").lstrip("#").strip()
 
 
+def is_local(request: Request) -> bool:
+    host = request.headers.get("host", "")
+    return host.startswith("localhost") or host.startswith("127.0.0.1")
+
+
 # =============================
 # Avatar e Arquivos Estáticos
 # =============================
@@ -273,6 +278,9 @@ async def whatsapp(request: Request):
 
 @app.post("/ask")
 async def ask(request: Request):
+
+    DEBUG = is_local(request)
+
     ip = request.client.host
     if not checar_rate_limit(ip):
         return JSONResponse(
@@ -294,27 +302,55 @@ async def ask(request: Request):
         autor_raw = data.get("autor", None)
         autor_filtro = autor_raw if autor_raw in AUTORES_DISPONIVEIS else None
 
+        # Sessão e histórico por usuário
+        session_id = data.get("session_id", ip)
+        historico_usuario = conversation_memory.get(session_id, [])
 
         provider_nome, provider_cfg = ai_provider.sortear_provider()
         top_k = provider_cfg.get("top_k", 3)
 
         contexto = buscar_contexto(pergunta, biblioteca_chizu, top_k=top_k, autor_filtro=autor_filtro)
         mensagens_base, perfil_nome = montar_prompt(pergunta, contexto, autor_filtro=autor_filtro)
-        prompt_completo = [mensagens_base[0], mensagens_base[-1]]
+
+        # Injeta histórico entre system e pergunta atual
+        if historico_usuario:
+            msgs_historico = []
+            for troca in historico_usuario[-3:]:
+                msgs_historico.append({"role": "user",      "content": troca["pergunta"]})
+                msgs_historico.append({"role": "assistant", "content": troca["resposta"]})
+            prompt_completo = [mensagens_base[0]] + msgs_historico + [mensagens_base[-1]]
+        else:
+            prompt_completo = [mensagens_base[0], mensagens_base[-1]]
         resposta_raw, ia_nome = ai_provider.chat(prompt_completo, provider_nome=provider_nome)        
         resposta_limpa = limpar_resposta(resposta_raw)
 
-        # print("-" * 50)        
-        # print("AUTOR:", perfil_nome)
-        # print("PERGUNTA:", pergunta)
-        # print("CONTEXTO:", contexto[:50])
-        # print("RESPOSTA BRUTA:\n", resposta_raw)
-        # print("RESPOSTA LIMPA:\n", resposta_limpa)       
-        # print("-" * 50)
+        if DEBUG:
+            print("-" * 50)        
+            print("AUTOR:", perfil_nome)
+            print("PERGUNTA:", pergunta)
+            print("CONTEXTO:", contexto[:50])
+            # print("TOP_K:", top_k)
+            # print("RESPOSTA BRUTA:\n", resposta_raw)
+            # print("RESPOSTA LIMPA:\n", resposta_limpa)       
+            # print("-" * 50)
         
 
         if is_bloqueado(resposta_limpa):
             return JSONResponse({"resposta": resposta_bloqueio()})
+
+        # Salva troca na memória da sessão
+        if session_id not in conversation_memory:
+            conversation_memory[session_id] = []
+        conversation_memory[session_id].append({
+            "pergunta": pergunta,
+            "resposta": resposta_limpa
+        })
+        # Mantém só as últimas 10 trocas por sessão
+        if len(conversation_memory[session_id]) > 10:
+            conversation_memory[session_id] = conversation_memory[session_id][-10:]
+        # Proteção de memória RAM — limpa se passar de 1000 sessões
+        if len(conversation_memory) > 1000:
+            conversation_memory.clear()
 
         anedota = buscar_anedota(pergunta)
         if anedota:
