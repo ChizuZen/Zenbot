@@ -38,6 +38,7 @@ nav:
     - Validação de Perguntas: validacao-perguntas.md
     - Protocolo de Testes: protocolo-de-testes.md
     - Bibliotecas Usadas: dependencias-importacoes.md
+    - Estado da Arte: estado-da-arte.md     
   - Mantenedor:
     - Fluxo de Trabalho: fluxo-de-trabalho.md
     - Comandos Úteis: comandos-uteis.md
