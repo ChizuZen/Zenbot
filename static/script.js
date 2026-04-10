@@ -175,7 +175,14 @@ async function fazerPergunta() {
 
     input.disabled    = true;
     input.placeholder = mestreEscolhido ? `Consultando ${mestreEscolhido}...` : autor ? `Consultando ${autor}...` : 'Chizu medita...';
-    respostaDiv.innerHTML = `<em>${randomMsg(window.AGUARDANDO_JS)}<br><br>     Chizu refletindo...</em>`;
+    // Rotação de mensagens enquanto aguarda — troca a cada 2.5s
+    const _msgs = [...window.AGUARDANDO_JS].sort(() => Math.random() - 0.5);
+    let _idx = 0;
+    respostaDiv.innerHTML = `<em>${_msgs[0]}</em>`;
+    const _rotacao = setInterval(() => {
+        _idx = (_idx + 1) % _msgs.length;
+        respostaDiv.innerHTML = `<em>${_msgs[_idx]}</em>`;
+    }, 2500);
 
     try {
         const payload = { pergunta, session_id: SESSION_ID };
@@ -225,6 +232,7 @@ async function fazerPergunta() {
     } catch (error) {
         respostaDiv.innerHTML = '<em>(o vento levou sua pergunta...)</em>';
     } finally {
+        clearInterval(_rotacao);
         input.disabled    = false;
         input.value       = '';
         input.placeholder = 'Fale com Chizu...';

@@ -6,7 +6,7 @@ import base64
 import re
 import time
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from collections import defaultdict
@@ -365,3 +365,138 @@ async def ask(request: Request):
     except Exception as e:
         print(f"❌ Erro: {e}")
         return JSONResponse({"resposta": resposta_bloqueio()}, status_code=500)
+
+
+@app.post("/ask-stream")
+async def ask_stream(request: Request):
+    """
+    Endpoint de streaming — tokens chegam ao frontend em tempo real.
+    Toda a lógica de segurança é idêntica ao /ask.
+    /ask continua intacto para WhatsApp e fallback.
+    """
+    DEBUG = is_local(request)
+
+    ip = request.client.host
+    if not checar_rate_limit(ip):
+        async def rate_limit_msg():
+            yield "data: " + json.dumps({"token": "Caminhante, o silêncio também precisa de pausa. Volte em breve."}) + "\n\n"
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(rate_limit_msg(), media_type="text/event-stream", status_code=429)
+
+    try:
+        data = await request.json()
+        pergunta_raw = data.get("pergunta", "").strip()
+        pergunta = sanitizar_pergunta(pergunta_raw)
+
+        if not pergunta:
+            async def bloqueio_msg():
+                yield "data: " + json.dumps({"token": resposta_bloqueio()}) + "\n\n"
+                yield "data: [DONE]\n\n"
+            return StreamingResponse(bloqueio_msg(), media_type="text/event-stream")
+
+        if pergunta.lower() in ["sair", "exit", "gassho", "obrigado", "ok", "quit"]:
+            despedida = random.choice(DESPEDIDA_JS)
+            async def despedida_msg():
+                yield "data: " + json.dumps({"token": despedida}) + "\n\n"
+                yield "data: [DONE]\n\n"
+            return StreamingResponse(despedida_msg(), media_type="text/event-stream")
+
+        autor_raw    = data.get("autor", None)
+        autor_filtro = autor_raw if autor_raw in AUTORES_DISPONIVEIS else None
+        session_id   = data.get("session_id", ip)
+        historico_usuario = conversation_memory.get(session_id, [])
+
+        provider_nome, provider_cfg = ai_provider.sortear_provider()
+        top_k = provider_cfg.get("top_k", 3)
+
+        contexto = buscar_contexto(pergunta, biblioteca_chizu, top_k=top_k, autor_filtro=autor_filtro)
+        mensagens_base, perfil_nome = montar_prompt(pergunta, contexto, autor_filtro=autor_filtro)
+
+        if historico_usuario:
+            msgs_historico = []
+            for troca in historico_usuario[-3:]:
+                msgs_historico.append({"role": "user",      "content": troca["pergunta"]})
+                msgs_historico.append({"role": "assistant", "content": troca["resposta"]})
+            prompt_completo = [mensagens_base[0]] + msgs_historico + [mensagens_base[-1]]
+        else:
+            prompt_completo = [mensagens_base[0], mensagens_base[-1]]
+
+        async def gerar():
+            buffer         = ""
+            resposta_full  = ""
+            bloqueado      = False
+            ia_label       = "IA"
+            BUFFER_MIN     = 80  # chars antes de começar a transmitir
+
+            try:
+                for token, label in ai_provider.stream(prompt_completo, provider_nome=provider_nome):
+                    ia_label      = label
+                    buffer       += token
+                    resposta_full += token
+
+                    # Verifica bloqueio no buffer antes de transmitir
+                    if len(buffer) < BUFFER_MIN:
+                        if is_bloqueado(buffer):
+                            bloqueado = True
+                            break
+                        continue  # ainda acumulando buffer
+
+                    # Buffer cheio e não bloqueado — flush
+                    if buffer and not is_bloqueado(buffer):
+                        yield "data: " + json.dumps({"token": buffer}) + "\n\n"
+                        buffer = ""
+
+                # Flush do que sobrou no buffer
+                if not bloqueado and buffer:
+                    if is_bloqueado(buffer):
+                        bloqueado = True
+                    else:
+                        yield "data: " + json.dumps({"token": buffer}) + "\n\n"
+
+            except Exception as e:
+                print(f"❌ Erro no stream: {e}")
+                bloqueado = True
+
+            if bloqueado:
+                yield "data: " + json.dumps({"token": resposta_bloqueio()}) + "\n\n"
+                yield "data: [DONE]\n\n"
+                return
+
+            # Limpa e salva na memória
+            resposta_limpa = limpar_resposta(resposta_full)
+
+            if DEBUG:
+                print("-" * 50)
+                print("   [STREAM] IA:", ia_label)
+                print("      AUTOR:", perfil_nome)
+                print("   PERGUNTA:", pergunta)
+                print("   CONTEXTO:", contexto[:50])
+
+            if session_id not in conversation_memory:
+                conversation_memory[session_id] = []
+            conversation_memory[session_id].append({
+                "pergunta": pergunta[:150],
+                "resposta": resposta_limpa[:200],
+            })
+            if len(conversation_memory[session_id]) > 10:
+                conversation_memory[session_id] = conversation_memory[session_id][-10:]
+            if len(conversation_memory) > 1000:
+                conversation_memory.clear()
+
+            # Envia rodapé (via + anedota)
+            anedota = buscar_anedota(pergunta)
+            rodape  = f"\n\n— via  {perfil_nome} · {ia_label}"
+            if anedota:
+                rodape += f"\n\n───\n\n{anedota}"
+
+            yield "data: " + json.dumps({"token": rodape}) + "\n\n"
+            yield "data: [DONE]\n\n"
+
+        return StreamingResponse(gerar(), media_type="text/event-stream")
+
+    except Exception as e:
+        print(f"❌ Erro ask-stream: {e}")
+        async def erro_msg():
+            yield "data: " + json.dumps({"token": resposta_bloqueio()}) + "\n\n"
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(erro_msg(), media_type="text/event-stream", status_code=500)
