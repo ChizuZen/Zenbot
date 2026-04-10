@@ -5,6 +5,7 @@ import time
 
 from core.engine import ESTILOS_IA
 
+
 # ============================================
 # Configurações por IA
 # ============================================
