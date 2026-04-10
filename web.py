@@ -465,12 +465,18 @@ async def ask_stream(request: Request):
             # Limpa e salva na memória
             resposta_limpa = limpar_resposta(resposta_full)
 
-            if DEBUG:
-                print("-" * 50)
-                print("   [STREAM] IA:", ia_label)
-                print("      AUTOR:", perfil_nome)
-                print("   PERGUNTA:", pergunta)
-                print("   CONTEXTO:", contexto[:50])
+            # if DEBUG:
+            #     print("-" * 50)
+            #     print("   [STREAM] IA:", ia_label)
+            #     print("      AUTOR:", perfil_nome)
+            #     print("   PERGUNTA:", pergunta)
+            #     print("   CONTEXTO:", contexto[:50])
+            
+            print("-" * 50)
+            print("   [STREAM] IA:", ia_label)
+            print("      AUTOR:", perfil_nome)
+            print("   PERGUNTA:", pergunta)
+            print("   CONTEXTO:", contexto[:50])            
 
             if session_id not in conversation_memory:
                 conversation_memory[session_id] = []
