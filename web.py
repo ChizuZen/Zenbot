@@ -465,7 +465,7 @@ async def ask_stream(request: Request):
             # Limpa e salva na memória
             resposta_limpa = limpar_resposta(resposta_full)
 
-            DEBUG = True #**************
+            # DEBUG = True #**************
             if DEBUG:
                 print("-" * 50)
                 print("   [STREAM] IA:", ia_label)

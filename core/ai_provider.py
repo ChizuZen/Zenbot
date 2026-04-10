@@ -138,7 +138,7 @@ class FreeAIProvider:
                     cfg["frequency_penalty"],
                     cfg["presence_penalty"],
                 )
-                print(f"[AI] Usando: {nome}")
+                # print(f"[AI] Usando: {nome}")
                 return resposta, label
 
             except requests.exceptions.HTTPError as e:
