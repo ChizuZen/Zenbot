@@ -31,36 +31,42 @@ class FreeAIProvider:
         }
         self._providers = [
             #("ollama", "Ollama", "Phi4 Mini · Ollama Local", self._ollama_chat),
-            ("anthropic", "Anthropic", "Claude Haiku · Anthropic", self._anthropic_chat),
             ("gemini",    "Gemini",    "Gemini 2.5 Flash · Google", self._gemini_chat),
             ("groq",      "Groq",      "Llama 3.3 70B · Groq",      self._groq_chat),
             ("cerebras",  "Cerebras",  "Llama 3.1 8B · Cerebras",   self._cerebras_chat),
             ("sambanova", "SambaNova", "Llama 3.1 8B · SambaNova",  self._sambanova_chat),
+            ("anthropic", "Anthropic", "Claude Haiku · Anthropic", self._anthropic_chat),  # último recurso
         ]
 
     def sortear_provider(self) -> tuple[str, dict]:
         """
-        Anthropic tem prioridade se a chave existir.
-        Fallback: sorteia entre os providers gratuitos disponíveis.
+        Gemini tem prioridade — gratuito e de alta qualidade.
+        Groq, Cerebras e SambaNova como fallback gratuito.
+        Anthropic apenas se nenhum outro estiver disponível — economiza créditos.
         Retorna (nome_do_provider, config) para uso ANTES de chamar a IA.
         """
-        # Anthropic primeiro — melhor qualidade
+        # Gemini primeiro — gratuito e melhor qualidade
+        if self.keys.get("gemini"):
+            cfg = CONFIGS.get("Gemini", {"top_k": 5})
+            return "Gemini", cfg
+
+        # Fallback gratuito — sorteia entre Groq, Cerebras, SambaNova
+        gratuitos = [
+            (key, nome, label, method)
+            for key, nome, label, method in self._providers
+            if self.keys.get(key) and nome != "Anthropic"
+        ]
+        if gratuitos:
+            key, nome, label, method = random.choice(gratuitos)
+            cfg = CONFIGS.get(nome, {"top_k": 3})
+            return nome, cfg
+
+        # Último recurso — Anthropic
         if self.keys.get("anthropic"):
             cfg = CONFIGS.get("Anthropic", {"top_k": 5})
             return "Anthropic", cfg
 
-        # Fallback gratuito — sorteia entre os disponíveis
-        disponiveis = [
-            (key, nome, label, method)
-            for key, nome, label, method in self._providers
-            if self.keys.get(key)
-        ]
-        if not disponiveis:
-            return "Fallback", {"top_k": 3}
-
-        key, nome, label, method = random.choice(disponiveis)
-        cfg = CONFIGS.get(nome, {"top_k": 3})
-        return nome, cfg
+        return "Fallback", {"top_k": 3}
 
     def _ajustar_system(self, messages: list, ia_nome: str) -> list:
         estilo = ESTILOS_IA.get(ia_nome, "")
@@ -117,12 +123,14 @@ class FreeAIProvider:
         providers = list(self._providers)
         random.shuffle(providers)
 
-        # ✅ FIX: garante prioridade Anthropic mesmo sem provider_nome explícito
-        if not provider_nome and self.keys.get("anthropic"):
-            provider_nome = "Anthropic"
-
+        # Anthropic sempre por último no fallback
         if provider_nome:
-            providers.sort(key=lambda p: 0 if p[1] == provider_nome else 1)
+            providers.sort(key=lambda p: (
+                0 if p[1] == provider_nome else
+                2 if p[1] == "Anthropic" else 1
+            ))
+        else:
+            providers.sort(key=lambda p: 1 if p[1] == "Anthropic" else 0)
 
         for key, nome, label, method in providers:
             if not self.keys.get(key):
@@ -163,12 +171,14 @@ class FreeAIProvider:
         providers = list(self._providers)
         random.shuffle(providers)
 
-        # ✅ FIX: garante prioridade Anthropic mesmo sem provider_nome explícito
-        if not provider_nome and self.keys.get("anthropic"):
-            provider_nome = "Anthropic"
-
+        # Anthropic sempre por último no fallback
         if provider_nome:
-            providers.sort(key=lambda p: 0 if p[1] == provider_nome else 1)
+            providers.sort(key=lambda p: (
+                0 if p[1] == provider_nome else
+                2 if p[1] == "Anthropic" else 1
+            ))
+        else:
+            providers.sort(key=lambda p: 1 if p[1] == "Anthropic" else 0)
 
         STREAM_SUPPORT = {"Groq", "Gemini"}
 
