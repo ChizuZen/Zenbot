@@ -178,6 +178,9 @@ HTML_PAGE = f"""
             <div class="header-avatar">
                 <img src="{AVATAR_B64}" alt="Mestre Chizu">
             </div>
+            <a href="https://engaged.chizu.ia.br" target="_blank" class="badge-engaged">
+                Engaged Buddhism
+            </a>            
         </div>
 
         <div class="livro-select-container">

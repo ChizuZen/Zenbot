@@ -30,6 +30,7 @@ body {
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid #f4f1ea;
+    position: relative;
 }
 .header-info { flex: 1; text-align: left; }
 .header-info h1 {
@@ -261,3 +262,20 @@ body {
         padding: 0.6rem 1rem;
     }
 }
+
+.badge-engaged {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #6b7c5e;
+    border: 1px solid #6b7c5e;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2px;
+    text-decoration: none;
+    opacity: 0.75;
+    transition: opacity 0.2s;
+}
+.badge-engaged:hover { opacity: 1; }
