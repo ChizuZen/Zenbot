@@ -132,6 +132,8 @@ if os.path.exists("static"):
 if os.path.exists("legal"):
     app.mount("/legal", StaticFiles(directory="legal", html=True), name="legal")
 
+if os.path.exists("apoio"):
+    app.mount("/static", StaticFiles(directory="static", html=True), name="apoio")
 
 # ============================================
 # Textos da Interface
@@ -174,7 +176,8 @@ HTML_PAGE = f"""
             <div class="header-info">
                 <h1>Chizu</h1>
                 <div class="sub">mestre zen digital</div>
-                <a href="https://kushin-ji.chizu.ia.br/" target="badge-engaged" class="badge-engaged">Engaged Buddhism ↗</a>
+                <br>
+                <a href="https://kushin-ji.chizu.ia.br/" target="badge-engaged" class="doc-link">Engaged Buddhism</a>
             </div>
             <div class="header-avatar">
                 <img src="{AVATAR_B64}" alt="Mestre Chizu">
@@ -213,6 +216,8 @@ HTML_PAGE = f"""
         <div class="resposta" id="resposta"><em>O silêncio precede a resposta...</em></div>
         <footer class="footer">                        
             <div class="footer-links">
+                <a href="/static/takuhatsu.html" class="doc-link">Takuhatsu (托鉢)</a>
+                <span class="separator">•</span>                
                 <a href="/legal" class="doc-link">Legal</a>
                 <span class="separator">•</span>
                 <a href="https://docs.chizu.ia.br/" target="_blank" class="doc-link">Documentação</a>
