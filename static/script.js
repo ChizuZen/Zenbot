@@ -1,7 +1,7 @@
 const PALAVRAS_SAIDA = ['sair', 'exit', 'quit', 'gassho', 'obrigado', 'ok'];
 
 // ID único por sessão — gerado ao abrir a aba, some ao fechar
-const SESSION_ID = crypto.randomUUID();
+const SESSION_ID = Math.random().toString(36).slice(2) + Date.now();
 
 // Mapa de @ para nome exato do autor no JSON
 const AUTORES_MAP = {
@@ -17,9 +17,8 @@ const AUTORES_MAP = {
     'bernard':  'Bernard Glassman & Rick Fields',    
 };
 
-const input       = document.getElementById('pergunta');
-const respostaDiv = document.getElementById('resposta');
-const btnMic      = document.getElementById('btn-mic');
+let input, respostaDiv, btnMic;
+
 
 function randomMsg(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -147,13 +146,22 @@ function pararMicrofone(e) {
 
 // --- INICIALIZAÇÃO ---
 window.addEventListener('DOMContentLoaded', () => {
+    input       = document.getElementById('pergunta');   // ← adicione
+    respostaDiv = document.getElementById('resposta');   // ← adicione
+    btnMic      = document.getElementById('btn-mic');    // ← adicione
+
     respostaDiv.innerHTML = `<em>O silêncio precede a resposta...</em>`;
+
     if (btnMic) {
         btnMic.addEventListener('mousedown',  iniciarMicrofone);
         btnMic.addEventListener('mouseup',    pararMicrofone);
         btnMic.addEventListener('touchstart', (e) => { e.preventDefault(); iniciarMicrofone(); }, { passive: false });
         btnMic.addEventListener('touchend',   pararMicrofone);
     }
+
+    input.addEventListener('keypress', (e) => {   // ← mova para cá
+        if (e.key === 'Enter') fazerPergunta();
+    });
 });
 
 // --- ENVIO DA PERGUNTA ---
@@ -242,9 +250,9 @@ async function fazerPergunta() {
     }
 }
 
-input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') fazerPergunta();
-});
+
+
+
 
 function compartilharWhatsApp(texto) {
     const msg = encodeURIComponent("Mestre Chizu:\n\n" + texto + "\n\nhttp://chizu.ia.br");
