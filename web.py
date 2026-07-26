@@ -10,6 +10,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, Response, StreamingRes
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from collections import defaultdict
+from core.contador import incrementar, total
 
 # 1. Ajuste de Caminho Absoluto
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -17,6 +18,8 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
+
+
 
 # --- IMPORTAÇÕES DO NOVO SISTEMA (CORE) ---
 try:
@@ -50,9 +53,17 @@ if os.path.exists(KOANS_PATH):
 MARCADORES_BLOQUEIO = ["BLOQUEADO", "VAZIO"]
 
 
+# nome próprio deste jardim — definido no .env de cada instância
+JARDIM_NOME = os.getenv("JARDIM_NOME", "chizu")
+
 RATE_LIMIT = 10
 JANELA_SEG = 60
 _contadores: dict = defaultdict(list)
+
+def _e_bot_monitor(request: Request) -> bool:
+    """Filtra pings de monitoramento (ex: UptimeRobot) — não são visitas reais."""
+    ua = request.headers.get("user-agent", "").lower()
+    return "uptimerobot" in ua
 
 def checar_rate_limit(ip: str) -> bool:
     agora = time.time()
@@ -221,8 +232,12 @@ HTML_PAGE = f"""
                 <a href="/legal" class="doc-link">Legal</a>
                 <span class="separator">•</span>
                 <a href="https://docs.chizu.ia.br/" target="_blank" class="doc-link">Documentação</a>
+                <span class="separator">•</span>                
+                <a href="mailto:mestre@chizu.ia.br" class="doc-link">Contato</a>
             </div>
-            <p class="gassho-quote">Que todos os seres se beneficiem.<br>mestre@chizu.ia.br</p>
+            <p class="contador-quote"><span id="contador-visitas">…</span> caminhantes já passaram por este jardim.</p>            
+            <p class="gassho-quote">Que todos os seres se beneficiem.</p>
+
         </footer>            
     </div>
     <script>
@@ -230,6 +245,16 @@ HTML_PAGE = f"""
         window.AGUARDANDO_JS = {json.dumps(AGUARDANDO_JS)};
     </script>
     <script src="/static/script.js"></script>
+    <script>
+        fetch('/contador')
+            .then(r => r.json())
+            .then(d => {{
+                document.getElementById('contador-visitas').textContent = d.visitas;
+            }})
+            .catch(() => {{
+                document.getElementById('contador-visitas').textContent = '∞';
+            }});
+    </script>   
 </body>
 </html>
 """
@@ -238,13 +263,20 @@ HTML_PAGE = f"""
 # Rotas do Servidor
 # ============================================
 @app.get("/", response_class=HTMLResponse)
-async def get_index():
+async def get_index(request: Request):
+    if not _e_bot_monitor(request):
+        incrementar(JARDIM_NOME)
     return HTML_PAGE
 
 
 @app.head("/")
 async def head_index():
     return Response(status_code=200)
+
+
+@app.get("/contador")
+async def get_contador():
+    return JSONResponse({"jardim": JARDIM_NOME, "visitas": total(JARDIM_NOME)})
 
 
 @app.post("/whatsapp")
