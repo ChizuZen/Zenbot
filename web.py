@@ -131,17 +131,19 @@ def limpar_resposta(texto: str) -> str:
     """Remove artefatos comuns das respostas das IAs."""
     return texto.replace("(Silêncio)", "").replace("(pausa)", "").lstrip("#").strip()
 
-
 def is_local(request: Request) -> bool:
-    # Primeiro, tenta pegar IP real do cabeçalho X-Forwarded-For
-    forwarded = request.headers.get("x-forwarded-for")
-    if forwarded:
-        ip = forwarded.split(",")[0].strip()
-    else:
-        ip = request.client.host
-    
-    # Lista de IPs locais e confiáveis
-    return ip in ("127.0.0.1", "::1") or ip.startswith("192.168.") or ip == "177.104.74.30"
+    ip = request.headers.get("cf-connecting-ip")
+    if not ip:
+        forwarded = request.headers.get("x-forwarded-for")
+        if forwarded:
+            ip = forwarded.split(",")[0].strip()
+        else:
+            ip = request.client.host
+    return (
+        ip in ("127.0.0.1", "::1") or 
+        ip.startswith("192.168.") or 
+        ip == "177.104.74.30"
+    )
 
 # =============================
 # Avatar e Arquivos Estáticos
@@ -390,7 +392,7 @@ async def ask(request: Request):
         incrementar(NOME_CONTADOR_PERGUNTAS)    
 #------------------------------------------------------
         # ========== BLOCO DE LOG (DEBUG) ==========
-        DEBUG = True
+        
         if DEBUG:
             import psutil
             import os
