@@ -133,9 +133,15 @@ def limpar_resposta(texto: str) -> str:
 
 
 def is_local(request: Request) -> bool:
-    host = request.headers.get("host", "")
-    return host.startswith("localhost") or host.startswith("127.0.0.1") or host.startswith("192.168.2.107") or host.startswith("177.104.74.30")
-
+    # Primeiro, tenta pegar IP real do cabeçalho X-Forwarded-For
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        ip = forwarded.split(",")[0].strip()
+    else:
+        ip = request.client.host
+    
+    # Lista de IPs locais e confiáveis
+    return ip in ("127.0.0.1", "::1") or ip.startswith("192.168.") or ip == "177.104.74.30"
 
 # =============================
 # Avatar e Arquivos Estáticos
