@@ -134,7 +134,7 @@ def limpar_resposta(texto: str) -> str:
 
 def is_local(request: Request) -> bool:
     host = request.headers.get("host", "")
-    return host.startswith("localhost") or host.startswith("127.0.0.1") or host.startswith("192.168.2.107")
+    return host.startswith("localhost") or host.startswith("127.0.0.1") or host.startswith("192.168.2.107") or host.startswith("177.104.74.30")
 
 
 # =============================
