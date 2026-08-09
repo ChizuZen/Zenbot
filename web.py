@@ -60,10 +60,24 @@ RATE_LIMIT = 10
 JANELA_SEG = 60
 _contadores: dict = defaultdict(list)
 
+NOME_CONTADOR_VISITAS = f"visitas_{JARDIM_NOME}"
+NOME_CONTADOR_PERGUNTAS = f"perguntas_{JARDIM_NOME}"
+
+ROBOTS = [
+    "uptimerobot", "pingdom", "newrelic", "googlebot", "bingbot", "yandex",
+    "facebookexternalhit", "bot", "crawler", "crawl", "spider", "scan",
+    "monitor", "check", "headless", "phantom", "curl", "wget",
+    "python-requests", "go-http-client", "libwww", "scrapy", "axios",
+]
+
 def _e_bot_monitor(request: Request) -> bool:
-    """Filtra pings de monitoramento (ex: UptimeRobot) — não são visitas reais."""
-    ua = request.headers.get("user-agent", "").lower()
-    return "uptimerobot" in ua
+    ua = request.headers.get("user-agent", "").strip().lower()
+    if not ua or "mozilla" not in ua:
+        return True
+    if any(bot in ua for bot in ROBOTS):
+        return True
+    return False
+
 
 def checar_rate_limit(ip: str) -> bool:
     agora = time.time()
@@ -120,7 +134,7 @@ def limpar_resposta(texto: str) -> str:
 
 def is_local(request: Request) -> bool:
     host = request.headers.get("host", "")
-    return host.startswith("localhost") or host.startswith("127.0.0.1")
+    return host.startswith("localhost") or host.startswith("127.0.0.1") or host.startswith("192.168.2.107")
 
 
 # =============================
@@ -179,7 +193,7 @@ HTML_PAGE = f"""
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chizu · Mestre Zen</title>
     <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
-    <link rel="stylesheet" href="/static/style.css?v=4">
+    <link rel="stylesheet" href="/static/style.css?v=1">
 </head>
 <body>
     <div class="container">
@@ -235,26 +249,17 @@ HTML_PAGE = f"""
                 <span class="separator">•</span>                
                 <a href="mailto:mestre@chizu.ia.br" class="doc-link">Contato</a>
             </div>
-            <p class="contador-quote"><span id="contador-visitas">…</span> caminhantes já passaram por este jardim.</p>            
+            <p class="contador-quote"><span id="contador-visitas">…</span> caminhantes já passaram por este jardim e <span id="contador-perguntas">…</span> perguntas foram feitas.</p>          
             <p class="gassho-quote">Que todos os seres se beneficiem.</p>
-
         </footer>            
     </div>
     <script>
         window.DESPEDIDA_JS = {json.dumps(DESPEDIDA_JS)};
         window.AGUARDANDO_JS = {json.dumps(AGUARDANDO_JS)};
-    </script>
-    <script src="/static/script.js"></script>
-    <script>
-        fetch('/contador')
-            .then(r => r.json())
-            .then(d => {{
-                document.getElementById('contador-visitas').textContent = d.visitas;
-            }})
-            .catch(() => {{
-                document.getElementById('contador-visitas').textContent = '∞';
-            }});
-    </script>   
+    </script>    
+    <script src="/static/script.js?v=1"></script>
+    <!-- Contadores atualizados pelo script.js -->
+  
 </body>
 </html>
 """
@@ -262,21 +267,25 @@ HTML_PAGE = f"""
 # ============================================
 # Rotas do Servidor
 # ============================================
+
 @app.get("/", response_class=HTMLResponse)
 async def get_index(request: Request):
     if not _e_bot_monitor(request):
-        incrementar(JARDIM_NOME)
+        incrementar(NOME_CONTADOR_VISITAS)
     return HTML_PAGE
-
 
 @app.head("/")
 async def head_index():
     return Response(status_code=200)
 
-
 @app.get("/contador")
 async def get_contador():
-    return JSONResponse({"jardim": JARDIM_NOME, "visitas": total(JARDIM_NOME)})
+    return JSONResponse({
+        "jardim": JARDIM_NOME,
+        "visitas": total(NOME_CONTADOR_VISITAS),
+        "perguntas": total(NOME_CONTADOR_PERGUNTAS),
+    })
+
 
 
 @app.post("/whatsapp")
@@ -318,7 +327,7 @@ async def whatsapp(request: Request):
 
 @app.post("/ask")
 async def ask(request: Request):
-
+    start_time = time.time() 
     DEBUG = is_local(request)
 
     ip = request.client.host
@@ -349,8 +358,12 @@ async def ask(request: Request):
         provider_nome, provider_cfg = ai_provider.sortear_provider()
         top_k = provider_cfg.get("top_k", 3)
 
+        t0_busca = time.time() 
+
         contexto = buscar_contexto(pergunta, biblioteca_chizu, top_k=top_k, autor_filtro=autor_filtro)
         mensagens_base, perfil_nome = montar_prompt(pergunta, contexto, autor_filtro=autor_filtro)
+
+        tempo_busca = time.time() - t0_busca 
 
         # Injeta histórico entre system e pergunta atual
         if historico_usuario:
@@ -364,22 +377,53 @@ async def ask(request: Request):
         resposta_raw, ia_nome = ai_provider.chat(prompt_completo, provider_nome=provider_nome)        
         resposta_limpa = limpar_resposta(resposta_raw)
 
-        if DEBUG:
-            print("-" * 50) 
-            print("      IA:", ia_nome)       
-            print("   AUTOR:", perfil_nome)
-            print("PERGUNTA:", pergunta)
-            print("CONTEXTO:", contexto[:50])
-            
-            # print("TOP_K:", top_k)
-            # print("RESPOSTA BRUTA:\n", resposta_raw)
-            # print("RESPOSTA LIMPA:\n", resposta_limpa)       
-            # print("-" * 50)
-        
 
         if is_bloqueado(resposta_limpa):
             return JSONResponse({"resposta": resposta_bloqueio()})
 
+        incrementar(NOME_CONTADOR_PERGUNTAS)    
+#------------------------------------------------------
+        # ========== BLOCO DE LOG (DEBUG) ==========
+        if DEBUG:
+            import psutil
+            import os
+
+            elapsed_total = time.time() - start_time
+            process = psutil.Process(os.getpid())
+            mem_rss = process.memory_info().rss / 1024 / 1024
+            mem_percent = process.memory_percent()
+            cpu_percent = process.cpu_percent(interval=None)
+            threads = process.num_threads()
+
+            # Parâmetros do adaptador (se disponível)
+            modelo = provider_cfg.get('model', 'N/A')
+            temperatura = provider_cfg.get('temperature', 'N/A')
+            max_tokens = provider_cfg.get('max_tokens', 'N/A')
+            top_p = provider_cfg.get('top_p', 'N/A')
+
+            print("=" * 60)
+            print(f"IA              : {ia_nome} ({modelo})")
+            print(f"Config          : temp={temperatura} | max_tokens={max_tokens} | top_p={top_p}")
+            print(f"Perfil          : {perfil_nome}")
+            print("-" * 60)
+            print(f"Pergunta        : {pergunta}")
+            print(f"Contexto (120c) : {contexto[:120]}...")
+            print("-" * 60)
+            print(f"Busca (rede)    : {tempo_busca:.3f} s")
+            print(f"Tempo total     : {elapsed_total:.3f} s")
+            print(f"Memória (RAM)   : {round(mem_rss, 2)} MB ({round(mem_percent, 2)}% do sistema)")
+            print(f"CPU / Threads   : {cpu_percent}% de uso | {threads} threads ativas")
+            print(f"Sessões ativas  : {len(conversation_memory)}")
+            print(f"IPs monitorados : {len(_contadores)}")
+            print(f"Visitas         : {total(NOME_CONTADOR_VISITAS)}")
+            print(f"Perguntas       : {total(NOME_CONTADOR_PERGUNTAS)}")
+            print("=" * 60 + "\n")
+
+
+
+
+
+#------------------------------------------------------
         # Salva troca na memória da sessão
         if session_id not in conversation_memory:
             conversation_memory[session_id] = []
@@ -462,6 +506,8 @@ async def ask_stream(request: Request):
             prompt_completo = [mensagens_base[0], mensagens_base[-1]]
 
         async def gerar():
+
+            print("🚀 gerar() foi chamado!")
             buffer         = ""
             resposta_full  = ""
             bloqueado      = False
@@ -501,24 +547,12 @@ async def ask_stream(request: Request):
                 yield "data: " + json.dumps({"token": resposta_bloqueio()}) + "\n\n"
                 yield "data: [DONE]\n\n"
                 return
-
+#------------------------------------
             # Limpa e salva na memória
-            resposta_limpa = limpar_resposta(resposta_full)
+            resposta_limpa = limpar_resposta(resposta_full)          
 
-            # DEBUG = True #**************
-            if DEBUG:
-                print("-" * 50)
-                print("   [STREAM] IA:", ia_label)
-                print("      AUTOR:", perfil_nome)
-                print("   PERGUNTA:", pergunta)
-                print("   CONTEXTO:", contexto[:50])
-
-            # print("-" * 50)
-            # print("   [STREAM] IA:", ia_label)
-            # print("      AUTOR:", perfil_nome)
-            # print("   PERGUNTA:", pergunta)
-            # print("   CONTEXTO:", contexto[:50])            
-
+            incrementar(NOME_CONTADOR_PERGUNTAS)
+            
             if session_id not in conversation_memory:
                 conversation_memory[session_id] = []
             conversation_memory[session_id].append({

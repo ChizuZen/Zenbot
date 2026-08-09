@@ -20,6 +20,22 @@ const AUTORES_MAP = {
 let input, respostaDiv, btnMic;
 
 
+//--------------------------------------------
+// ATUALIZA CONTADORES EM TEMPO REAL
+//--------------------------------------------
+function atualizarContadores() {
+    fetch('/contador')
+        .then(r => r.json())
+        .then(d => {
+            const visitaEl = document.getElementById('contador-visitas');
+            const perguntaEl = document.getElementById('contador-perguntas');
+            if (visitaEl) visitaEl.textContent = d.visitas;
+            if (perguntaEl) perguntaEl.textContent = d.perguntas;
+        })
+        .catch(() => {});
+}
+
+
 function randomMsg(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -162,6 +178,9 @@ window.addEventListener('DOMContentLoaded', () => {
     input.addEventListener('keypress', (e) => {   // ← mova para cá
         if (e.key === 'Enter') fazerPergunta();
     });
+
+    atualizarContadores();
+
 });
 
 // --- ENVIO DA PERGUNTA ---
@@ -247,6 +266,7 @@ async function fazerPergunta() {
         input.value       = '';
         input.placeholder = 'Fale com Chizu...';
         input.focus();
+        setTimeout(atualizarContadores, 300);
     }
 }
 
