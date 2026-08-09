@@ -390,6 +390,7 @@ async def ask(request: Request):
         incrementar(NOME_CONTADOR_PERGUNTAS)    
 #------------------------------------------------------
         # ========== BLOCO DE LOG (DEBUG) ==========
+        DEBUG = True
         if DEBUG:
             import psutil
             import os
