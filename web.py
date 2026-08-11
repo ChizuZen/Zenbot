@@ -146,17 +146,21 @@ def is_local(request: Request) -> bool:
 # ============================================
 def resposta_anedota_direta(pergunta: str) -> str | None:
     """
-    Retorna anedota formatada se a pergunta for apenas 'anedota' (ou variantes próximas).
+    Retorna anedota formatada se a pergunta contiver a palavra 'anedota' (ou 'anedotas')
+    e for curta o suficiente para indicar que é um pedido direto.
     Reutiliza a função buscar_anedota() já existente no core.
     """
     pergunta_lower = pergunta.lower().strip()
-    palavras_chave = ("anedota", "anedotas", "uma anedota", "conte uma anedota", "anedota?", "anedota!")
-    if pergunta_lower in palavras_chave:
-        anedota = buscar_anedota(pergunta)
-        if anedota:
-            return f"{anedota}\n\n— do acervo do Bosque"
+    
+    # Verifica se contém a palavra-chave
+    if "anedota" in pergunta_lower:
+        # Limita a perguntas curtas para evitar falsos positivos
+        # Ex: "qual é a origem da palavra anedota?" - não deve ativar
+        if len(pergunta_lower) <= 60:
+            anedota = buscar_anedota(pergunta)
+            if anedota:
+                return f"{anedota}\n\n— do acervo Chizu"
     return None
-
 # =============================
 # Avatar e Arquivos Estáticos
 # =============================
