@@ -1,5 +1,5 @@
 #
-# /caminho/completo/do/web.py
+# /chizu/web.py
 #
 
 import sys
@@ -26,7 +26,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
 # --- IMPORTAÇÕES DO NOVO SISTEMA (CORE) ---
 try:
     from core.ai_provider import FreeAIProvider
-    from core.engine import carregar_biblioteca, buscar_contexto, montar_prompt, buscar_anedota, AUTORES_DISPONIVEIS    
+    from core.engine import carregar_biblioteca, buscar_contexto, montar_prompt, buscar_anedota, sortear_anedota, AUTORES_DISPONIVEIS    
 except ImportError as e:
     print(f"❌ Erro de importação: {e}. Verifique a pasta 'core'.")
     sys.exit(1)
@@ -55,13 +55,14 @@ MARCADORES_BLOQUEIO = ["BLOQUEADO", "VAZIO"]
 
 # nome próprio deste jardim — definido no .env de cada instância
 JARDIM_NOME = os.getenv("JARDIM_NOME", "chizu")
+NOME_CONTADOR_VISITAS = f"visitas_{JARDIM_NOME}"
+NOME_CONTADOR_PERGUNTAS = f"perguntas_{JARDIM_NOME}"
 
 RATE_LIMIT = 10
 JANELA_SEG = 60
 _contadores: dict = defaultdict(list)
 
-NOME_CONTADOR_VISITAS = f"visitas_{JARDIM_NOME}"
-NOME_CONTADOR_PERGUNTAS = f"perguntas_{JARDIM_NOME}"
+
 
 ROBOTS = [
     "uptimerobot", "pingdom", "newrelic", "googlebot", "bingbot", "yandex",
@@ -69,22 +70,6 @@ ROBOTS = [
     "monitor", "check", "headless", "phantom", "curl", "wget",
     "python-requests", "go-http-client", "libwww", "scrapy", "axios",
 ]
-
-def _e_bot_monitor(request: Request) -> bool:
-    ua = request.headers.get("user-agent", "").strip().lower()
-    if not ua or "mozilla" not in ua:
-        return True
-    if any(bot in ua for bot in ROBOTS):
-        return True
-    return False
-
-def checar_rate_limit(ip: str) -> bool:
-    agora = time.time()
-    _contadores[ip] = [t for t in _contadores[ip] if agora - t < JANELA_SEG]
-    if len(_contadores[ip]) >= RATE_LIMIT:
-        return False
-    _contadores[ip].append(agora)
-    return True
 
 PADROES_INJECTION = [
     r"###\s*\w+",
@@ -103,6 +88,25 @@ PADROES_INJECTION = [
     r"ignor\w*\s+(as instruções|as regras|tudo|acima)",
     r"você pode",
 ]
+
+PALAVRAS_ANEDOTA = ["anedota", "piada", "outra", "próxima", "mais uma"]
+
+def _e_bot_monitor(request: Request) -> bool:
+    ua = request.headers.get("user-agent", "").strip().lower()
+    if not ua or "mozilla" not in ua:
+        return True
+    if any(bot in ua for bot in ROBOTS):
+        return True
+    return False
+
+def checar_rate_limit(ip: str) -> bool:
+    agora = time.time()
+    _contadores[ip] = [t for t in _contadores[ip] if agora - t < JANELA_SEG]
+    if len(_contadores[ip]) >= RATE_LIMIT:
+        return False
+    _contadores[ip].append(agora)
+    return True
+
 
 def sanitizar_pergunta(texto: str) -> str | None:
     texto = texto.strip()
@@ -145,22 +149,14 @@ def is_local(request: Request) -> bool:
 # ANEDOTA DIRETA - Função auxiliar
 # ============================================
 def resposta_anedota_direta(pergunta: str) -> str | None:
-    """
-    Retorna anedota formatada se a pergunta contiver a palavra 'anedota' (ou 'anedotas')
-    e for curta o suficiente para indicar que é um pedido direto.
-    Reutiliza a função buscar_anedota() já existente no core.
-    """
     pergunta_lower = pergunta.lower().strip()
-    
-    # Verifica se contém a palavra-chave
-    if "anedota" in pergunta_lower:
-        # Limita a perguntas curtas para evitar falsos positivos
-        # Ex: "qual é a origem da palavra anedota?" - não deve ativar
+
+    if any(p in pergunta_lower for p in PALAVRAS_ANEDOTA):
         if len(pergunta_lower) <= 60:
-            anedota = buscar_anedota(pergunta)
+            anedota = sortear_anedota()
             if anedota:
                 return f"{anedota}\n\n— do acervo Chizu"
-    return None
+    return None   
 # =============================
 # Avatar e Arquivos Estáticos
 # =============================
