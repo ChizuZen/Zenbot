@@ -1,3 +1,6 @@
+#
+# /chizu/core/engine.py 
+#   
 import json
 import random
 import re
@@ -295,6 +298,24 @@ def buscar_anedota(pergunta: str) -> str:
         idx = random.randrange(len(_anedotas))
 
     item   = _anedotas[idx]
+    titulo = item.get("titulo", "").strip()
+    texto  = item.get("texto", "").strip()
+
+    if titulo:
+        return f"✦ {titulo}\n\n{texto}"
+    return texto
+
+
+def sortear_anedota() -> str:
+    """
+    Sorteio puro, sem TF-IDF/argmax — usado quando o pedido é
+    explicitamente por uma anedota (ex: 'conte uma anedota'), onde
+    não há tema real na pergunta para embasar uma busca por similaridade.
+    """
+    if not _anedotas:
+        return ""
+
+    item   = random.choice(_anedotas)
     titulo = item.get("titulo", "").strip()
     texto  = item.get("texto", "").strip()
 
