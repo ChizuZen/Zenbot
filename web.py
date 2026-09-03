@@ -1,7 +1,3 @@
-#
-# /chizu/web.py
-#
-
 import sys
 import os
 import random
@@ -23,13 +19,16 @@ if BASE_DIR not in sys.path:
 
 load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
 
+
+
 # --- IMPORTAÇÕES DO NOVO SISTEMA (CORE) ---
 try:
     from core.ai_provider import FreeAIProvider
-    from core.engine import carregar_biblioteca, buscar_contexto, montar_prompt, buscar_anedota, sortear_anedota, AUTORES_DISPONIVEIS    
+    from core.engine import carregar_biblioteca, buscar_contexto, montar_prompt, buscar_anedota, AUTORES_DISPONIVEIS    
 except ImportError as e:
     print(f"❌ Erro de importação: {e}. Verifique a pasta 'core'.")
     sys.exit(1)
+
 
 # ============================================
 # Inicialização do Sistema
@@ -53,16 +52,16 @@ if os.path.exists(KOANS_PATH):
 # Marcadores de bloqueio — única fonte da verdade
 MARCADORES_BLOQUEIO = ["BLOQUEADO", "VAZIO"]
 
+
 # nome próprio deste jardim — definido no .env de cada instância
 JARDIM_NOME = os.getenv("JARDIM_NOME", "chizu")
-NOME_CONTADOR_VISITAS = f"visitas_{JARDIM_NOME}"
-NOME_CONTADOR_PERGUNTAS = f"perguntas_{JARDIM_NOME}"
 
 RATE_LIMIT = 10
 JANELA_SEG = 60
 _contadores: dict = defaultdict(list)
 
-
+NOME_CONTADOR_VISITAS = f"visitas_{JARDIM_NOME}"
+NOME_CONTADOR_PERGUNTAS = f"perguntas_{JARDIM_NOME}"
 
 ROBOTS = [
     "uptimerobot", "pingdom", "newrelic", "googlebot", "bingbot", "yandex",
@@ -70,6 +69,23 @@ ROBOTS = [
     "monitor", "check", "headless", "phantom", "curl", "wget",
     "python-requests", "go-http-client", "libwww", "scrapy", "axios",
 ]
+
+def _e_bot_monitor(request: Request) -> bool:
+    ua = request.headers.get("user-agent", "").strip().lower()
+    if not ua or "mozilla" not in ua:
+        return True
+    if any(bot in ua for bot in ROBOTS):
+        return True
+    return False
+
+
+def checar_rate_limit(ip: str) -> bool:
+    agora = time.time()
+    _contadores[ip] = [t for t in _contadores[ip] if agora - t < JANELA_SEG]
+    if len(_contadores[ip]) >= RATE_LIMIT:
+        return False
+    _contadores[ip].append(agora)
+    return True
 
 PADROES_INJECTION = [
     r"###\s*\w+",
@@ -89,25 +105,6 @@ PADROES_INJECTION = [
     r"você pode",
 ]
 
-PALAVRAS_ANEDOTA = ["anedota", "piada", "outra", "próxima", "mais uma"]
-
-def _e_bot_monitor(request: Request) -> bool:
-    ua = request.headers.get("user-agent", "").strip().lower()
-    if not ua or "mozilla" not in ua:
-        return True
-    if any(bot in ua for bot in ROBOTS):
-        return True
-    return False
-
-def checar_rate_limit(ip: str) -> bool:
-    agora = time.time()
-    _contadores[ip] = [t for t in _contadores[ip] if agora - t < JANELA_SEG]
-    if len(_contadores[ip]) >= RATE_LIMIT:
-        return False
-    _contadores[ip].append(agora)
-    return True
-
-
 def sanitizar_pergunta(texto: str) -> str | None:
     texto = texto.strip()
     if len(texto) > 400:
@@ -117,15 +114,18 @@ def sanitizar_pergunta(texto: str) -> str | None:
             return None
     return texto
 
+
 def resposta_bloqueio() -> str:
     """Retorna uma frase zen aleatória quando o Chizu bloqueia a pergunta."""
     if koans_zen:
         return f"Caminhante, {random.choice(koans_zen)}\n\nVá praticar Zazen."
     return "Caminhante, o silêncio é a única resposta.\n\nVá praticar Zazen."
 
+
 def is_bloqueado(texto: str) -> bool:
     t = texto.upper()
     return any(m.upper() in t for m in MARCADORES_BLOQUEIO)
+
 
 def limpar_resposta(texto: str) -> str:
     """Remove artefatos comuns das respostas das IAs."""
@@ -145,18 +145,6 @@ def is_local(request: Request) -> bool:
         ip == "177.104.74.30"
     )
 
-# ============================================
-# ANEDOTA DIRETA - Função auxiliar
-# ============================================
-def resposta_anedota_direta(pergunta: str) -> str | None:
-    pergunta_lower = pergunta.lower().strip()
-
-    if any(p in pergunta_lower for p in PALAVRAS_ANEDOTA):
-        if len(pergunta_lower) <= 60:
-            anedota = sortear_anedota()
-            if anedota:
-                return f"{anedota}\n\n— do acervo Chizu"
-    return None   
 # =============================
 # Avatar e Arquivos Estáticos
 # =============================
@@ -226,6 +214,7 @@ HTML_PAGE = f"""
             </div>
             <div class="header-avatar">
                 <img src="{AVATAR_B64}" alt="Mestre Chizu">
+
             </div>
         </div>
 
@@ -255,6 +244,8 @@ HTML_PAGE = f"""
             <button id="btn-enviar" onclick="fazerPergunta()">&#10148;</button>
         </div>
 
+
+
         <div class="resposta" id="resposta"><em>O silêncio precede a resposta...</em></div>
         <footer class="footer">                        
             <div class="footer-links">
@@ -276,6 +267,7 @@ HTML_PAGE = f"""
     </script>    
     <script src="/static/script.js?v=1"></script>
     <!-- Contadores atualizados pelo script.js -->
+  
 </body>
 </html>
 """
@@ -302,6 +294,8 @@ async def get_contador():
         "perguntas": total(NOME_CONTADOR_PERGUNTAS),
     })
 
+
+
 @app.post("/whatsapp")
 async def whatsapp(request: Request):
     ip = request.client.host
@@ -314,14 +308,6 @@ async def whatsapp(request: Request):
         form = await request.form()
         pergunta_raw = form.get("Body", "").strip()
         pergunta = sanitizar_pergunta(pergunta_raw)
-
-        # --- ANEDOTA DIRETA (WhatsApp) ---
-        if pergunta:
-            anedota_direta = resposta_anedota_direta(pergunta)
-            if anedota_direta:
-                twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<Response><Message>{anedota_direta}</Message></Response>"""
-                return Response(content=twiml, media_type="application/xml")
 
         if not pergunta:
             resposta_limpa = resposta_bloqueio()
@@ -369,11 +355,6 @@ async def ask(request: Request):
         if pergunta.lower() in ["sair", "exit", "gassho", "obrigado", "ok", "quit"]:
             return JSONResponse({"resposta": random.choice(DESPEDIDA_JS)})
 
-        # --- ANEDOTA DIRETA (/ask) ---
-        anedota_direta = resposta_anedota_direta(pergunta)
-        if anedota_direta:
-            return JSONResponse({"resposta": anedota_direta})
-
         # Whitelist do autor — nunca confie no cliente
         autor_raw = data.get("autor", None)
         autor_filtro = autor_raw if autor_raw in AUTORES_DISPONIVEIS else None
@@ -404,12 +385,14 @@ async def ask(request: Request):
         resposta_raw, ia_nome = ai_provider.chat(prompt_completo, provider_nome=provider_nome)        
         resposta_limpa = limpar_resposta(resposta_raw)
 
+
         if is_bloqueado(resposta_limpa):
             return JSONResponse({"resposta": resposta_bloqueio()})
 
         incrementar(NOME_CONTADOR_PERGUNTAS)    
-
+#------------------------------------------------------
         # ========== BLOCO DE LOG (DEBUG) ==========
+        
         if DEBUG:
             import psutil
             import os
@@ -421,6 +404,7 @@ async def ask(request: Request):
             cpu_percent = process.cpu_percent(interval=None)
             threads = process.num_threads()
 
+            # Parâmetros do adaptador (se disponível)
             modelo = provider_cfg.get('model', 'N/A')
             temperatura = provider_cfg.get('temperature', 'N/A')
             max_tokens = provider_cfg.get('max_tokens', 'N/A')
@@ -444,15 +428,22 @@ async def ask(request: Request):
             print(f"Perguntas       : {total(NOME_CONTADOR_PERGUNTAS)}")
             print("=" * 60 + "\n")
 
+
+
+
+
+#------------------------------------------------------
         # Salva troca na memória da sessão
         if session_id not in conversation_memory:
             conversation_memory[session_id] = []
         conversation_memory[session_id].append({
-            "pergunta": pergunta[:150],
-            "resposta": resposta_limpa[:200]
+            "pergunta": pergunta[:150],      # ← limita pergunta também
+            "resposta": resposta_limpa[:200] # ← limita resposta
         })
+        # Mantém só as últimas 10 trocas por sessão
         if len(conversation_memory[session_id]) > 10:
             conversation_memory[session_id] = conversation_memory[session_id][-10:]
+        # Proteção de memória RAM — limpa se passar de 1000 sessões
         if len(conversation_memory) > 1000:
             conversation_memory.clear()
 
@@ -467,6 +458,7 @@ async def ask(request: Request):
     except Exception as e:
         print(f"❌ Erro: {e}")
         return JSONResponse({"resposta": resposta_bloqueio()}, status_code=500)
+
 
 @app.post("/ask-stream")
 async def ask_stream(request: Request):
@@ -502,14 +494,6 @@ async def ask_stream(request: Request):
                 yield "data: [DONE]\n\n"
             return StreamingResponse(despedida_msg(), media_type="text/event-stream")
 
-        # --- ANEDOTA DIRETA (/ask-stream) ---
-        anedota_direta = resposta_anedota_direta(pergunta)
-        if anedota_direta:
-            async def anedota_stream():
-                yield "data: " + json.dumps({"token": anedota_direta}) + "\n\n"
-                yield "data: [DONE]\n\n"
-            return StreamingResponse(anedota_stream(), media_type="text/event-stream")
-
         autor_raw    = data.get("autor", None)
         autor_filtro = autor_raw if autor_raw in AUTORES_DISPONIVEIS else None
         session_id   = data.get("session_id", ip)
@@ -531,12 +515,13 @@ async def ask_stream(request: Request):
             prompt_completo = [mensagens_base[0], mensagens_base[-1]]
 
         async def gerar():
+
             print("🚀 gerar() foi chamado!")
             buffer         = ""
             resposta_full  = ""
             bloqueado      = False
             ia_label       = "IA"
-            BUFFER_MIN     = 80
+            BUFFER_MIN     = 80  # chars antes de começar a transmitir
 
             try:
                 for token, label in ai_provider.stream(prompt_completo, provider_nome=provider_nome):
@@ -544,16 +529,19 @@ async def ask_stream(request: Request):
                     buffer       += token
                     resposta_full += token
 
+                    # Verifica bloqueio no buffer antes de transmitir
                     if len(buffer) < BUFFER_MIN:
                         if is_bloqueado(buffer):
                             bloqueado = True
                             break
-                        continue
+                        continue  # ainda acumulando buffer
 
+                    # Buffer cheio e não bloqueado — flush
                     if buffer and not is_bloqueado(buffer):
                         yield "data: " + json.dumps({"token": buffer}) + "\n\n"
                         buffer = ""
 
+                # Flush do que sobrou no buffer
                 if not bloqueado and buffer:
                     if is_bloqueado(buffer):
                         bloqueado = True
@@ -568,8 +556,10 @@ async def ask_stream(request: Request):
                 yield "data: " + json.dumps({"token": resposta_bloqueio()}) + "\n\n"
                 yield "data: [DONE]\n\n"
                 return
-
+#------------------------------------
+            # Limpa e salva na memória
             resposta_limpa = limpar_resposta(resposta_full)          
+
             incrementar(NOME_CONTADOR_PERGUNTAS)
             
             if session_id not in conversation_memory:
@@ -583,6 +573,7 @@ async def ask_stream(request: Request):
             if len(conversation_memory) > 1000:
                 conversation_memory.clear()
 
+            # Envia rodapé (via + anedota)
             anedota = buscar_anedota(pergunta)
             rodape  = f"\n\n— via  {perfil_nome} · {ia_label}"
             if anedota:
